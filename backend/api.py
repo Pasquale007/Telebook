@@ -83,7 +83,7 @@ def signup(user: UserSignUp):
         if num >= 1:
             return {"message": "Benutzer '{user.name}'wurde erfolgreich erstellt!"}
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Bei der Erstellung des Benutzer ist ein Felher aufgetreten. Bitte versuche es später erneut.",
         )
 
@@ -118,7 +118,7 @@ def create_addressbooks(addressbook: Addressbook):
         if num >= 1:
             return {"message": f"Adressbuch '{addressbook.name}' wurde erfolgreich erstellt!"}
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Bei der Erstellung des Adressbuches ist ein Felher aufgetreten. Bitte versuche es erneut.",
         )
 
@@ -217,6 +217,8 @@ class Contact(BaseModel):
 
 # TODO: add phone numbers nicht in extra table sondern hier mit
 # create
+
+
 @app.post("/addressbook/{addressbook_id}/contact")
 def create_contact(addressbook_id: int, contact: Contact):
     with connection.cursor() as cursor:
@@ -229,7 +231,7 @@ def create_contact(addressbook_id: int, contact: Contact):
         if num >= 1:
             return {"message": "Der Eint4rrag wurde hinzugefügt"}
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Es konnte kein Eintrag erstellt werden. Bitte versuche es später erneut.",
         )
 
@@ -261,9 +263,10 @@ def get_one_contact(addressbook_id: int, contact_id: int):
 # update
 @app.put("/addressbook/{addressbook_id}/contact/{contact_id}")
 def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
-    # Check if contact exists in addressbook
+    with connection.cursor() as cursor:
+        # Check if contact exists in addressbook
         cursor.execute(
-            "SELECT id FROM contacts WHERE addressbook_id = %s AND id = %s", (addressbook_id, contact_id))
+            "SELECT id FROM contacts WHERE address_book_id = %s AND id = %s", (addressbook_id, contact_id))
         existing_contact = cursor.fetchone()
         if not existing_contact:
             raise HTTPException(
@@ -271,27 +274,20 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
                 detail="Der Kontakt existiert nicht.",
             )
 
-        # Check if updated contact name already exists in addressbook
-        # -> macht das Sinn? Es gibt ja sicher mehrere Felix Müller
-        cursor.execute(
-            "SELECT id FROM contact WHERE addressbook_id = %s AND fist_name = %s AND last_name = %s", (addressbook_id, new_contact.first_name, new_contact.last_name))
-        existing_contact = cursor.fetchone()
-        if existing_contact:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Ein Kontakt mit diesem Vor- und Nachnamen existiert bereits. Bitte wähle einen anderen Namen.",
-            )
-
-        # if everything is ok -> update the contact
-        string = '''
+        string = ''' 
             UPDATE contacts 
-            SET  name = %s 
-            WHERE id = %s;
+            SET first_name = %s, last_name = %s, email = %s, street = %s, city = %s, zip_code = %s
+            WHERE id = %s AND address_book_id = %s;
         '''
-        old_name = new_contact.first_name
-        num = cursor.execute(string, (new_addressbook.name, addressbook_id))
-        if num >= 1:
-            return {"message": f"Der Kontakt wurde aktualisiert."}
+        num = cursor.execute(string, (new_contact.first_name, new_contact.last_name, new_contact.email,
+                             new_contact.street, new_contact.city, new_contact.zip_code, contact_id, addressbook_id))
+        if num == 0:
+            raise HTTPException(
+                status_code=status.HTTP_304_NOT_MODIFIED,
+                detail="Keine Änderrungen notwendig. Der Kontakt ist unverändert.",
+            )
+        if num == 1:
+            return {"message": "Kontakt erfolgreich aktualisiert."}
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -300,9 +296,14 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
 
 
 # delete
-@app.put("/addressbook/{addressbook_id}/contact/{contact_id}")
+@app.delete("/addressbook/{addressbook_id}/contact/{contact_id}")
 def delete_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
     with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM contacts WHERE address_book_id = %s AND id = %s;", (addressbook_id, contact_id))
-        return cursor.fetchone()
+        num = cursor.execute(
+            "DELETE FROM contacts WHERE address_book_id = %s AND id = %s;", (addressbook_id, contact_id))
+        if num == 1:
+            return {"message": "Benutzer wurde erfolgreich gelöscht"}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Der Kontakt konnte nicht gelöscht werden, da es ihn nicht gibt.",
+        )
