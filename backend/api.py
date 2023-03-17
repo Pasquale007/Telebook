@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import HTTPException, status
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 # MySQL Connector
@@ -214,6 +214,7 @@ class Contact(BaseModel):
     street: Optional[str] = None
     city: Optional[str] = None
     zip_code: Optional[str] = None
+    phone_numbers: Optional[List[str]] = None
 
 # TODO: add phone numbers nicht in extra table sondern hier mit
 # create
@@ -228,8 +229,17 @@ def create_contact(addressbook_id: int, contact: Contact):
         '''
         num = cursor.execute(string, (addressbook_id, contact.first_name, contact.last_name,
                              contact.email, contact.street, contact.city, contact.zip_code))
+
+        contact_id = cursor.lastrowid
+        add_phone_str = '''
+            INSERT INTO phone_numbers (contact_id, phone_number)
+            VALUES (%s, %s);
+        '''
+        for phone_number in contact.phone_numbers:
+            cursor.execute(add_phone_str, (contact_id, phone_number))
+
         if num >= 1:
-            return {"message": "Der Eint4rrag wurde hinzugefügt"}
+            return {"message": "Der Eintrag wurde hinzugefügt"}
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Es konnte kein Eintrag erstellt werden. Bitte versuche es später erneut.",
@@ -240,18 +250,45 @@ def create_contact(addressbook_id: int, contact: Contact):
 @app.get("/addressbook/{addressbook_id}/contact")
 def get_all_contact(addressbook_id: int):
     with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM contacts WHERE address_book_id = %s;", addressbook_id)
-        return cursor.fetchall()
+        string = '''
+            SELECT c.*, GROUP_CONCAT(p.phone_number) AS phone_numbers 
+            FROM contacts c 
+            LEFT JOIN phone_numbers p 
+            ON c.id = p.contact_id 
+            WHERE c.address_book_id = %s 
+            GROUP BY c.id;
+        '''
+        cursor.execute(string, addressbook_id)
+        results = cursor.fetchall()
+        contacts = []
+        for entry in results:
+            phone_numbers = entry['phone_numbers']
+            if phone_numbers:
+                entry['phone_numbers'] = phone_numbers.split(',')
+            else:
+                entry.phone_number = []
+            contacts.append(entry)
+        return contacts
 
 
 # get id
 @app.get("/addressbook/{addressbook_id}/contact/{contact_id}")
 def get_one_contact(addressbook_id: int, contact_id: int):
     with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM contacts WHERE address_book_id = %s AND id = %s;", (addressbook_id, contact_id))
+        string = '''
+            SELECT c.*, GROUP_CONCAT(p.phone_number) AS phone_numbers
+            FROM contacts c
+            LEFT JOIN phone_numbers p
+            ON c.id = p.contact_id
+            WHERE c.address_book_id = %s AND c.id = %s;
+        '''
+        cursor.execute(string, (addressbook_id, contact_id))
         result = cursor.fetchone()
+        phone_numbers = result['phone_numbers']
+        if phone_numbers:
+            result['phone_numbers'] = phone_numbers.split(',')
+        else:
+            result.phone_number = []
         if result:
             return result
         raise HTTPException(
@@ -279,13 +316,21 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
             SET first_name = %s, last_name = %s, email = %s, street = %s, city = %s, zip_code = %s
             WHERE id = %s AND address_book_id = %s;
         '''
-        num = cursor.execute(string, (new_contact.first_name, new_contact.last_name, new_contact.email,
+        cursor.execute(string, (new_contact.first_name, new_contact.last_name, new_contact.email,
                              new_contact.street, new_contact.city, new_contact.zip_code, contact_id, addressbook_id))
-        if num == 0:
-            raise HTTPException(
-                status_code=status.HTTP_304_NOT_MODIFIED,
-                detail="Keine Änderrungen notwendig. Der Kontakt ist unverändert.",
-            )
+        
+        # Vorerst: Statt aktualisieren -> alle löschen und einfügen
+        if new_contact.phone_numbers:
+            num = cursor.execute(
+                "DELETE FROM phone_numbers WHERE contact_id = %s", contact_id)
+            for phone_number in new_contact.phone_numbers:
+                cursor.execute(
+                    "INSERT INTO phone_numbers (contact_id, phone_number) VALUES (%s, %s)", (contact_id, phone_number))
+            if num == 0:
+                raise HTTPException(
+                    status_code=status.HTTP_304_NOT_MODIFIED,
+                    detail="Keine Änderrungen notwendig. Der Kontakt ist unverändert.",
+                )
         if num == 1:
             return {"message": "Kontakt erfolgreich aktualisiert."}
 
