@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS contacts (
   first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255),
   email VARCHAR(255),
-  address VARCHAR(255),
+  street VARCHAR(255),
   city VARCHAR(255),
   zip_code VARCHAR(20),
   PRIMARY KEY (id),
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 );
 
 /*insert values into contact*/
-INSERT INTO contacts (address_book_id, first_name, last_name, email, address, city, zip_code)
+INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code)
 VALUES
     (1, 'Julia', 'Wesel', 'julia.wesel@example.com', 'Baumstrasse 3a', 'Berlin', '00012'),
     (1, 'Bob', 'Schmidt', 'bob.schmidt@example.com', 'Blumenweg 12', 'Hamburg', '54678'),
