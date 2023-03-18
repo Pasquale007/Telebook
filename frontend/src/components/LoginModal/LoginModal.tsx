@@ -1,28 +1,28 @@
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 const BASE_ENDPOINT = process.env.REACT_APP_BASE_ENDPOINT || "";
 const LOGIN_ENDPOINT = process.env.REACT_APP_LOGIN_ENDPOINT || "";
 const SIGNUP_ENDPOINT = process.env.REACT_APP_SIGNUP_ENDPOINT || "";
 const BASE_URL = process.env.REACT_APP_BASE_URL || "";
 
-export default function Login() {
-    const [signUp, setSignUp] = useState(false);
-    const [errorMsg, setErrorMsg] = useState("");
+export default function Login(): ReactElement {
+    const [signUp, setSignUp] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
     const [loginForm] = Form.useForm();
 
 
     useEffect(() => {
         if (errorMsg.length > 0) {
-            setTimeout(() => setErrorMsg(""), 5000)
+            setTimeout(() => setErrorMsg(""), 5000);
         }
     }, [errorMsg]);
 
     function sendLogIn() {
-        const name = loginForm.getFieldValue('name');
-        const password = loginForm.getFieldValue('password');
+        const name: string = loginForm.getFieldValue('name');
+        const password: string = loginForm.getFieldValue('password');
         loginForm.resetFields(['password']);
 
         if (!password || !name) {
@@ -46,10 +46,10 @@ export default function Login() {
     }
 
     function sendSignUp() {
-        const username = loginForm.getFieldValue('name');
-        const email = loginForm.getFieldValue('email');
-        const password = loginForm.getFieldValue('password');
-        const passwordTest = loginForm.getFieldValue('passwordTest');
+        const username: string = loginForm.getFieldValue('name');
+        const email: string = loginForm.getFieldValue('email');
+        const password: string = loginForm.getFieldValue('password');
+        const passwordTest: string = loginForm.getFieldValue('passwordTest');
 
         loginForm.resetFields(['password', 'passwordTest']);
 

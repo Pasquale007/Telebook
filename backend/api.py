@@ -148,19 +148,25 @@ def create_addressbooks(addressbook: Addressbook):
 
 
 # get
-@app.get("/addressbook")
-def get_all_addressbooks():
+@app.get("/addressbook/{user_id}/get")
+def get_all_addressbooks(user_id: int):
     with connection.cursor() as cursor:
-        cursor.execute(" SELECT * FROM address_books;")
+        cursor.execute('''
+        SELECT *
+        FROM address_books
+        WHERE user_id = %s;
+        ''', user_id)
         return cursor.fetchall()
 
 
 # get id
-@app.get("/addressbook/{addressbook_id}")
-def get_one_addressbooks(addressbook_id: int):
+@app.get("/addressbook/{user_id}/get/{addressbook_id}")
+def get_one_addressbooks(addressbook_id: int, user_id: int):
     with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM address_books WHERE id = %s;", addressbook_id)
+        cursor.execute('''
+        SELECT * 
+        FROM address_books
+        WHERE id = %s AND user_id = %s;''', (addressbook_id, user_id))
         result = cursor.fetchone()
         if result:
             return result

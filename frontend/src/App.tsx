@@ -1,26 +1,25 @@
-import React from 'react';
 import { Button } from 'antd';
-import Layout from './Layout';
+import Format from './Format';
 import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
+import { ReactElement } from 'react';
 
-function App() {
+function App(): ReactElement {
+
   function isLoggedIn(): boolean {
-    if (sessionStorage.getItem('loggedIn')) {
-      return true
-    }
-    return false
+    //convert to boolean with '!!'
+    return !!sessionStorage.getItem('loggedIn');
   }
 
 
   return (
     <div>
       {isLoggedIn() ?
-        <Layout>
-          <Button type="dashed">Hi</Button>
-        </Layout>
+        <Format>
+          <Button type="default">Hi</Button>
+        </Format>
         :
-        <LoginModal />
+        <LoginModal/>
       }
     </div>
   );
