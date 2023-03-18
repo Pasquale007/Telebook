@@ -40,7 +40,7 @@ export default function Login() {
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
         }).catch(err => {
-            setErrorMsg(err.response?.data?.detail || "Ein Fehler ist aufgetreten")
+            setErrorMsg(err.response?.data?.detail || "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut")
         })
     }
 
@@ -53,12 +53,12 @@ export default function Login() {
         loginForm.resetFields(['password', 'passwordTest']);
 
         if (!username || !email || !password || !passwordTest) {
-            setErrorMsg("Alle Felder müssen gefüllt sein");
+            setErrorMsg("Alle Felder müssen gefüllt sein.");
             return;
         }
 
         if (password !== passwordTest) {
-            setErrorMsg("Deine Passwörter unterschieden sich. Bitte überprüfe die Passwörter");
+            setErrorMsg("Deine Passwörter unterschieden sich. Bitte überprüfe die Passwörter.");
             return;
         }
 
@@ -83,7 +83,6 @@ export default function Login() {
         <>
             {signUp ?
                 <Modal
-                    forceRender
                     open
                     title="Sign Up"
                     centered
@@ -92,7 +91,7 @@ export default function Login() {
                     onOk={sendSignUp}
                     onCancel={() => setSignUp(!signUp)}
                 >
-                    {errorMsg && <Alert message={errorMsg} type="warning" showIcon />}
+                    {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
                     <hr />
                     <Form form={loginForm} >
                         <Form.Item name="name" label="Username:" required>
@@ -112,8 +111,6 @@ export default function Login() {
                 </Modal>
                 :
                 <Modal
-                    forceRender
-                    getContainer={false}
                     open
                     title="Login"
                     centered
@@ -122,7 +119,7 @@ export default function Login() {
                     onOk={sendLogIn}
                     onCancel={() => setSignUp(!signUp)}
                 >
-                    {errorMsg && <Alert message={errorMsg} type="warning" showIcon />}
+                    {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
                     <hr />
                     <Form form={loginForm} >
                         <Form.Item name="name" label="Email oder Benutzername:" required>
