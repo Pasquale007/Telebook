@@ -70,8 +70,6 @@ def login(user: UserLogin):
         return cursor.fetchone()
 
 # create
-
-
 @app.post("/signup")
 def signup(user: UserSignUp):
     with connection.cursor() as cursor:
