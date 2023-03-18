@@ -1,15 +1,15 @@
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import Format from './Format';
 import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
 import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Addressbook, Contacts } from './sharedTypes';
+import { SearchOutlined } from '@ant-design/icons';
 
 const BASE_URL = process.env.REACT_APP_BASE_ENDPOINT || "";
 const ADDRESSBOOK_ENDPOINT = process.env.REACT_APP_ADDRESSBOOK_ENDPOINT || "";
 const CONTACT_ENDPOINT = process.env.REACT_APP_CONTACT_ENDPOINT || "";
-
 
 function App(): ReactElement {
 
@@ -54,7 +54,11 @@ function App(): ReactElement {
     <div>
       {isLoggedIn() ?
         <Format addressbooks={addressbooks} callback={clickCallback}>
-          <Button type="default">Hi</Button>
+          <Input
+            style={{ margin: "20px", width: "90%", padding: "10px" }}
+            prefix={<SearchOutlined />}
+          />
+          {/*Hier kommt die Liste der Kontakte hin*/}
         </Format>
         :
         <LoginModal />

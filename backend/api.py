@@ -9,7 +9,7 @@ from pydantic import BaseModel
 import pymysql.cursors
 
 # zusätzlich
-import json 
+import json
 
 
 app = FastAPI()
@@ -41,8 +41,10 @@ connection = pymysql.connect(
     database=config.get('database'),
     cursorclass=pymysql.cursors.DictCursor)
 
+# TODO: jeder aufruf muss eigene connection zur DB aufbauen sonst time out probleme
 
 # ======================================== USER ========================================
+
 
 class UserLogin(BaseModel):
     username_or_email: str
@@ -66,7 +68,8 @@ def login(user: UserLogin):
             WHERE
             (name = %s OR email = %s) AND password = MD5(%s);
         '''
-        cursor.execute(string, (user.username_or_email, user.username_or_email, user.password))
+        cursor.execute(string, (user.username_or_email,
+                       user.username_or_email, user.password))
         result = cursor.fetchone()
         if not result:
             raise HTTPException(
@@ -76,10 +79,12 @@ def login(user: UserLogin):
         return result
 
 # create
+
+
 @app.post("/signup")
 def signup(user: UserSignUp):
     with connection.cursor() as cursor:
-        #check
+        # check
         check_query = '''
             SELECT id FROM users WHERE name=%s OR email=%s
         '''
@@ -90,7 +95,7 @@ def signup(user: UserSignUp):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Es existiert schon ein Benutzer mit dieser Email oder diesem Benutzernamen."
             )
-        #insert
+        # insert
         string = '''
             INSERT INTO users (name, email, password, role)
             VALUES (%s, %s, MD5(%s), "user")
@@ -120,6 +125,8 @@ class Addressbook(BaseModel):
     name: str
 
 # create
+
+
 @app.post("/addressbook")
 def create_addressbooks(addressbook: Addressbook):
     with connection.cursor() as cursor:
@@ -176,6 +183,8 @@ def get_one_addressbooks(addressbook_id: int, user_id: int):
         )
 
 # update
+
+
 @app.put("/addressbook/{addressbook_id}")
 def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
     with connection.cursor() as cursor:
@@ -345,15 +354,15 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
             WHERE id = %s AND address_book_id = %s;
         '''
         cursor.execute(string, (new_contact.first_name, new_contact.last_name, new_contact.email,
-                             new_contact.street, new_contact.city, new_contact.zip_code, contact_id, addressbook_id))
+                                new_contact.street, new_contact.city, new_contact.zip_code, contact_id, addressbook_id))
         connection.commit()
-        
+
         # Vorerst: statt aktualisieren -> alle löschen und einfügen
         if new_contact.phone_numbers:
             num = cursor.execute(
                 "DELETE FROM phone_numbers WHERE contact_id = %s", contact_id)
             connection.commit()
-            
+
             for phone_number in new_contact.phone_numbers:
                 cursor.execute(
                     "INSERT INTO phone_numbers (contact_id, phone_number) VALUES (%s, %s)", (contact_id, phone_number))
