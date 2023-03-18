@@ -67,7 +67,12 @@ def login(user: UserLogin):
             (name = %s OR email = %s) AND password = MD5(%s);
         '''
         cursor.execute(string, (user.username_or_email, user.username_or_email, user.password))
-        return cursor.fetchone()
+        result = cursor.fetchone()
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Es existiert kein Benutzer mit diesen Anmeldedaten"
+            )
 
 # create
 @app.post("/signup")
