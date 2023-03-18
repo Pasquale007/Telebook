@@ -9,7 +9,7 @@ from pydantic import BaseModel
 import pymysql.cursors
 
 # zusätzlich
-import json
+import json 
 
 
 app = FastAPI()
@@ -45,7 +45,7 @@ connection = pymysql.connect(
 # ======================================== USER ========================================
 
 class UserLogin(BaseModel):
-    name: str
+    username_or_email: str
     password: str
 
 
@@ -64,9 +64,9 @@ def login(user: UserLogin):
             SELECT *
             FROM users
             WHERE
-            name = %s AND password = MD5(%s);
+            (name = %s OR email = %s) AND password = MD5(%s);
         '''
-        cursor.execute(string, (user.name, user.password))
+        cursor.execute(string, (user.username_or_email, user.username_or_email, user.password))
         return cursor.fetchone()
 
 # create
@@ -75,6 +75,18 @@ def login(user: UserLogin):
 @app.post("/signup")
 def signup(user: UserSignUp):
     with connection.cursor() as cursor:
+        #check
+        check_query = '''
+            SELECT id FROM users WHERE name=%s OR email=%s
+        '''
+        cursor.execute(check_query, (user.name, user.email))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Es existiert schon ein Benutzer mit dieser Email oder diesem Benutzernamen."
+            )
+        #insert
         string = '''
             INSERT INTO users (name, email, password, role)
             VALUES (%s, %s, MD5(%s), "user")
@@ -95,8 +107,6 @@ class Addressbook(BaseModel):
     name: str
 
 # create
-
-
 @app.post("/addressbook")
 def create_addressbooks(addressbook: Addressbook):
     with connection.cursor() as cursor:
@@ -122,18 +132,16 @@ def create_addressbooks(addressbook: Addressbook):
             detail="Bei der Erstellung des Adressbuches ist ein Felher aufgetreten. Bitte versuche es erneut.",
         )
 
+
 # get
-
-
 @app.get("/addressbook")
 def get_all_addressbooks():
     with connection.cursor() as cursor:
         cursor.execute(" SELECT * FROM address_books;")
         return cursor.fetchall()
 
+
 # get id
-
-
 @app.get("/addressbook/{addressbook_id}")
 def get_one_addressbooks(addressbook_id: int):
     with connection.cursor() as cursor:
