@@ -1,26 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Button } from 'antd';
+import Layout from './Layout';
+import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
 
 function App() {
+  function isLoggedIn(): boolean {
+    if (sessionStorage.getItem('loggedIn')) {
+      return true
+    }
+    return false
+  }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {isLoggedIn() ?
+        <Layout>
+          <Button type="dashed">Hi</Button>
+        </Layout>
+        :
+        <LoginModal />
+      }
     </div>
   );
 }
-
 export default App;
+
