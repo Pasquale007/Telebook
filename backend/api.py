@@ -96,6 +96,7 @@ def signup(user: UserSignUp):
             VALUES (%s, %s, MD5(%s), "user")
         '''
         num = cursor.execute(string, (user.name, user.email, user.password))
+        connection.commit()
         if num >= 1:
             string = ''' 
             SELECT *
@@ -137,6 +138,7 @@ def create_addressbooks(addressbook: Addressbook):
             VALUES (%s, %s);
         '''
         num = cursor.execute(string, (addressbook.user_id, addressbook.name))
+        connection.commit()
         if num >= 1:
             return {"message": f"Adressbuch '{addressbook.name}' wurde erfolgreich erstellt!"}
         raise HTTPException(
@@ -201,6 +203,7 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
         '''
         old_name = updated_addressbook.name
         num = cursor.execute(string, (new_addressbook.name, addressbook_id))
+        connection.commit()
         if num >= 1:
             return {"message": f"Das Adressbuch wurde zu '{old_name}' umgenannt."}
 
@@ -217,6 +220,7 @@ def delete_addressbooks(addressbook_id: int):
     with connection.cursor() as cursor:
         num = cursor.execute(
             "DELETE FROM address_books WHERE id = %s", addressbook_id)
+        connection.commit()
         if num >= 1:
             return {"message": "Das Adressbuch wurde gelöscht"}
         raise HTTPException(
@@ -249,7 +253,7 @@ def create_contact(addressbook_id: int, contact: Contact):
         '''
         num = cursor.execute(string, (addressbook_id, contact.first_name, contact.last_name,
                              contact.email, contact.street, contact.city, contact.zip_code))
-
+        connection.commit()
         contact_id = cursor.lastrowid
         add_phone_str = '''
             INSERT INTO phone_numbers (contact_id, phone_number)
@@ -257,6 +261,7 @@ def create_contact(addressbook_id: int, contact: Contact):
         '''
         for phone_number in contact.phone_numbers:
             cursor.execute(add_phone_str, (contact_id, phone_number))
+            connection.commit()
 
         if num >= 1:
             return {"message": "Der Eintrag wurde hinzugefügt"}
@@ -338,14 +343,19 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
         '''
         cursor.execute(string, (new_contact.first_name, new_contact.last_name, new_contact.email,
                              new_contact.street, new_contact.city, new_contact.zip_code, contact_id, addressbook_id))
+        connection.commit()
         
-        # Vorerst: Statt aktualisieren -> alle löschen und einfügen
+        # Vorerst: statt aktualisieren -> alle löschen und einfügen
         if new_contact.phone_numbers:
             num = cursor.execute(
                 "DELETE FROM phone_numbers WHERE contact_id = %s", contact_id)
+            connection.commit()
+            
             for phone_number in new_contact.phone_numbers:
                 cursor.execute(
                     "INSERT INTO phone_numbers (contact_id, phone_number) VALUES (%s, %s)", (contact_id, phone_number))
+                connection.commit()
+
             if num == 0:
                 raise HTTPException(
                     status_code=status.HTTP_304_NOT_MODIFIED,
@@ -366,6 +376,8 @@ def delete_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
     with connection.cursor() as cursor:
         num = cursor.execute(
             "DELETE FROM contacts WHERE address_book_id = %s AND id = %s;", (addressbook_id, contact_id))
+        connection.commit()
+
         if num == 1:
             return {"message": "Benutzer wurde erfolgreich gelöscht"}
         raise HTTPException(
