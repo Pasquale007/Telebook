@@ -96,7 +96,15 @@ def signup(user: UserSignUp):
         '''
         num = cursor.execute(string, (user.name, user.email, user.password))
         if num >= 1:
-            return {"message": "Benutzer '{user.name}'wurde erfolgreich erstellt!"}
+            string = ''' 
+            SELECT *
+            FROM users
+            WHERE
+            name = %s AND password = MD5(%s);
+            '''
+            cursor.execute(string, (user.name, user.password))
+            result = cursor.fetchone()
+            return result
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Bei der Erstellung des Benutzer ist ein Felher aufgetreten. Bitte versuche es später erneut.",
