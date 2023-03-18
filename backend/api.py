@@ -73,6 +73,7 @@ def login(user: UserLogin):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Es existiert kein Benutzer mit diesen Anmeldedaten"
             )
+        return result
 
 # create
 @app.post("/signup")
