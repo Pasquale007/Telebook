@@ -34,19 +34,17 @@ export default function Login() {
                 "password": password
             }
         ).then(response => {
-            console.log(response);
             sessionStorage.setItem('email', response.data.email);
             sessionStorage.setItem('id', response.data.id);
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
         }).catch(err => {
-            setErrorMsg(err.response.data.detail)
+            setErrorMsg(err.response?.data?.detail || "Ein Fehler ist aufgetreten")
         })
     }
 
     function sendSignUp() {
-        console.log(loginForm.getFieldValue('name'))
         const username = loginForm.getFieldValue('name');
         const email = loginForm.getFieldValue('email');
         const password = loginForm.getFieldValue('password');
@@ -76,9 +74,8 @@ export default function Login() {
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
-            console.log(response.data);
         }).catch(err => {
-            console.log(err.response.data);
+            setErrorMsg(err.response.data.detail)
         })
     }
 
