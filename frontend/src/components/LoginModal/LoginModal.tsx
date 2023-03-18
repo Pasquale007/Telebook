@@ -1,3 +1,4 @@
+import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -93,21 +94,34 @@ export default function Login() {
                 >
                     {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
                     <hr />
-                    <Form form={loginForm} >
-                        <Form.Item name="name" label="Username:" required>
-                            <Input placeholder="Benutzername" />
+                    <Form form={loginForm}>
+                        <Form.Item name="name">
+                            <Input
+                                placeholder="Benutzername"
+                                prefix={<UserOutlined />}
+                            />
                         </Form.Item>
-                        <Form.Item name="email" label="Email:" required>
-                            <Input placeholder="Email" />
+                        <Form.Item name="email">
+                            <Input
+                                placeholder="Email"
+                                prefix={<MailOutlined />}
+                            />
                         </Form.Item>
-                        <Form.Item name="password" label="Passwort:" required>
-                            <Input placeholder="Passwort" type="password" />
+                        <Form.Item name="password">
+                            <Input
+                                placeholder="Passwort"
+                                type="password"
+                                prefix={<LockOutlined />}
+                            />
                         </Form.Item>
-                        <Form.Item name="passwordTest" label="Passwort:" required>
-                            <Input placeholder="Passwort" type="password" />
+                        <Form.Item name="passwordTest">
+                            <Input
+                                placeholder="Passwort"
+                                type="password"
+                                prefix={<LockOutlined />}
+                            />
                         </Form.Item>
                     </Form>
-
                 </Modal>
                 :
                 <Modal
@@ -122,11 +136,13 @@ export default function Login() {
                     {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
                     <hr />
                     <Form form={loginForm} >
-                        <Form.Item name="name" label="Email oder Benutzername:" required>
-                            <Input placeholder="Name/ Email" />
+                        <Form.Item name="name">
+                            <Input
+                                placeholder="Name/ Email"
+                                prefix={<UserOutlined />} />
                         </Form.Item>
-                        <Form.Item name="password" label="Passwort:" required>
-                            <Input placeholder="Passwort" type="password" />
+                        <Form.Item name="password" required>
+                            <Input placeholder="Passwort" type="password" prefix={<LockOutlined />} />
                         </Form.Item>
                     </Form>
 
