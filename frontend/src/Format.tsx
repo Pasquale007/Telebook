@@ -38,9 +38,9 @@ export default function Format(props: FormProps): ReactElement {
             (addressbook) => {
                 return addressbook.id + '' === menuItem?.key
             })
-            if(searchedAddressbook){
-                callback(searchedAddressbook);
-            }
+        if (searchedAddressbook) {
+            callback(searchedAddressbook);
+        }
     }
 
     return (

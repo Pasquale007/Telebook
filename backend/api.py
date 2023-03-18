@@ -176,8 +176,6 @@ def get_one_addressbooks(addressbook_id: int, user_id: int):
         )
 
 # update
-
-
 @app.put("/addressbook/{addressbook_id}")
 def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
     with connection.cursor() as cursor:
@@ -218,9 +216,8 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
             detail="Das Adressbuch konnte nicht aktualisiert werden. Bitte versuche es später erneut.",
         )
 
+
 # delete
-
-
 @app.delete("/addressbook/{addressbook_id}")
 def delete_addressbooks(addressbook_id: int):
     with connection.cursor() as cursor:
@@ -297,7 +294,7 @@ def get_all_contact(addressbook_id: int):
             if phone_numbers:
                 entry['phone_numbers'] = phone_numbers.split(',')
             else:
-                entry.phone_number = []
+                entry['phone_numbers'] = []
             contacts.append(entry)
         return contacts
 

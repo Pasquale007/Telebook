@@ -4,15 +4,32 @@ import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
 import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Addressbook } from './sharedTypes';
+import { Addressbook, Contacts } from './sharedTypes';
 
 const BASE_URL = process.env.REACT_APP_BASE_ENDPOINT || "";
 const ADDRESSBOOK_ENDPOINT = process.env.REACT_APP_ADDRESSBOOK_ENDPOINT || "";
+const CONTACT_ENDPOINT = process.env.REACT_APP_CONTACT_ENDPOINT || "";
 
 
 function App(): ReactElement {
 
   const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
+  const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook>();
+  const [contacts, setContacts] = useState<Contacts[]>([]);
+
+
+  useEffect(() => {
+    console.log(contacts);
+  }, [contacts]);
+
+  useEffect(() => {
+    axios.get(BASE_URL + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
+    ).then(response => {
+      setContacts(response.data);
+    }).catch(err => {
+      console.log(err);
+    })
+  }, [currentAddressbook]);
 
   useEffect(() => {
     axios.get(BASE_URL + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
@@ -29,8 +46,8 @@ function App(): ReactElement {
     return !!sessionStorage.getItem('loggedIn');
   }
 
-  function clickCallback(element: Addressbook) {
-    console.log(element);
+  function clickCallback(addressbook: Addressbook) {
+    setCurrentAddressbook(addressbook);
   }
 
   return (
