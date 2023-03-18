@@ -85,7 +85,7 @@ export default function Login() {
             {signUp ?
                 <Modal
                     open
-                    title="Sign Up"
+                    title={<h3>Sign Up</h3>}
                     centered
                     cancelText={'Log In'}
                     okText={'Sign Up'}
@@ -126,7 +126,7 @@ export default function Login() {
                 :
                 <Modal
                     open
-                    title="Login"
+                    title={<h3>Login</h3>}
                     centered
                     cancelText={'Sign Up'}
                     okText={'Log In'}
