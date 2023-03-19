@@ -47,7 +47,6 @@ function App(): ReactElement {
   }
 
   function updateContacts() {
-
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
