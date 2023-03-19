@@ -94,7 +94,10 @@ export default function Login(): ReactElement {
                 >
                     {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
                     <hr />
-                    <Form form={loginForm}>
+                    <Form
+                        form={loginForm}
+
+                    >
                         <Form.Item name="name">
                             <Input
                                 placeholder="Benutzername"
@@ -118,7 +121,12 @@ export default function Login(): ReactElement {
                             <Input
                                 placeholder="Passwort"
                                 type="password"
-                                prefix={<LockOutlined />}
+                                prefix={<LockOutlined />
+                                } onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        sendSignUp()
+                                    }
+                                }}
                             />
                         </Form.Item>
                     </Form>
@@ -142,7 +150,15 @@ export default function Login(): ReactElement {
                                 prefix={<UserOutlined />} />
                         </Form.Item>
                         <Form.Item name="password" required>
-                            <Input placeholder="Passwort" type="password" prefix={<LockOutlined />} />
+                            <Input
+                                placeholder="Passwort"
+                                type="password"
+                                prefix={<LockOutlined />}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        sendLogIn()
+                                    }
+                                }} />
                         </Form.Item>
                     </Form>
 
