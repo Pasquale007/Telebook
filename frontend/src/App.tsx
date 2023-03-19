@@ -45,11 +45,15 @@ function App(): ReactElement {
     setCurrentAddressbook(addressbook);
   }
 
+  function editContactCallback(contact: Contact) {
+    console.log(contact);
+  }
+
   return (
     <div>
       {isLoggedIn() ?
         <Format addressbooks={addressbooks} callback={clickCallback}>
-          <ContactList contacts={contacts}/>
+          <ContactList contacts={contacts} editContactCallback={editContactCallback} />
         </Format>
         :
         <LoginModal />

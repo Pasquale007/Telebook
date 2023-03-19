@@ -5,11 +5,12 @@ import { Contact } from "../../sharedTypes";
 
 
 type ContactListProps = {
-    contacts: Contact[]
+    contacts: Contact[],
+    editContactCallback: any
 }
-export default function ContactList(props: ContactListProps): ReactElement {
-    const { contacts } = props;
 
+export default function ContactList(props: ContactListProps): ReactElement {
+    const { contacts, editContactCallback } = props;
     function desc(contact: Contact): string {
         let result = ""
         if (contact.email) {
@@ -35,17 +36,22 @@ export default function ContactList(props: ContactListProps): ReactElement {
         return result;
     }
 
+    function editContact(key: number) {
+        const searchedContact: Contact | undefined = contacts.find((contact) => contact.id === key)
+        if (searchedContact) {
+            editContactCallback(searchedContact);
+        }
+    }
+
     return (
         <List
             itemLayout="horizontal"
-            dataSource={contacts.sort((a, b) => a.first_name < b.first_name ? 1 : ((a.last_name < b.last_name) ? -1 : 0))}
+            dataSource={contacts}
             renderItem={(contact, index) => (
                 <List.Item
-                    onClick={(e) => {
-                        console.log(e)
-                    }}
-                    actions={[<p key="list-loadmore-edit">edit</p>]}
+                    actions={[<p onClick={() => editContact(contact.id)} style={{ cursor: 'pointer', padding: '10px' }}>edit</p>]}
                     style={{ marginRight: "20px" }}
+                    key={contact.id}
                 >
                     <List.Item.Meta
                         avatar={<Avatar src={`https://joesch.moe/api/v1/random?key=${index}`} />}
