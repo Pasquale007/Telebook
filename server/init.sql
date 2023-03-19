@@ -43,16 +43,17 @@ CREATE TABLE IF NOT EXISTS contacts (
   street VARCHAR(255),
   city VARCHAR(255),
   zip_code VARCHAR(20),
+  birthday DATE,
   PRIMARY KEY (id),
   FOREIGN KEY (address_book_id) REFERENCES address_books(id) ON DELETE CASCADE
 );
 
 /*insert values into contact*/
-INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code)
+INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code, birthday)
 VALUES
-    (1, 'Julia', 'Wesel', 'julia.wesel@example.com', 'Baumstrasse 3a', 'Berlin', '00012'),
-    (1, 'Bob', 'Schmidt', 'bob.schmidt@example.com', 'Blumenweg 12', 'Hamburg', '54678'),
-    (2, 'Pascal', 'Thurow', 'pascal.thurow@example.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145');
+    (1, 'Julia', 'Wesel', 'julia.wesel@example.com', 'Baumstrasse 3a', 'Berlin', '00012', '2004-20-20'),
+    (1, 'Bob', 'Schmidt', 'bob.schmidt@example.com', 'Blumenweg 12', 'Hamburg', '54678', '2012-01-01'),
+    (2, 'Pascal', 'Thurow', 'pascal.thurow@example.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145', '2004-07-04');
 
 /*create table phone_numbers*/
 CREATE TABLE IF NOT EXISTS phone_numbers (

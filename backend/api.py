@@ -251,6 +251,7 @@ class Contact(BaseModel):
     city: Optional[str] = None
     zip_code: Optional[str] = None
     phone_numbers: Optional[List[str]] = None
+    birthday: Optional[str] = None
 
 # TODO: add phone numbers nicht in extra table sondern hier mit
 # create
@@ -260,13 +261,15 @@ class Contact(BaseModel):
 def create_contact(addressbook_id: int, contact: Contact):
     with connection.cursor() as cursor:
         string = ''' 
-            INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s);
+            INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code, birthday) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         '''
         num = cursor.execute(string, (addressbook_id, contact.first_name, contact.last_name,
-                             contact.email, contact.street, contact.city, contact.zip_code))
+                             contact.email, contact.street, contact.city, contact.zip_code, contact.birthday))
         connection.commit()
         contact_id = cursor.lastrowid
+        if not contact.phone_numbers:
+            return {"message": "Der Eintrag wurde hinzugefügt"}
         add_phone_str = '''
             INSERT INTO phone_numbers (contact_id, phone_number)
             VALUES (%s, %s);
@@ -350,11 +353,11 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
 
         string = ''' 
             UPDATE contacts 
-            SET first_name = %s, last_name = %s, email = %s, street = %s, city = %s, zip_code = %s
+            SET first_name = %s, last_name = %s, email = %s, street = %s, city = %s, zip_code = %s, birthday = %s
             WHERE id = %s AND address_book_id = %s;
         '''
         cursor.execute(string, (new_contact.first_name, new_contact.last_name, new_contact.email,
-                                new_contact.street, new_contact.city, new_contact.zip_code, contact_id, addressbook_id))
+                                new_contact.street, new_contact.city, new_contact.zip_code, new_contact.birthday, contact_id, addressbook_id))
         connection.commit()
 
         # Vorerst: statt aktualisieren -> alle löschen und einfügen
@@ -373,13 +376,14 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
                     status_code=status.HTTP_304_NOT_MODIFIED,
                     detail="Keine Änderrungen notwendig. Der Kontakt ist unverändert.",
                 )
-        if num == 1:
-            return {"message": "Kontakt erfolgreich aktualisiert."}
+            if num == 1:
+                return {"message": "Kontakt erfolgreich aktualisiert."}
 
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Der Kontakt konnte nicht aktualisiert werden. Bitte versuche es später erneut.",
-        )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Der Kontakt konnte nicht aktualisiert werden. Bitte versuche es später erneut.",
+            )
+        return {"message": "Kontakt erfolgreich aktualisiert."}
 
 
 # delete
