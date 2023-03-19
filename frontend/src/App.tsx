@@ -5,6 +5,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Addressbook, Contact } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
+import { Form, Input, Modal } from 'antd';
 
 const BASE_URL = process.env.REACT_APP_BASE_ENDPOINT || "";
 const ADDRESSBOOK_ENDPOINT = process.env.REACT_APP_ADDRESSBOOK_ENDPOINT || "";
@@ -15,6 +16,7 @@ function App(): ReactElement {
   const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
   const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook>();
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [editContact, setEditContact] = useState<Contact | undefined>(undefined);
 
 
   useEffect(() => {
@@ -47,18 +49,28 @@ function App(): ReactElement {
 
   function editContactCallback(contact: Contact) {
     console.log(contact);
+    setEditContact(contact)
+
   }
 
   return (
     <div>
-      {isLoggedIn() ?
-        <Format addressbooks={addressbooks} callback={clickCallback}>
-          <ContactList contacts={contacts} editContactCallback={editContactCallback} />
-        </Format>
-        :
-        <LoginModal />
+      <Modal
+        open={editContact ? true : false}
+      >
+        <Form>
+
+        </Form>
+      </Modal>
+      {
+        isLoggedIn() ?
+          <Format addressbooks={addressbooks} callback={clickCallback}>
+            <ContactList contacts={contacts} editContactCallback={editContactCallback} />
+          </Format>
+          :
+          <LoginModal />
       }
-    </div>
+    </div >
   );
 }
 export default App;

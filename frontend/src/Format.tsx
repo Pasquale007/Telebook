@@ -1,10 +1,11 @@
 import { Content, Header } from "antd/es/layout/layout";
-import { Button, Input, Layout, Menu, MenuProps, Space } from "antd";
+import { Button, Input, Layout, Menu, MenuProps, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Addressbook } from "./sharedTypes";
 import MenuItem from "antd/es/menu/MenuItem";
+import axios from "axios";
 
 type FormProps = {
     children: ReactElement
@@ -18,6 +19,8 @@ export default function Format(props: FormProps): ReactElement {
     const { addressbooks, children, callback } = props;
     const [items, setItems] = useState<any[]>([]);
     const [collapsed, setCollapsed] = useState(false);
+    const [nameAddressbook, setNameAddressbook] = useState(false);
+    const inputName = useRef(null);
 
     function getItem(
         label: React.ReactNode,
@@ -33,9 +36,18 @@ export default function Format(props: FormProps): ReactElement {
         setItems(books);
     }, [addressbooks]);
 
-    function createAddressbook(e: any){
-        console.log(e);
-        console.log("create addressbook");
+    function createAddressbook() {
+        setNameAddressbook(true);
+    }
+    function sendNewAddressbook() {
+        let addressBookName: string = "";
+        if (inputName.current) {
+            addressBookName = inputName.current['input']['value'];
+        }
+        if (addressBookName) {
+            //send Axios post request
+            //axios.post(BASE)
+        }
     }
 
     function clickMenu(menuItem: MenuItem) {
@@ -56,10 +68,10 @@ export default function Format(props: FormProps): ReactElement {
                 onCollapse={(value) => setCollapsed(value)}
             >
                 <Menu
-                    onClick={(e) => createAddressbook(e)}
-                    items={[getItem("Neues Addressbuch", 1, <PlusOutlined/>)]}
+                    onClick={createAddressbook}
+                    items={[getItem("Neues Addressbuch", 1, <PlusOutlined />)]}
                     defaultSelectedKeys={['1']}
-                    />
+                />
                 <Menu
                     onClick={clickMenu}
                     theme="dark"
@@ -81,7 +93,16 @@ export default function Format(props: FormProps): ReactElement {
                         icon={<PlusOutlined />}
                     > Neuen Kontakt</Button>
                 </Header>
-                <Content>{children}</Content>
+                <Content>
+                    <Modal
+                        open={nameAddressbook}
+                        title="Neues Addressbuch"
+                        onOk={() => sendNewAddressbook()}
+                    >
+                        <Input ref={inputName} placeholder="Addressbuch Name" />
+                    </Modal>
+                    {children}
+                </Content>
             </Layout>
         </Layout>
     )
