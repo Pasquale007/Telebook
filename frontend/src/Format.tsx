@@ -1,8 +1,8 @@
-import { Content } from "antd/es/layout/layout";
-import { Button, Layout, Menu, MenuProps } from "antd";
+import { Content, Header } from "antd/es/layout/layout";
+import { Button, Input, Layout, Menu, MenuProps, Space } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { ReactElement, useEffect, useState } from "react";
-import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
+import { ContactsOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Addressbook } from "./sharedTypes";
 
 type FormProps = {
@@ -63,6 +63,19 @@ export default function Format(props: FormProps): ReactElement {
                 />
             </Sider>
             <Layout>
+                <Header>
+                    <Space direction="horizontal">
+                        <Input
+                            style={{ padding: "10px", width: "90%" }}
+                            prefix={<SearchOutlined />
+                        }
+                        />
+                        <Button
+                            type="default"
+                            style={{ margin: "5px", marginTop: "10px" }}
+                        > <PlusOutlined /> Neuen Kontakt</Button>
+                    </Space>
+                </Header>
                 <Content>{children}</Content>
             </Layout>
         </Layout>

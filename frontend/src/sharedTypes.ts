@@ -4,7 +4,7 @@ export type Addressbook = {
     name: string
 }
 
-export type Contacts = {
+export type Contact = {
     id: number
     address_book_id: number,
     city: string,
@@ -13,5 +13,6 @@ export type Contacts = {
     last_name: string,
     phone_numbers: string[],
     street: string,
-    zip_code: string
+    zip_code: string,
+    birthday: string
 }

@@ -1,11 +1,10 @@
-import { Button, Input } from 'antd';
 import Format from './Format';
 import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
 import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Addressbook, Contacts } from './sharedTypes';
-import { SearchOutlined } from '@ant-design/icons';
+import { Addressbook, Contact } from './sharedTypes';
+import ContactList from './components/ContactList/ContactList';
 
 const BASE_URL = process.env.REACT_APP_BASE_ENDPOINT || "";
 const ADDRESSBOOK_ENDPOINT = process.env.REACT_APP_ADDRESSBOOK_ENDPOINT || "";
@@ -15,7 +14,7 @@ function App(): ReactElement {
 
   const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
   const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook>();
-  const [contacts, setContacts] = useState<Contacts[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
 
 
   useEffect(() => {
@@ -54,11 +53,9 @@ function App(): ReactElement {
     <div>
       {isLoggedIn() ?
         <Format addressbooks={addressbooks} callback={clickCallback}>
-          <Input
-            style={{ margin: "20px", width: "90%", padding: "10px" }}
-            prefix={<SearchOutlined />}
-          />
+          
           {/*Hier kommt die Liste der Kontakte hin*/}
+          <ContactList contacts={contacts}/>
         </Format>
         :
         <LoginModal />
