@@ -4,6 +4,7 @@ import Sider from "antd/es/layout/Sider";
 import { ReactElement, useEffect, useState } from "react";
 import { ContactsOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Addressbook } from "./sharedTypes";
+import MenuItem from "antd/es/menu/MenuItem";
 
 type FormProps = {
     children: ReactElement
@@ -57,7 +58,7 @@ export default function Format(props: FormProps): ReactElement {
                 <Menu
                     onClick={clickMenu}
                     theme="dark"
-                    defaultSelectedKeys={['1']}
+                    //defaultSelectedKeys={['1']}
                     mode="inline"
                     items={items}
                 />
@@ -68,7 +69,7 @@ export default function Format(props: FormProps): ReactElement {
                         <Input
                             style={{ padding: "10px", width: "90%" }}
                             prefix={<SearchOutlined />
-                        }
+                            }
                         />
                         <Button
                             type="default"

@@ -18,10 +18,6 @@ function App(): ReactElement {
 
 
   useEffect(() => {
-    console.log(contacts);
-  }, [contacts]);
-
-  useEffect(() => {
     axios.get(BASE_URL + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
     ).then(response => {
       setContacts(response.data);
@@ -53,8 +49,6 @@ function App(): ReactElement {
     <div>
       {isLoggedIn() ?
         <Format addressbooks={addressbooks} callback={clickCallback}>
-          
-          {/*Hier kommt die Liste der Kontakte hin*/}
           <ContactList contacts={contacts}/>
         </Format>
         :
