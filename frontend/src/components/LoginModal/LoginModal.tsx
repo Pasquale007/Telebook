@@ -122,10 +122,9 @@ export default function Login(): ReactElement {
                                 placeholder="Passwort"
                                 type="password"
                                 prefix={<LockOutlined />
-                                } onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        sendSignUp()
-                                    }
+                                }
+                                onPressEnter={(e) => {
+                                    sendLogIn();
                                 }}
                             />
                         </Form.Item>
@@ -154,10 +153,8 @@ export default function Login(): ReactElement {
                                 placeholder="Passwort"
                                 type="password"
                                 prefix={<LockOutlined />}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        sendLogIn()
-                                    }
+                                onPressEnter={(e) => {
+                                    sendLogIn();
                                 }} />
                         </Form.Item>
                     </Form>
