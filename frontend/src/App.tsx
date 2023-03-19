@@ -3,13 +3,9 @@ import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
 import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Addressbook, Contact } from './sharedTypes';
+import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
-import { Form, Input, Modal } from 'antd';
-
-const BASE_URL = process.env.REACT_APP_BASE_ENDPOINT || "";
-const ADDRESSBOOK_ENDPOINT = process.env.REACT_APP_ADDRESSBOOK_ENDPOINT || "";
-const CONTACT_ENDPOINT = process.env.REACT_APP_CONTACT_ENDPOINT || "";
+import EditUserModal from './components/EditUserModal/EditUserModal';
 
 function App(): ReactElement {
 
@@ -18,9 +14,8 @@ function App(): ReactElement {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editContact, setEditContact] = useState<Contact | undefined>(undefined);
 
-
   useEffect(() => {
-    axios.get(BASE_URL + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
+    axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
     ).then(response => {
       setContacts(response.data);
     }).catch(err => {
@@ -29,7 +24,7 @@ function App(): ReactElement {
   }, [currentAddressbook]);
 
   useEffect(() => {
-    axios.get(BASE_URL + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
+    axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
       setAddressbooks(response.data)
     }).catch(err => {
@@ -48,20 +43,17 @@ function App(): ReactElement {
   }
 
   function editContactCallback(contact: Contact) {
-    console.log(contact);
-    setEditContact(contact)
+    setEditContact(contact);
+  }
 
+  function updateContacts() {
+
+    setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
   return (
     <div>
-      <Modal
-        open={editContact ? true : false}
-      >
-        <Form>
-
-        </Form>
-      </Modal>
+      {editContact && <EditUserModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} />}
       {
         isLoggedIn() ?
           <Format addressbooks={addressbooks} callback={clickCallback}>

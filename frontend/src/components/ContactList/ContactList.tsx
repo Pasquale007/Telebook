@@ -31,7 +31,7 @@ export default function ContactList(props: ContactListProps): ReactElement {
             result += ", " + contact.street;
         }
         if (contact.birthday) {
-            result += " | " + new Date(contact.birthday);
+            result += " | " + new Date(contact.birthday).toISOString().split('T')[0];
         }
         return result;
     }

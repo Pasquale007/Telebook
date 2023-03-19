@@ -3,7 +3,7 @@ import { Button, Input, Layout, Menu, MenuProps, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Addressbook } from "./sharedTypes";
+import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
 import MenuItem from "antd/es/menu/MenuItem";
 import axios from "axios";
 
@@ -44,9 +44,17 @@ export default function Format(props: FormProps): ReactElement {
         if (inputName.current) {
             addressBookName = inputName.current['input']['value'];
         }
+        setNameAddressbook(false);
         if (addressBookName) {
             //send Axios post request
-            //axios.post(BASE)
+            axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT, {
+                'user_id': sessionStorage.getItem('id'),
+                'name': addressBookName
+            }).then(response => {
+                console.log(response.data);
+            }).catch(err => {
+                console.log(err)
+            });
         }
     }
 
@@ -98,6 +106,7 @@ export default function Format(props: FormProps): ReactElement {
                         open={nameAddressbook}
                         title="Neues Addressbuch"
                         onOk={() => sendNewAddressbook()}
+                        onCancel={() => setNameAddressbook(false)}
                     >
                         <Input ref={inputName} placeholder="Addressbuch Name" />
                     </Modal>

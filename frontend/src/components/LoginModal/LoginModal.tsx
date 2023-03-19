@@ -2,11 +2,7 @@ import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
 import { ReactElement, useEffect, useState } from "react";
-
-const BASE_ENDPOINT = process.env.REACT_APP_BASE_ENDPOINT || "";
-const LOGIN_ENDPOINT = process.env.REACT_APP_LOGIN_ENDPOINT || "";
-const SIGNUP_ENDPOINT = process.env.REACT_APP_SIGNUP_ENDPOINT || "";
-const BASE_URL = process.env.REACT_APP_BASE_URL || "";
+import { BASE_ENDPOINT, BASE_URL, LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "../../sharedTypes";
 
 export default function Login(): ReactElement {
     const [signUp, setSignUp] = useState<boolean>(false);
