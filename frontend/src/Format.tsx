@@ -33,6 +33,10 @@ export default function Format(props: FormProps): ReactElement {
         setItems(books);
     }, [addressbooks]);
 
+    function createAddressbook(e: any){
+        console.log(e);
+        console.log("create addressbook");
+    }
 
     function clickMenu(menuItem: MenuItem) {
         const searchedAddressbook: Addressbook | undefined = addressbooks.find(
@@ -51,10 +55,11 @@ export default function Format(props: FormProps): ReactElement {
                 collapsed={collapsed}
                 onCollapse={(value) => setCollapsed(value)}
             >
-                <Button
-                    type="default"
-                    style={{ margin: "5px", marginTop: "10px" }}
-                > <PlusOutlined /> Neues Addressbuch</Button>
+                <Menu
+                    onClick={(e) => createAddressbook(e)}
+                    items={[getItem("Neues Addressbuch", 1, <PlusOutlined/>)]}
+                    defaultSelectedKeys={['1']}
+                    />
                 <Menu
                     onClick={clickMenu}
                     theme="dark"
@@ -64,18 +69,17 @@ export default function Format(props: FormProps): ReactElement {
                 />
             </Sider>
             <Layout>
-                <Header>
-                    <Space direction="horizontal">
-                        <Input
-                            style={{ padding: "10px", width: "90%" }}
-                            prefix={<SearchOutlined />
-                            }
-                        />
-                        <Button
-                            type="default"
-                            style={{ margin: "5px", marginTop: "10px" }}
-                        > <PlusOutlined /> Neuen Kontakt</Button>
-                    </Space>
+                <Header style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    <Input
+                        style={{ padding: "10px", width: "90%" }}
+                        prefix={<SearchOutlined />
+                        }
+                    />
+                    <Button
+                        type="default"
+                        style={{ margin: "5px" }}
+                        icon={<PlusOutlined />}
+                    > Neuen Kontakt</Button>
                 </Header>
                 <Content>{children}</Content>
             </Layout>

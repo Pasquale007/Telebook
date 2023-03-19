@@ -57,8 +57,6 @@ class UserSignUp(BaseModel):
     email: str
 
 # get username/passwd
-
-
 @app.post("/login")
 def login(user: UserLogin):
     with connection.cursor() as cursor:
@@ -76,6 +74,7 @@ def login(user: UserLogin):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Es existiert kein Benutzer mit diesen Anmeldedaten"
             )
+        
         return result
 
 # create
