@@ -17,11 +17,11 @@ export default function ContactList(props: ContactListProps): ReactElement {
         if (contact.email) {
             result += "Email: " + contact.email
         }
-        if (contact.phone_numbers) {
+        if (contact.phone_numbers.length > 0) {
             result += " | Nummer: "
             contact.phone_numbers.map(number => result += number + ", ")
         }
-        result = result.substring(0, result.length - 2);
+        result = result.substring(0, result.length - 1);
         if (contact.zip_code) {
             result += " | Wohnort: " + contact.zip_code;
         }
