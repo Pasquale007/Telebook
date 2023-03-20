@@ -19,12 +19,7 @@ export default function EditUserModal(props: EditUserModalProps): ReactElement {
     function sendUpdatedContact() {
         const contact: Contact = editContact!;
         setEditContact(undefined);
-        let phone_numbers: string[] = [];
-        const len: number | undefined = editContact?.phone_numbers.length || 0;
-        for (let i = 0; i < len; i++) {
-            phone_numbers.push(contactForm.getFieldValue('phone_number' + i));
-        }
-        console.log(phone_numbers)
+        let phone_numbers: string[] | undefined = editContact?.phone_numbers.map(((phoneNumber, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
