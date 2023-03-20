@@ -5,7 +5,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
-import EditUserModal from './components/EditUserModal/EditUserModal';
+import EditContactModal from './components/EditContactModal/EditContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
 
 function App(): ReactElement {
@@ -57,8 +57,8 @@ function App(): ReactElement {
 
   return (
     <div>
-      {editContact && <EditUserModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} />}
-      {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts}/>}
+      {editContact && <EditContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} />}
+      {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} />}
       {
         isLoggedIn() ?
           <Format addressbooks={addressbooks} callback={clickCallback}>
