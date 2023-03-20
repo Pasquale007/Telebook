@@ -34,12 +34,15 @@ config = {
     'database': 'APP'
 }
 # Connect to the database
-connection = pymysql.connect(
-    host=config.get('host'),
-    user=config.get('user'),
-    password=config.get('password'),
-    database=config.get('database'),
-    cursorclass=pymysql.cursors.DictCursor)
+
+
+def connectToDB():
+    return pymysql.connect(
+        host=config.get('host'),
+        user=config.get('user'),
+        password=config.get('password'),
+        database=config.get('database'),
+        cursorclass=pymysql.cursors.DictCursor)
 
 # TODO: jeder aufruf muss eigene connection zur DB aufbauen sonst time out probleme
 
@@ -56,9 +59,11 @@ class UserSignUp(BaseModel):
     password: str
     email: str
 
+
 # get username/passwd
 @app.post("/login")
 def login(user: UserLogin):
+    connection = connectToDB()
     with connection.cursor() as cursor:
         string = ''' 
             SELECT *
@@ -69,19 +74,19 @@ def login(user: UserLogin):
         cursor.execute(string, (user.username_or_email,
                        user.username_or_email, user.password))
         result = cursor.fetchone()
+        connection.close()
         if not result:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Es existiert kein Benutzer mit diesen Anmeldedaten"
             )
-        
-        return result
+    return result
+
 
 # create
-
-
 @app.post("/signup")
 def signup(user: UserSignUp):
+    connection = connectToDB()
     with connection.cursor() as cursor:
         # check
         check_query = '''
@@ -90,6 +95,7 @@ def signup(user: UserSignUp):
         cursor.execute(check_query, (user.name, user.email))
         existing_user = cursor.fetchone()
         if existing_user:
+            connection.close()
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Es existiert schon ein Benutzer mit dieser Email oder diesem Benutzernamen."
@@ -110,7 +116,10 @@ def signup(user: UserSignUp):
             '''
             cursor.execute(string, (user.name, user.password))
             result = cursor.fetchone()
+            connection.close()
             return result
+
+        connection.close()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Bei der Erstellung des Benutzer ist ein Felher aufgetreten. Bitte versuche es später erneut.",
@@ -123,17 +132,18 @@ class Addressbook(BaseModel):
     user_id: int
     name: str
 
+
 # create
-
-
 @app.post("/addressbook")
 def create_addressbooks(addressbook: Addressbook):
+    connection = connectToDB()
     with connection.cursor() as cursor:
         # Check if an address book with same name already exists in the db
         cursor.execute(
             "SELECT id FROM address_books WHERE name = %s", (addressbook.name,))
         existing_addressbook = cursor.fetchone()
         if existing_addressbook:
+            connection.close()
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Es existiert schon ein Adressbuch mit diesem Namen. Bitte ändere diesen Namen.",
@@ -156,24 +166,31 @@ def create_addressbooks(addressbook: Addressbook):
 # get
 @app.get("/addressbook/{user_id}/get")
 def get_all_addressbooks(user_id: int):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         cursor.execute('''
         SELECT *
         FROM address_books
         WHERE user_id = %s;
         ''', user_id)
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        connection.close()
+        return result
 
 
 # get id
 @app.get("/addressbook/{user_id}/get/{addressbook_id}")
 def get_one_addressbooks(addressbook_id: int, user_id: int):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         cursor.execute('''
         SELECT * 
         FROM address_books
         WHERE id = %s AND user_id = %s;''', (addressbook_id, user_id))
         result = cursor.fetchone()
+        connection.close()
         if result:
             return result
         raise HTTPException(
@@ -181,17 +198,19 @@ def get_one_addressbooks(addressbook_id: int, user_id: int):
             detail="Adressbuch nicht gefunden",
         )
 
+
 # update
-
-
 @app.put("/addressbook/{addressbook_id}")
 def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         # Check if address book exists
         cursor.execute(
             "SELECT id FROM address_books WHERE id = %s", addressbook_id)
         existing_addressbook = cursor.fetchone()
         if not existing_addressbook:
+            connection.close()
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Das Adressbuch existiert nicht.",
@@ -202,6 +221,7 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
             "SELECT id FROM address_books WHERE name = %s", new_addressbook.name)
         existing_addressbook = cursor.fetchone()
         if existing_addressbook:
+            connection.close()
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Ein Adressbuch mit diesem Namen existiert bereits. Bitte wähle einen anderen Namen.",
@@ -216,6 +236,7 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
         old_name = updated_addressbook.name
         num = cursor.execute(string, (new_addressbook.name, addressbook_id))
         connection.commit()
+        connection.close()
         if num >= 1:
             return {"message": f"Das Adressbuch wurde zu '{old_name}' umgenannt."}
 
@@ -228,10 +249,13 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
 # delete
 @app.delete("/addressbook/{addressbook_id}")
 def delete_addressbooks(addressbook_id: int):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         num = cursor.execute(
             "DELETE FROM address_books WHERE id = %s", addressbook_id)
         connection.commit()
+        connection.close()
         if num >= 1:
             return {"message": "Das Adressbuch wurde gelöscht"}
         raise HTTPException(
@@ -252,12 +276,13 @@ class Contact(BaseModel):
     phone_numbers: Optional[List[str]] = None
     birthday: Optional[str] = None
 
+
 # TODO: add phone numbers nicht in extra table sondern hier mit
 # create
-
-
 @app.post("/addressbook/{addressbook_id}/contact")
 def create_contact(addressbook_id: int, contact: Contact):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         string = ''' 
             INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code, birthday) 
@@ -268,6 +293,7 @@ def create_contact(addressbook_id: int, contact: Contact):
         connection.commit()
         contact_id = cursor.lastrowid
         if not contact.phone_numbers:
+            connection.close()
             return {"message": "Der Eintrag wurde hinzugefügt"}
         add_phone_str = '''
             INSERT INTO phone_numbers (contact_id, phone_number)
@@ -276,6 +302,7 @@ def create_contact(addressbook_id: int, contact: Contact):
         for phone_number in contact.phone_numbers:
             cursor.execute(add_phone_str, (contact_id, phone_number))
             connection.commit()
+        connection.close()
 
         if num >= 1:
             return {"message": "Der Eintrag wurde hinzugefügt"}
@@ -288,6 +315,8 @@ def create_contact(addressbook_id: int, contact: Contact):
 # get
 @app.get("/addressbook/{addressbook_id}/contact")
 def get_all_contact(addressbook_id: int):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         string = '''
             SELECT c.*, GROUP_CONCAT(p.phone_number) AS phone_numbers 
@@ -299,6 +328,7 @@ def get_all_contact(addressbook_id: int):
         '''
         cursor.execute(string, addressbook_id)
         results = cursor.fetchall()
+        connection.close()
         contacts = []
         for entry in results:
             phone_numbers = entry['phone_numbers']
@@ -313,6 +343,8 @@ def get_all_contact(addressbook_id: int):
 # get id
 @app.get("/addressbook/{addressbook_id}/contact/{contact_id}")
 def get_one_contact(addressbook_id: int, contact_id: int):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         string = '''
             SELECT c.*, GROUP_CONCAT(p.phone_number) AS phone_numbers
@@ -323,6 +355,7 @@ def get_one_contact(addressbook_id: int, contact_id: int):
         '''
         cursor.execute(string, (addressbook_id, contact_id))
         result = cursor.fetchone()
+        connection.close()
         phone_numbers = result['phone_numbers']
         if phone_numbers:
             result['phone_numbers'] = phone_numbers.split(',')
@@ -339,12 +372,15 @@ def get_one_contact(addressbook_id: int, contact_id: int):
 # update
 @app.put("/addressbook/{addressbook_id}/contact/{contact_id}")
 def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         # Check if contact exists in addressbook
         cursor.execute(
             "SELECT id FROM contacts WHERE address_book_id = %s AND id = %s", (addressbook_id, contact_id))
         existing_contact = cursor.fetchone()
         if not existing_contact:
+            connection.close()
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Der Kontakt existiert nicht.",
@@ -361,7 +397,7 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
 
         # Vorerst: statt aktualisieren -> alle löschen und einfügen
         if new_contact.phone_numbers:
-            num = cursor.execute(
+            cursor.execute(
                 "DELETE FROM phone_numbers WHERE contact_id = %s", contact_id)
             connection.commit()
 
@@ -371,29 +407,20 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
                 cursor.execute(
                     "INSERT INTO phone_numbers (contact_id, phone_number) VALUES (%s, %s)", (contact_id, phone_number))
                 connection.commit()
-
-            if num == 0:
-                raise HTTPException(
-                    status_code=status.HTTP_304_NOT_MODIFIED,
-                    detail="Keine Änderrungen notwendig. Der Kontakt ist unverändert.",
-                )
-            if num >= 1:
-                return {"message": "Kontakt erfolgreich aktualisiert."}
-
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Der Kontakt konnte nicht aktualisiert werden. Bitte versuche es später erneut.",
-            )
+            connection.close()
         return {"message": "Kontakt erfolgreich aktualisiert."}
 
 
 # delete
 @app.delete("/addressbook/{addressbook_id}/contact/{contact_id}")
 def delete_contact(addressbook_id: int, contact_id: int):
+    connection = connectToDB()
+
     with connection.cursor() as cursor:
         num = cursor.execute(
             "DELETE FROM contacts WHERE address_book_id = %s AND id = %s;", (addressbook_id, contact_id))
         connection.commit()
+        connection.close()
 
         if num == 1:
             return {"message": "Benutzer wurde erfolgreich gelöscht"}
