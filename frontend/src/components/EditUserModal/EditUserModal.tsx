@@ -19,9 +19,6 @@ export default function EditUserModal(props: EditUserModalProps): ReactElement {
     function sendUpdatedContact() {
         const contact: Contact = editContact!;
         setEditContact(undefined);
-        console.log(editContact?.address_book_id);
-        console.log(contactForm.getFieldValue('first_name'));
-        console.log(contactForm.getFieldValue('last_name'));
         let phone_numbers: string[] = [];
         const len: number | undefined = editContact?.phone_numbers.length || 0;
         for (let i = 0; i < len; i++) {
