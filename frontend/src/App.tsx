@@ -17,12 +17,15 @@ function App(): ReactElement {
   const [deleteContact, setDeleteContact] = useState<Contact | undefined>(undefined);
 
   useEffect(() => {
-    axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
-    ).then(response => {
-      setContacts(response.data);
-    }).catch(err => {
-      console.log(err);
-    })
+    if (currentAddressbook) {
+      axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
+      ).then(response => {
+        setContacts(response.data);
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+
   }, [currentAddressbook]);
 
   useEffect(() => {
