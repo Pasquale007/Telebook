@@ -361,7 +361,7 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
 
         # Vorerst: statt aktualisieren -> alle löschen und einfügen
         if new_contact.phone_numbers:
-            cursor.execute(
+            num = cursor.execute(
                 "DELETE FROM phone_numbers WHERE contact_id = %s", contact_id)
             connection.commit()
 
