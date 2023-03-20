@@ -10,13 +10,14 @@ import axios from "axios";
 type FormProps = {
     children: ReactElement
     addressbooks: Addressbook[]
-    callback: any
+    callback: any,
+    updateAddressBooks: any
 };
 
 export type MenuItem = Required<MenuProps>['items'][number];
 
 export default function Format(props: FormProps): ReactElement {
-    const { addressbooks, children, callback } = props;
+    const { addressbooks, children, callback, updateAddressBooks } = props;
     const [items, setItems] = useState<any[]>([]);
     const [collapsed, setCollapsed] = useState(false);
     const [nameAddressbook, setNameAddressbook] = useState(false);
@@ -50,6 +51,7 @@ export default function Format(props: FormProps): ReactElement {
             'user_id': sessionStorage.getItem('id'),
             'name': addressBookName
         }).then(response => {
+            updateAddressBooks([]);
             console.log(response.data);
 
         }).catch(err => {

@@ -33,15 +33,17 @@ function App(): ReactElement {
   }, [currentAddressbook]);
 
   useEffect(() => {
+    updateAddressbooks();
+  }, []);
+
+  function updateAddressbooks() {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
       setAddressbooks(response.data)
     }).catch(err => {
       console.log(err);
     })
-
-  }, []);
-
+  }
   function isLoggedIn(): boolean {
     //convert to boolean with '!!'
     return !!sessionStorage.getItem('loggedIn');
@@ -91,7 +93,7 @@ function App(): ReactElement {
       {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} />}
       {
         isLoggedIn() ?
-          <Format addressbooks={addressbooks} callback={clickCallback}>
+          <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks}>
             <ContactList contacts={contacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
           </Format>
           :
