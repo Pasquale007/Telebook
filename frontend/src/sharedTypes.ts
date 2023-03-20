@@ -6,16 +6,16 @@ export type Addressbook = {
 }
 
 export type Contact = {
-    id: number
-    address_book_id: number,
-    city: string,
-    email: string,
+    id?: number
+    address_book_id?: number,
+    city?: string,
+    email?: string,
     first_name: string,
-    last_name: string,
-    phone_numbers: string[],
-    street: string,
-    zip_code: string,
-    birthday: string
+    last_name?: string,
+    phone_numbers?: string[],
+    street?: string,
+    zip_code?: string,
+    birthday?: string
 }
 //Endpoints
 export const BASE_ENDPOINT = process.env.REACT_APP_BASE_ENDPOINT || "";

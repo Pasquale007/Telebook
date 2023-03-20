@@ -17,7 +17,7 @@ export default function ContactList(props: ContactListProps): ReactElement {
         if (contact.email) {
             result += "Email: " + contact.email
         }
-        if (contact.phone_numbers.length > 0) {
+        if (contact.phone_numbers && contact.phone_numbers.length > 0) {
             result += " | Nummer: "
             contact.phone_numbers.map(number => result += number + ", ")
         }
@@ -37,14 +37,14 @@ export default function ContactList(props: ContactListProps): ReactElement {
         return result;
     }
 
-    function editContact(key: number) {
+    function editContact(key: number | undefined) {
         const searchedContact: Contact | undefined = contacts.find((contact) => contact.id === key)
         if (searchedContact) {
             editContactCallback(searchedContact);
         }
     }
 
-    function deleteContact(key: number) {
+    function deleteContact(key: number | undefined) {
         const searchedContact: Contact | undefined = contacts.find((contact) => contact.id === key);
         if (searchedContact) {
             deleteContactCallback(searchedContact);

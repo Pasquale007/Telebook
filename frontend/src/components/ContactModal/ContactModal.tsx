@@ -6,15 +6,45 @@ import { ReactElement } from "react";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from "../../sharedTypes";
 
 
+type Mode = "EDIT" | "CREATE";
+
 type EditUserModalProps = {
     editContact: Contact | undefined,
     setEditContact: any,
-    updateContacts: any
+    updateContacts: any,
+    mode: Mode
 }
 
-export default function EditUserModal(props: EditUserModalProps): ReactElement {
-    const { editContact, setEditContact, updateContacts } = props;
+export default function ContactModal(props: EditUserModalProps): ReactElement {
+    const { editContact, setEditContact, updateContacts, mode } = props;
     const [contactForm] = Form.useForm();
+
+    function createContact() {
+        const contact: Contact = editContact!;
+        let phone_numbers: string[] | undefined = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
+        if (contactForm.getFieldValue('first_name')) {
+            setEditContact(undefined);
+        } else {
+            console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
+            return;
+        }
+        axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact.address_book_id + CONTACT_ENDPOINT, {
+            'first_name': contactForm.getFieldValue('first_name'),
+            'last_name': contactForm.getFieldValue('last_name'),
+            'phone_numbers': phone_numbers,
+            'street': contactForm.getFieldValue('street'),
+            'city': contactForm.getFieldValue('city'),
+            'zip_code': contactForm.getFieldValue('zip_code'),
+            'email': contactForm.getFieldValue('email'),
+            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
+        }).then(response => {
+            console.log(response);
+            updateContacts();
+        }).catch(err => {
+            console.log(err);
+            updateContacts();
+        })
+    }
 
     function sendUpdatedContact() {
         const contact: Contact = editContact!;
@@ -42,7 +72,13 @@ export default function EditUserModal(props: EditUserModalProps): ReactElement {
     return (
         <Modal
             open={editContact ? true : false}
-            onOk={() => sendUpdatedContact()}
+            onOk={() => {
+                if (mode === 'EDIT') {
+                    sendUpdatedContact();
+                } else if (mode === 'CREATE') {
+                    createContact();
+                }
+            }}
             onCancel={() => setEditContact(undefined)}
         >
             <Form form={contactForm}>
@@ -62,6 +98,9 @@ export default function EditUserModal(props: EditUserModalProps): ReactElement {
                     })}
                     <Button icon={<PlusOutlined />} onClick={() => {
                         let newContact: Contact | undefined = JSON.parse(JSON.stringify(editContact));
+                        if (newContact && !newContact.phone_numbers) {
+                            newContact.phone_numbers = []
+                        }
                         newContact?.phone_numbers?.push("");
                         setEditContact(newContact);
                     }} />
@@ -79,7 +118,7 @@ export default function EditUserModal(props: EditUserModalProps): ReactElement {
                     <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}>
                         <Input prefix={<MailOutlined />} />
                     </Form.Item>
-                    <Form.Item name={"birthday"} initialValue={dayjs(editContact?.birthday, 'YYYY-MM-DD')} style={{ margin: "0px" }}>
+                    <Form.Item name={"birthday"} initialValue={editContact?.birthday ? dayjs(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
                         <DatePicker />
                     </Form.Item>
                 </Space>

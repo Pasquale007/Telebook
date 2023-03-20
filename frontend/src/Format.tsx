@@ -1,8 +1,8 @@
-import { Content, Header } from "antd/es/layout/layout";
-import { Button, Input, Layout, Menu, MenuProps, Modal } from "antd";
+import { Content } from "antd/es/layout/layout";
+import { Input, Layout, Menu, MenuProps, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { ContactsOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
 import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
 import MenuItem from "antd/es/menu/MenuItem";
 import axios from "axios";
@@ -45,17 +45,16 @@ export default function Format(props: FormProps): ReactElement {
             addressBookName = inputName.current['input']['value'];
         }
         setNameAddressbook(false);
-        if (addressBookName) {
-            //send Axios post request
-            axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT, {
-                'user_id': sessionStorage.getItem('id'),
-                'name': addressBookName
-            }).then(response => {
-                console.log(response.data);
-            }).catch(err => {
-                console.log(err)
-            });
-        }
+        //send Axios post request
+        axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT, {
+            'user_id': sessionStorage.getItem('id'),
+            'name': addressBookName
+        }).then(response => {
+            console.log(response.data);
+
+        }).catch(err => {
+            console.log(err)
+        });
     }
 
     function clickMenu(menuItem: MenuItem) {
@@ -89,18 +88,6 @@ export default function Format(props: FormProps): ReactElement {
                 />
             </Sider>
             <Layout>
-                <Header style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                    <Input
-                        style={{ padding: "10px", width: "90%" }}
-                        prefix={<SearchOutlined />
-                        }
-                    />
-                    <Button
-                        type="default"
-                        style={{ margin: "5px" }}
-                        icon={<PlusOutlined />}
-                    > Neuen Kontakt</Button>
-                </Header>
                 <Content>
                     <Modal
                         open={nameAddressbook}
