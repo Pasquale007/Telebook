@@ -366,6 +366,8 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
             connection.commit()
 
             for phone_number in new_contact.phone_numbers:
+                if len(phone_number) == 0:
+                    continue
                 cursor.execute(
                     "INSERT INTO phone_numbers (contact_id, phone_number) VALUES (%s, %s)", (contact_id, phone_number))
                 connection.commit()
