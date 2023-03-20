@@ -51,7 +51,6 @@ export default function ContactList(props: ContactListProps): ReactElement {
         }
     }
 
-
     return (
         <List
             itemLayout="horizontal"
