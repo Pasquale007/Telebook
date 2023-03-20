@@ -387,7 +387,7 @@ def update_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
 
 # delete
 @app.delete("/addressbook/{addressbook_id}/contact/{contact_id}")
-def delete_contact(addressbook_id: int, contact_id: int, new_contact: Contact):
+def delete_contact(addressbook_id: int, contact_id: int):
     with connection.cursor() as cursor:
         num = cursor.execute(
             "DELETE FROM contacts WHERE address_book_id = %s AND id = %s;", (addressbook_id, contact_id))
