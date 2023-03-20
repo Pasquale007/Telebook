@@ -6,11 +6,12 @@ import { Contact } from "../../sharedTypes";
 
 type ContactListProps = {
     contacts: Contact[],
-    editContactCallback: any
+    editContactCallback: any,
+    deleteContactCallback: any
 }
 
 export default function ContactList(props: ContactListProps): ReactElement {
-    const { contacts, editContactCallback } = props;
+    const { contacts, editContactCallback, deleteContactCallback } = props;
     function desc(contact: Contact): string {
         let result = ""
         if (contact.email) {
@@ -43,13 +44,22 @@ export default function ContactList(props: ContactListProps): ReactElement {
         }
     }
 
+    function deleteContact(key: number) {
+        const searchedContact: Contact | undefined = contacts.find((contact) => contact.id === key);
+        if (searchedContact) {
+            deleteContactCallback(searchedContact);
+        }
+    }
+
+
     return (
         <List
             itemLayout="horizontal"
             dataSource={contacts}
             renderItem={(contact, index) => (
                 <List.Item
-                    actions={[<p onClick={() => editContact(contact.id)} style={{ cursor: 'pointer', padding: '10px' }}>edit</p>]}
+                    actions={[<p onClick={() => editContact(contact.id)} style={{ cursor: 'pointer', padding: '10px' }}>bearbeiten</p>,
+                    <p onClick={() => deleteContact(contact.id)} style={{ cursor: 'pointer', padding: '10px' }}>löschen</p>]}
                     style={{ marginRight: "20px" }}
                     key={contact.id}
                 >

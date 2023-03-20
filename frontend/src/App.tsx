@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
 import EditUserModal from './components/EditUserModal/EditUserModal';
+import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
 
 function App(): ReactElement {
 
@@ -13,6 +14,7 @@ function App(): ReactElement {
   const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook>();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [editContact, setEditContact] = useState<Contact | undefined>(undefined);
+  const [deleteContact, setDeleteContact] = useState<Contact | undefined>(undefined);
 
   useEffect(() => {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
@@ -45,6 +47,9 @@ function App(): ReactElement {
   function editContactCallback(contact: Contact) {
     setEditContact(contact);
   }
+  function deleteContactCallback(contact: Contact) {
+    setDeleteContact(JSON.parse(JSON.stringify(contact)));
+  }
 
   function updateContacts() {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
@@ -53,10 +58,11 @@ function App(): ReactElement {
   return (
     <div>
       {editContact && <EditUserModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} />}
+      {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts}/>}
       {
         isLoggedIn() ?
           <Format addressbooks={addressbooks} callback={clickCallback}>
-            <ContactList contacts={contacts} editContactCallback={editContactCallback} />
+            <ContactList contacts={contacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
           </Format>
           :
           <LoginModal />
