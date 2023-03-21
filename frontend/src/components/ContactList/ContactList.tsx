@@ -13,28 +13,21 @@ type ContactListProps = {
 export default function ContactList(props: ContactListProps): ReactElement {
     const { contacts, editContactCallback, deleteContactCallback } = props;
     function desc(contact: Contact): string {
-        let result = ""
+        let information: string[] = []
         if (contact.email) {
-            result += "Email: " + contact.email
+            information.push(" Email: " + contact.email)
         }
         if (contact.phone_numbers && contact.phone_numbers.length > 0) {
-            result += " | Nummer: "
-            contact.phone_numbers.map(number => result += number + ", ")
+            let address = " Nummer(n): " + contact.phone_numbers.map(number => " " + number)
+            information.push(address.substring(0, address.length - 2))
         }
-        result = result.substring(0, result.length - 1);
-        if (contact.zip_code) {
-            result += " | Wohnort: " + contact.zip_code;
-        }
-        if (contact.city) {
-            result += ", " + contact.city;
-        }
-        if (contact.street) {
-            result += ", " + contact.street;
+        if (contact.zip_code && contact.city && contact.street) {
+            information.push(" Wohnort: " + contact.zip_code + ", " + contact.city + ", " + contact.street);
         }
         if (contact.birthday) {
-            result += " | " + new Date(contact.birthday).toISOString().split('T')[0];
+            information.push(" Geburtstag: " + new Date(contact.birthday).toISOString().split('T')[0]);
         }
-        return result;
+        return information.join(" | ");
     }
 
     function editContact(key: number | undefined) {
@@ -64,7 +57,7 @@ export default function ContactList(props: ContactListProps): ReactElement {
                 >
                     <List.Item.Meta
                         avatar={<Avatar src={`https://joesch.moe/api/v1/random?key=${index}`} />}
-                        title={<h3>{contact.first_name + ' ' + contact.last_name}</h3>}
+                        title={<h3>{contact.first_name} {contact.last_name}</h3>}
                         description={desc(contact)}
                     />
                 </List.Item>
