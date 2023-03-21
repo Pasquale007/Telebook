@@ -25,7 +25,11 @@ function App(): ReactElement {
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
-        setAllContacts(response.data);
+        let sortedData = response.data.sort(function (a: Contact, b: Contact) {
+          return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
+        });
+
+        setAllContacts(sortedData);
       }).catch(err => {
         console.log(err);
       })

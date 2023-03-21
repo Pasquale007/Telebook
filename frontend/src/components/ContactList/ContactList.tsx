@@ -2,8 +2,6 @@ import { Avatar, List } from "antd";
 import { ReactElement } from "react";
 import { Contact } from "../../sharedTypes";
 
-
-
 type ContactListProps = {
     contacts: Contact[],
     editContactCallback: any,
