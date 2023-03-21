@@ -66,7 +66,6 @@ function App(): ReactElement {
   }
 
   function filterContacts(inputString: string) {
-    console.log(inputString);
     if (inputString.length === 0) {
       setContacts(undefined)
     }
