@@ -15,7 +15,8 @@ function App(): ReactElement {
 
   const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
   const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook>();
-  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contacts, setContacts] = useState<Contact[] | undefined>(undefined);
+  const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [editContact, setEditContact] = useState<Contact | undefined>(undefined);
   const [deleteContact, setDeleteContact] = useState<Contact | undefined>(undefined);
   const [newContact, setNewContact] = useState<Contact | undefined>(undefined);
@@ -24,7 +25,7 @@ function App(): ReactElement {
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
-        setContacts(response.data);
+        setAllContacts(response.data);
       }).catch(err => {
         console.log(err);
       })
@@ -64,12 +65,36 @@ function App(): ReactElement {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
+  function filterContacts(inputString: string) {
+    console.log(inputString);
+    if (inputString.length === 0) {
+      setContacts(undefined)
+    }
+    // const contacts: Contact[] = allContacts.fill((contact: Contact) =>
+    //   contact.first_name.includes(inputString) || contact.last_name?.includes(inputString)
+    // )
+
+    let contacts = undefined
+    for (let contact of allContacts) {
+      if (contact.first_name.includes(inputString) || contact.last_name?.includes(inputString) || contact.phone_numbers?.find(number => number.includes(inputString))) {
+        if (!contacts) {
+          contacts = [contact];
+        } else {
+          contacts.push(contact);
+        }
+      }
+    }
+    setContacts(contacts)
+
+  }
+
   return (
     <Layout>
       <Header
         style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
         <div style={{ width: '20%' }}></div>
         <Input
+          onChange={(e) => filterContacts(e.target.value)}
           style={{ padding: "10px", width: "50%" }}
           prefix={<SearchOutlined />
           }
@@ -94,7 +119,7 @@ function App(): ReactElement {
       {
         isLoggedIn() ?
           <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks}>
-            <ContactList contacts={contacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
+            <ContactList contacts={contacts || allContacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
           </Format>
           :
           <LoginModal />
