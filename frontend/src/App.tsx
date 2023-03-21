@@ -73,20 +73,9 @@ function App(): ReactElement {
     if (inputString.length === 0) {
       setContacts(undefined)
     }
-    // const contacts: Contact[] = allContacts.fill((contact: Contact) =>
-    //   contact.first_name.includes(inputString) || contact.last_name?.includes(inputString)
-    // )
-
-    let contacts = undefined
-    for (let contact of allContacts) {
-      if (contact.first_name.includes(inputString) || contact.last_name?.includes(inputString) || contact.phone_numbers?.find(number => number.includes(inputString))) {
-        if (!contacts) {
-          contacts = [contact];
-        } else {
-          contacts.push(contact);
-        }
-      }
-    }
+    const contacts: Contact[] = allContacts.filter((contact: Contact) =>
+      contact.first_name.includes(inputString) || contact.last_name?.includes(inputString) || contact.phone_numbers?.find(number => number.includes(inputString))
+    )
     setContacts(contacts)
 
   }
