@@ -71,12 +71,12 @@ function App(): ReactElement {
 
   function filterContacts(inputString: string) {
     if (inputString.length === 0) {
-      setContacts(undefined)
+      setContacts(undefined);
     }
     const contacts: Contact[] = allContacts.filter((contact: Contact) =>
       contact.first_name.includes(inputString) || contact.last_name?.includes(inputString) || contact.phone_numbers?.find(number => number.includes(inputString))
     )
-    setContacts(contacts)
+    setContacts(contacts);
 
   }
 
