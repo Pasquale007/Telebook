@@ -2,7 +2,7 @@ import { Content } from "antd/es/layout/layout";
 import { Input, Layout, Menu, MenuProps, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { ContactsOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
 import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
 import MenuItem from "antd/es/menu/MenuItem";
 import axios from "axios";
@@ -19,8 +19,8 @@ export type MenuItem = Required<MenuProps>['items'][number];
 export default function Format(props: FormProps): ReactElement {
     const { addressbooks, children, callback, updateAddressBooks } = props;
     const [items, setItems] = useState<MenuItem[]>([]);
-    const [collapsed, setCollapsed] = useState(false);
-    const [nameAddressbook, setNameAddressbook] = useState(false);
+    const [collapsed, setCollapsed] = useState<boolean>(false);
+    const [nameAddressbook, setNameAddressbook] = useState<boolean>(false);
     const inputName = useRef(null);
 
     function getItem(
@@ -40,6 +40,7 @@ export default function Format(props: FormProps): ReactElement {
     function createAddressbook() {
         setNameAddressbook(true);
     }
+
     function sendNewAddressbook() {
         let addressBookName: string = "";
         if (inputName.current) {
@@ -91,14 +92,14 @@ export default function Format(props: FormProps): ReactElement {
             </Sider>
             <Layout>
                 <Content>
-                    <Modal
-                        open={nameAddressbook}
+                    {nameAddressbook && <Modal
+                        open
                         title="Neues Addressbuch"
                         onOk={() => sendNewAddressbook()}
                         onCancel={() => setNameAddressbook(false)}
                     >
                         <Input ref={inputName} placeholder="Addressbuch Name" />
-                    </Modal>
+                    </Modal>}
                     {children}
                 </Content>
             </Layout>
