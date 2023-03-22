@@ -95,8 +95,8 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
                         Kopiere einfach folgenden Link und schicke ihn deinen Freunden:
                         <br />
                         <p style={{ color: 'blue', cursor: 'pointer' }}
-                            onClick={() => { navigator.clipboard.writeText(window.location.href + addressbook.id) }}>
-                            {window.location.href + addressbook.id}
+                            onClick={() => { navigator.clipboard.writeText(window.location.href + "/share" + addressbook.id) }}>
+                            {window.location.href + "/share" + addressbook.id}
                         </p>
                     </p>
                 }
