@@ -91,9 +91,14 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
                 </div>
 
                 {share &&
-                    <Form.Item name="user" style={{ marginTop: "30px" }}>
-                        <Input placeholder="E-Mail/ Username" prefix={<UserOutlined />} />
-                    </Form.Item>
+                    <p>
+                        Kopiere einfach folgenden Link und schicke ihn deinen Freunden:
+                        <br />
+                        <p style={{ color: 'blue', cursor: 'pointer' }}
+                            onClick={() => { navigator.clipboard.writeText(window.location.href + addressbook.id) }}>
+                            {window.location.href + addressbook.id}
+                        </p>
+                    </p>
                 }
             </Form>
             {del &&
