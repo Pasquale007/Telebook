@@ -12,7 +12,7 @@ import { SearchOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 
-function App(): ReactElement {
+const App = (): ReactElement => {
 
   const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
   const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook | undefined>(undefined);
@@ -28,7 +28,6 @@ function App(): ReactElement {
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
-        //to arrrow function
         let sortedData = response.data.sort((a: Contact, b: Contact) => {
           return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
         });
