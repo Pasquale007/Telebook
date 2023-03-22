@@ -3,12 +3,12 @@ import { useParams } from "react-router-dom";
 
 
 export function SharedPage(): ReactElement {
-    const { addressbookId } = useParams();
+    const { addressbookID } = useParams();
 
     useEffect(() => {
-        console.log(addressbookId)
+        console.log(addressbookID)
     }, []);
-    
+
     return (
         <>
             <h1>Test</h1>

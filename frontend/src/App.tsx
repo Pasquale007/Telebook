@@ -9,7 +9,7 @@ export default function Router() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Main />} />
-                <Route path="/share:addressbookID" element={<SharedPage />} />
+                <Route path="/share/:addressbookID" element={<SharedPage />} />
             </Routes>
         </BrowserRouter>
     )
