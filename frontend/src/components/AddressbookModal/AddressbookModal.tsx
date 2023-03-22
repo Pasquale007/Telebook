@@ -96,7 +96,7 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
                         <br />
                         <p style={{ color: 'blue', cursor: 'pointer' }}
                             onClick={() => { navigator.clipboard.writeText(window.location.href + "/share" + addressbook.id) }}>
-                            {window.location.href + "/share" + addressbook.id}
+                            {window.location.href + "share/" + addressbook.id}
                         </p>
                     </p>
                 }
