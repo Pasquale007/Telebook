@@ -19,7 +19,7 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
 
     const action = (): void => {
         if (del) {
-            axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id
+            axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
             ).then(response => {
                 updateAddressbooks();
                 deleteAddressbook();
@@ -42,7 +42,7 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
             const name = form.getFieldValue('name');
             console.log(name);
             axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id, {
-                'user_id': sessionStorage.getItem('id'),
+                'user_id': [sessionStorage.getItem('id')],
                 'name': name
             }).then(response => {
                 console.log(response);

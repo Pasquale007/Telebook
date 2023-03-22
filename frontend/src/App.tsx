@@ -24,6 +24,7 @@ function App(): ReactElement {
   const [newContact, setNewContact] = useState<Contact | undefined>(undefined);
 
   useEffect(() => {
+    console.log(currentAddressbook?.name)
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
@@ -31,7 +32,6 @@ function App(): ReactElement {
         let sortedData = response.data.sort((a: Contact, b: Contact) => {
           return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
         });
-
         setAllContacts(sortedData);
       }).catch(err => {
         console.log(err);

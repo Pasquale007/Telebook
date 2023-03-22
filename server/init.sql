@@ -21,17 +21,32 @@ VALUES
 /*create table for address_books*/
 CREATE TABLE IF NOT EXISTS address_books (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id INT UNSIGNED NOT NULL,
   name VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  PRIMARY KEY (id)
 );
 
 /*insert values into address_books*/
-INSERT INTO address_books (user_id, name)
+INSERT INTO address_books ( name)
 VALUES
-    (1, 'Meine Kontakte'),
-    (1, "Familienkontakte");
+    ('Meine Kontakte'),
+    ("Familienkontakte");
+
+/*add multiple users to a addressbook*/
+CREATE TABLE IF NOT EXISTS address_book_users (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  address_book_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (address_book_id) REFERENCES address_books(id)
+);
+
+INSERT INTO address_book_users (user_id, address_book_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (2, 1);
+
 
 /*create table contacts*/
 CREATE TABLE IF NOT EXISTS contacts (

@@ -129,7 +129,7 @@ def signup(user: UserSignUp):
 
 
 class Addressbook(BaseModel):
-    user_id: int
+    user_id: List[int]
     name: str
 
 
@@ -140,7 +140,7 @@ def create_addressbooks(addressbook: Addressbook):
     with connection.cursor() as cursor:
         # Check if an address book with same name already exists in the db
         cursor.execute(
-            "SELECT id FROM address_books WHERE name = %s", (addressbook.name,))
+            "SELECT id FROM address_books WHERE name = %s", addressbook.name)
         existing_addressbook = cursor.fetchone()
         if existing_addressbook:
             connection.close()
@@ -148,31 +148,30 @@ def create_addressbooks(addressbook: Addressbook):
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Es existiert schon ein Adressbuch mit diesem Namen. Bitte ändere diesen Namen.",
             )
-
-        string = ''' 
-            INSERT INTO address_books (user_id, name) 
-            VALUES (%s, %s);
-        '''
-        num = cursor.execute(string, (addressbook.user_id, addressbook.name))
+        # Insert the new address book into the 'address_books' table
+        cursor.execute(
+            "INSERT INTO address_books (name) VALUES (%s)", addressbook.name)
+        new_addressbook_id = cursor.lastrowid
+        # Insert the users into the `address_book_users` table
+        for user_id in addressbook.user_id:
+            cursor.execute(
+                "INSERT INTO address_book_users (user_id, address_book_id) VALUES (%s, %s)",
+                (user_id, new_addressbook_id)
+            )
         connection.commit()
-        if num >= 1:
-            return {"message": f"Adressbuch '{addressbook.name}' wurde erfolgreich erstellt!"}
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Bei der Erstellung des Adressbuches ist ein Felher aufgetreten. Bitte versuche es erneut.",
-        )
+        return {"message": f"Adressbuch '{addressbook.name}' wurde erfolgreich erstellt!"}
 
 
 # get
 @app.get("/addressbook/{user_id}/get")
 def get_all_addressbooks(user_id: int):
     connection = connectToDB()
-
     with connection.cursor() as cursor:
         cursor.execute('''
-        SELECT *
-        FROM address_books
-        WHERE user_id = %s;
+        SELECT a.*
+        FROM address_books AS a
+        INNER JOIN address_book_users AS au ON a.id = au.address_book_id
+        WHERE au.user_id = %s;
         ''', user_id)
         result = cursor.fetchall()
         connection.close()
@@ -186,33 +185,48 @@ def get_one_addressbooks(addressbook_id: int, user_id: int):
 
     with connection.cursor() as cursor:
         cursor.execute('''
-        SELECT * 
+        SELECT *
         FROM address_books
-        WHERE id = %s AND user_id = %s;''', (addressbook_id, user_id))
+        INNER JOIN address_book_users ON address_books.id = address_book_users.address_book_id
+        WHERE address_books.id = %s AND address_book_users.user_id = %s;
+        ''', (addressbook_id, user_id))
         result = cursor.fetchone()
         connection.close()
         if result:
             return result
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Adressbuch nicht gefunden",
+            detail="Adressbuch nicht gefunden oder Zugriff nicht erlaubt.",
         )
 
-# update
-@app.put("/addressbook/{addressbook_id}/addUser/{name_or_email}")
-def update_addressbooks(addressbook_id: int, name_or_email: str):
-    return {'message': 'function called'}
-    connection = connectToDB()
-    with connection.cursor() as cursor:
-        # get user
-        string = ''' 
-        SELECT *
-        FROM users
-        WHERE
-        name = %s OR email = %s
-    '''
-        cursor.execute(string, name_or_email)
-        result = cursor.fetchone()
+
+class AddUserRequest(BaseModel):
+    user_name_or_email: str
+    address_book_id: int
+
+
+# post new user
+@app.post("/add_user_to_address_book")
+def add_user_to_address_book(request: AddUserRequest):
+    mycursor = mydb.cursor()
+
+    # get the user ID based on the provided name or email
+    query = "SELECT id FROM users WHERE name = %s OR email = %s"
+    values = (request.user_name_or_email, request.user_name_or_email)
+    mycursor.execute(query, values)
+    result = mycursor.fetchone()
+    if not result:
+        return {"message": "User not found"}
+    user_id = result[0]
+
+    # insert a new record into the address_book_users table
+    mycursor.execute('''INSERT INTO
+        address_book_users (user_id, address_book_id) 
+        VALUES (%s, %s)''', (user_id, request.address_book_id))
+    mydb.commit()
+
+    return {"message": "User added to Addressbook"}
+
 
 # update
 @app.put("/addressbook/{addressbook_id}")
@@ -262,13 +276,24 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
 
 
 # delete
-@app.delete("/addressbook/{addressbook_id}")
-def delete_addressbooks(addressbook_id: int):
+@app.delete("/addressbook/{addressbook_id}/get/{current_user_id}")
+def delete_addressbooks(addressbook_id: int, current_user_id: int):
     connection = connectToDB()
 
     with connection.cursor() as cursor:
+        cursor.execute(
+            '''DELETE FROM address_book_users
+            WHERE address_book_id = %s
+            AND user_id = %s''',
+            (addressbook_id, current_user_id)
+        )
         num = cursor.execute(
-            "DELETE FROM address_books WHERE id = %s", addressbook_id)
+            '''DELETE FROM address_books
+                WHERE id = %s
+                AND NOT EXISTS 
+                    (SELECT * FROM address_book_users WHERE address_book_id = %s)
+                    ''', (addressbook_id, addressbook_id)
+        )
         connection.commit()
         connection.close()
         if num >= 1:
@@ -277,7 +302,6 @@ def delete_addressbooks(addressbook_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Das Adressbuch konnte nicht gefunden werden.",
         )
-
 # ======================================== Kontakte ========================================
 
 
@@ -292,7 +316,6 @@ class Contact(BaseModel):
     birthday: Optional[str] = None
 
 
-# TODO: add phone numbers nicht in extra table sondern hier mit
 # create
 @app.post("/addressbook/{addressbook_id}/contact")
 def create_contact(addressbook_id: int, contact: Contact):

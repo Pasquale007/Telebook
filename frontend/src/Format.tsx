@@ -49,7 +49,7 @@ export default function Format(props: FormProps): ReactElement {
         setNameAddressbook(false);
         //send Axios post request
         axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT, {
-            'user_id': sessionStorage.getItem('id'),
+            'user_id': [sessionStorage.getItem('id')],
             'name': addressBookName
         }).then(response => {
             updateAddressBooks([]);
