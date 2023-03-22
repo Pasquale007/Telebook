@@ -27,6 +27,7 @@ function App(): ReactElement {
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
+        //to arrrow function
         let sortedData = response.data.sort(function (a: Contact, b: Contact) {
           return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
         });
@@ -97,7 +98,7 @@ function App(): ReactElement {
         style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
         {currentAddressbook && <Button
           type="default"
-          style={{ margin: "5px", width: '15%',whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+          style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
           icon={<EditOutlined />}
           onClick={() => {
             setEditAddressbook(currentAddressbook)

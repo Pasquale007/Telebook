@@ -51,8 +51,8 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
         setEditContact(undefined);
         let phone_numbers: string[] | undefined = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
-        console.log(contactForm.getFieldValue('birthday'))
-        console.log(contactForm.getFieldValue('birthday')?.toISOString().split('T')[0])
+        console.log(contactForm.getFieldValue('birthday')?.toISOString())
+        console.log(new Date(contactForm.getFieldValue('birthday')).toISOString().split('T')[0])
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
