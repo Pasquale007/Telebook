@@ -233,7 +233,7 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
             SET  name = %s 
             WHERE id = %s;
         '''
-        old_name = updated_addressbook.name
+        old_name = new_addressbook.name
         num = cursor.execute(string, (new_addressbook.name, addressbook_id))
         connection.commit()
         connection.close()

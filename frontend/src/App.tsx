@@ -8,16 +8,18 @@ import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
 import { Button, Input, Layout } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
+import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 
 function App(): ReactElement {
 
   const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
-  const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook>();
+  const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook | undefined>(undefined);
   const [contacts, setContacts] = useState<Contact[] | undefined>(undefined);
   const [allContacts, setAllContacts] = useState<Contact[]>([]);
   const [editContact, setEditContact] = useState<Contact | undefined>(undefined);
+  const [editAddressbook, setEditAddressbook] = useState<Addressbook | undefined>();
   const [deleteContact, setDeleteContact] = useState<Contact | undefined>(undefined);
   const [newContact, setNewContact] = useState<Contact | undefined>(undefined);
 
@@ -33,6 +35,8 @@ function App(): ReactElement {
       }).catch(err => {
         console.log(err);
       })
+    } else {
+      setAllContacts([]);
     }
 
   }, [currentAddressbook]);
@@ -41,14 +45,21 @@ function App(): ReactElement {
     updateAddressbooks();
   }, []);
 
+  useEffect(() => {
+    if (currentAddressbook) {
+      updateContacts();
+    }
+  }, [addressbooks]);
+
   function updateAddressbooks() {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
-      setAddressbooks(response.data)
+      setAddressbooks(response.data);
     }).catch(err => {
       console.log(err);
     })
   }
+
   function isLoggedIn(): boolean {
     //convert to boolean with '!!'
     return !!sessionStorage.getItem('loggedIn');
@@ -84,16 +95,23 @@ function App(): ReactElement {
     <Layout>
       <Header
         style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
-        <div style={{ width: '20%' }}></div>
+        {currentAddressbook && <Button
+          type="default"
+          style={{ margin: "5px", width: '15%',whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+          icon={<EditOutlined />}
+          onClick={() => {
+            setEditAddressbook(currentAddressbook)
+          }}
+        > {currentAddressbook.name}</Button>}
         <Input
           onChange={(e) => filterContacts(e.target.value)}
           style={{ padding: "10px", width: "50%" }}
           prefix={<SearchOutlined />
           }
         />
-        <Button
+        {currentAddressbook && <Button
           type="default"
-          style={{ margin: "5px" }}
+          style={{ margin: "5px", width: '15%' }}
           icon={<PlusOutlined />}
           onClick={() => {
             if (currentAddressbook) {
@@ -103,10 +121,11 @@ function App(): ReactElement {
               })
             }
           }}
-        > Neuen Kontakt</Button>
+        > Kontakt</Button>}
       </Header>
       {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} />}
       {editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} />}
+      {editAddressbook && <AddressbookModal addressbook={editAddressbook} setEditAddressbook={setEditAddressbook} updateAddressbooks={updateAddressbooks} deleteAddressbook={setCurrentAddressbook} />}
       {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} />}
       {
         isLoggedIn() ?
