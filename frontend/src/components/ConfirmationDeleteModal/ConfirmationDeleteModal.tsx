@@ -11,9 +11,9 @@ type DelteConfirmationDeleteModal = {
 }
 
 export default function ConfirmationDeleteModal(props: DelteConfirmationDeleteModal): ReactElement {
-    const { deleteContact, setDeleteContact, updateContacts} = props;
+    const { deleteContact, setDeleteContact, updateContacts } = props;
 
-    function delContact() {
+    const delContact = (): void => {
         const contact: Contact | undefined = deleteContact;
         setDeleteContact(undefined);
         axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
@@ -24,7 +24,7 @@ export default function ConfirmationDeleteModal(props: DelteConfirmationDeleteMo
             console.log(err);
         })
     }
-    function cancel() {
+    const cancel = (): void => {
         setDeleteContact(undefined);
     }
     return (

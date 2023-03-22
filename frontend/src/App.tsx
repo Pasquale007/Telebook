@@ -52,7 +52,7 @@ function App(): ReactElement {
     }
   }, [addressbooks]);
 
-  function updateAddressbooks() {
+  const updateAddressbooks = (): void => {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
       setAddressbooks(response.data);
@@ -61,27 +61,27 @@ function App(): ReactElement {
     })
   }
 
-  function isLoggedIn(): boolean {
+  const isLoggedIn = (): boolean => {
     //convert to boolean with '!!'
     return !!sessionStorage.getItem('loggedIn');
   }
 
-  function clickCallback(addressbook: Addressbook) {
+  const clickCallback = (addressbook: Addressbook): void => {
     setCurrentAddressbook(addressbook);
   }
 
-  function editContactCallback(contact: Contact) {
+  const editContactCallback = (contact: Contact): void => {
     setEditContact(contact);
   }
-  function deleteContactCallback(contact: Contact) {
+  const deleteContactCallback = (contact: Contact): void => {
     setDeleteContact(JSON.parse(JSON.stringify(contact)));
   }
 
-  function updateContacts() {
+  const updateContacts = (): void => {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
-  function filterContacts(inputString: string) {
+  const filterContacts = (inputString: string) => {
     if (inputString.length === 0) {
       setContacts(undefined);
     }

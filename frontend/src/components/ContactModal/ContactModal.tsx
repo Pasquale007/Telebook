@@ -19,7 +19,7 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
     const { editContact, setEditContact, updateContacts, mode } = props;
     const [contactForm] = Form.useForm();
 
-    function createContact() {
+    const createContact = (): void => {
         const contact: Contact = editContact!;
         let phone_numbers: string[] | undefined = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         if (contactForm.getFieldValue('first_name')) {
@@ -46,7 +46,7 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
         })
     }
 
-    function sendUpdatedContact() {
+    const sendUpdatedContact = (): void => {
         const contact: Contact = editContact!;
         setEditContact(undefined);
         let phone_numbers: string[] | undefined = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));

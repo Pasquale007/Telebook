@@ -10,7 +10,8 @@ type ContactListProps = {
 
 export default function ContactList(props: ContactListProps): ReactElement {
     const { contacts, editContactCallback, deleteContactCallback } = props;
-    function desc(contact: Contact): string {
+
+    const desc = (contact: Contact): string => {
         let information: string[] = []
         if (contact.email) {
             information.push(" Email: " + contact.email)
@@ -28,14 +29,14 @@ export default function ContactList(props: ContactListProps): ReactElement {
         return information.join(" | ");
     }
 
-    function editContact(key: number | undefined) {
+    const editContact = (key: number | undefined): void => {
         const searchedContact: Contact | undefined = contacts.find((contact) => contact.id === key)
         if (searchedContact) {
             editContactCallback(searchedContact);
         }
     }
 
-    function deleteContact(key: number | undefined) {
+    const deleteContact = (key: number | undefined): void => {
         const searchedContact: Contact | undefined = contacts.find((contact) => contact.id === key);
         if (searchedContact) {
             deleteContactCallback(searchedContact);

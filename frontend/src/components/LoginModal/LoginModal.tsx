@@ -16,7 +16,7 @@ export default function Login(): ReactElement {
         }
     }, [errorMsg]);
 
-    function sendLogIn() {
+    const sendLogIn = (): void => {
         const name: string = loginForm.getFieldValue('name');
         const password: string = loginForm.getFieldValue('password');
         loginForm.resetFields(['password']);
@@ -41,7 +41,7 @@ export default function Login(): ReactElement {
         })
     }
 
-    function sendSignUp() {
+    const sendSignUp = (): void => {
         const username: string = loginForm.getFieldValue('name');
         const email: string = loginForm.getFieldValue('email');
         const password: string = loginForm.getFieldValue('password');

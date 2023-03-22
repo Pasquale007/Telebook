@@ -37,11 +37,11 @@ export default function Format(props: FormProps): ReactElement {
         setItems(books);
     }, [addressbooks]);
 
-    function createAddressbook() {
+    const createAddressbook = (): void => {
         setNameAddressbook(true);
     }
 
-    function sendNewAddressbook() {
+    const sendNewAddressbook = (): void => {
         let addressBookName: string = "";
         if (inputName.current) {
             addressBookName = inputName.current['input']['value'];
@@ -60,7 +60,7 @@ export default function Format(props: FormProps): ReactElement {
         });
     }
 
-    function clickMenu(menuItem: MenuItem) {
+    const clickMenu = (menuItem: MenuItem): void => {
         const searchedAddressbook: Addressbook | undefined = addressbooks.find(
             (addressbook) => {
                 return addressbook.id + '' === menuItem?.key

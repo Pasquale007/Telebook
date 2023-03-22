@@ -198,6 +198,21 @@ def get_one_addressbooks(addressbook_id: int, user_id: int):
             detail="Adressbuch nicht gefunden",
         )
 
+# update
+@app.put("/addressbook/{addressbook_id}/addUser/{name_or_email}")
+def update_addressbooks(addressbook_id: int, name_or_email: str):
+    return {'message': 'function called'}
+    connection = connectToDB()
+    with connection.cursor() as cursor:
+        # get user
+        string = ''' 
+        SELECT *
+        FROM users
+        WHERE
+        name = %s OR email = %s
+    '''
+        cursor.execute(string, name_or_email)
+        result = cursor.fetchone()
 
 # update
 @app.put("/addressbook/{addressbook_id}")

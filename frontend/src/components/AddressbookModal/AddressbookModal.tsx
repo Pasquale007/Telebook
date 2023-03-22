@@ -17,10 +17,8 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
     const [del, setDelete] = useState<boolean>(false);
     const [share, setShare] = useState<boolean>(false);
 
-    function action() {
-
+    const action = (): void => {
         if (del) {
-            console.log(del);
             axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id
             ).then(response => {
                 updateAddressbooks();
@@ -35,8 +33,6 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
 
             axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id
             ).then(response => {
-                updateAddressbooks();
-                deleteAddressbook();
                 console.log(response);
             }).catch(err => {
                 console.log(err);
@@ -58,16 +54,16 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
         setEditAddressbook(undefined);
     }
 
-    function cancel() {
+    const cancel = (): void => {
         setEditAddressbook(undefined);
     }
 
-    function initDeleteModal() {
+    const initDeleteModal = (): void => {
         setShare(false);
         setDelete(true);
     }
 
-    function iniShare() {
+    const iniShare = (): void => {
         setDelete(false);
         setShare(true);
 
@@ -78,7 +74,6 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
             open
             onOk={() => action()}
             onCancel={() => cancel()}
-
         >
             <Form form={form}>
                 <Form.Item name="name" initialValue={addressbook.name} style={{ marginTop: "30px" }}>
