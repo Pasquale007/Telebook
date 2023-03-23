@@ -65,7 +65,7 @@ class UserSignUp(BaseModel):
 def login(user: UserLogin):
     connection = connectToDB()
     with connection.cursor() as cursor:
-        string = ''' 
+        string = '''
             SELECT *
             FROM users
             WHERE
@@ -108,7 +108,7 @@ def signup(user: UserSignUp):
         num = cursor.execute(string, (user.name, user.email, user.password))
         connection.commit()
         if num >= 1:
-            string = ''' 
+            string = '''
             SELECT *
             FROM users
             WHERE
@@ -201,30 +201,27 @@ def get_one_addressbooks(addressbook_id: int, user_id: int):
 
 
 class AddUserRequest(BaseModel):
-    user_name_or_email: str
+    user_id: str
     address_book_id: int
 
 
 # post new user
-@app.post("/add_user_to_address_book")
-def add_user_to_address_book(request: AddUserRequest):
-    mycursor = mydb.cursor()
+@app.post("/add_user_to_addressbook")
+def add_user_to_addressbook(request: AddUserRequest):
+    connection = connectToDB()
+    with connection.cursor() as cursor:
+        cursor.execute('''SELECT user_id FROM
+            address_book_users WHERE user_id=%s AND address_book_id=%s''', (request.user_id, request.address_book_id))
+        result = cursor.fetchone()
+        if result:
+            return {"message": "Du bist bereits teil dieses Kontaktbuches"}
+        connection.commit()
 
-    # get the user ID based on the provided name or email
-    query = "SELECT id FROM users WHERE name = %s OR email = %s"
-    values = (request.user_name_or_email, request.user_name_or_email)
-    mycursor.execute(query, values)
-    result = mycursor.fetchone()
-    if not result:
-        return {"message": "User not found"}
-    user_id = result[0]
-
-    # insert a new record into the address_book_users table
-    mycursor.execute('''INSERT INTO
-        address_book_users (user_id, address_book_id) 
-        VALUES (%s, %s)''', (user_id, request.address_book_id))
-    mydb.commit()
-
+        # add user to addressbook
+        cursor.execute('''INSERT INTO
+            address_book_users (user_id, address_book_id) 
+            VALUES (%s, %s)''', (request.user_id, request.address_book_id))
+        connection.commit()
     return {"message": "User added to Addressbook"}
 
 
@@ -277,11 +274,11 @@ def update_addressbooks(addressbook_id: int, new_addressbook: Addressbook):
 
 # delete
 @app.delete("/addressbook/{addressbook_id}/get/{current_user_id}")
-def delete_addressbooks(addressbook_id: int, current_user_id: int):
+def delete_addressbook(addressbook_id: int, current_user_id: int):
     connection = connectToDB()
 
     with connection.cursor() as cursor:
-        cursor.execute(
+        lines = cursor.execute(
             '''DELETE FROM address_book_users
             WHERE address_book_id = %s
             AND user_id = %s''',
@@ -296,6 +293,9 @@ def delete_addressbooks(addressbook_id: int, current_user_id: int):
         )
         connection.commit()
         connection.close()
+        if lines > 0 and num == 0:
+            return {"message": "Du hast dieses Adressbuch verlassen"}
+
         if num >= 1:
             return {"message": "Das Adressbuch wurde gelöscht"}
         raise HTTPException(

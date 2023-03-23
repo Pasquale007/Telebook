@@ -1,5 +1,4 @@
 import Format from './Format';
-import LoginModal from './components/LoginModal/LoginModal';
 import './App.css';
 import { ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -60,11 +59,6 @@ function App(): ReactElement {
     })
   }
 
-  const isLoggedIn = (): boolean => {
-    //convert to boolean with '!!'
-    return !!sessionStorage.getItem('loggedIn');
-  }
-
   const clickCallback = (addressbook: Addressbook): void => {
     setCurrentAddressbook(addressbook);
   }
@@ -72,6 +66,7 @@ function App(): ReactElement {
   const editContactCallback = (contact: Contact): void => {
     setEditContact(contact);
   }
+
   const deleteContactCallback = (contact: Contact): void => {
     setDeleteContact(JSON.parse(JSON.stringify(contact)));
   }
@@ -128,14 +123,11 @@ function App(): ReactElement {
       {editAddressbook && <AddressbookModal addressbook={editAddressbook} setEditAddressbook={setEditAddressbook} updateAddressbooks={updateAddressbooks} deleteAddressbook={setCurrentAddressbook} />}
       {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} />}
       {
-        isLoggedIn() ?
-          <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks}>
-            <ContactList contacts={contacts || allContacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
-          </Format>
-          :
-          <LoginModal />
+        <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks}>
+          <ContactList contacts={contacts || allContacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
+        </Format>
       }
-    </Layout >
+    </Layout>
   );
 }
 export default App;

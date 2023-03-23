@@ -27,18 +27,7 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
             }).catch(err => {
                 console.log(err);
             });
-
-        } else if (share) {
-            const user = form.getFieldValue('user');
-
-            axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id
-            ).then(response => {
-                console.log(response);
-            }).catch(err => {
-                console.log(err);
-            });
-
-        } else {
+        } else if (!share) {
             const name = form.getFieldValue('name');
             console.log(name);
             axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id, {
@@ -95,7 +84,7 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
                         Kopiere einfach folgenden Link und schicke ihn deinen Freunden:
                         <br />
                         <p style={{ color: 'blue', cursor: 'pointer' }}
-                            onClick={() => { navigator.clipboard.writeText(window.location.href + "/share" + addressbook.id) }}>
+                            onClick={() => { navigator.clipboard.writeText(window.location.href + "share/" + addressbook.id) }}>
                             {window.location.href + "share/" + addressbook.id}
                         </p>
                     </p>
