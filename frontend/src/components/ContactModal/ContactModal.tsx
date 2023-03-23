@@ -2,6 +2,7 @@ import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutli
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
+import moment from "moment";
 import { ReactElement } from "react";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from "../../sharedTypes";
 
@@ -51,8 +52,12 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
         setEditContact(undefined);
         let phone_numbers: string[] | undefined = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
-        console.log(contactForm.getFieldValue('birthday')?.toISOString())
-        console.log(new Date(contactForm.getFieldValue('birthday')).toISOString().split('T')[0])
+        let moment = contactForm.getFieldValue('birthday');
+        if (moment) {
+            moment = moment.add(1, 'days');
+            moment = moment.toISOString().split('T')[0]
+        }
+        console.log(moment)
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -61,7 +66,7 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
             'email': contactForm.getFieldValue('email'),
-            'birthday': new Date(contactForm.getFieldValue('birthday')).toISOString().split('T')[0],
+            'birthday': moment,
         }).then(response => {
             console.log(response);
             updateContacts();
@@ -120,7 +125,7 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
                     <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}>
                         <Input prefix={<MailOutlined />} />
                     </Form.Item>
-                    <Form.Item name={"birthday"} initialValue={editContact?.birthday ? dayjs(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
+                    <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
                         <DatePicker />
                     </Form.Item>
                 </Space>
