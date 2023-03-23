@@ -33,9 +33,9 @@ config = {
     'password': 'example',
     'database': 'APP'
 }
+
+
 # Connect to the database
-
-
 def connectToDB():
     return pymysql.connect(
         host=config.get('host'),
@@ -43,8 +43,6 @@ def connectToDB():
         password=config.get('password'),
         database=config.get('database'),
         cursorclass=pymysql.cursors.DictCursor)
-
-# TODO: jeder aufruf muss eigene connection zur DB aufbauen sonst time out probleme
 
 # ======================================== USER ========================================
 
