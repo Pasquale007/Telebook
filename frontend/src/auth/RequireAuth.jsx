@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const RequireAuth = (): any => {
+const RequireAuth = () => {
     return (
         <>
             {sessionStorage.getItem('id')

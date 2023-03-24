@@ -1,13 +1,13 @@
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BASE_ENDPOINT, BASE_URL, SIGNUP_ENDPOINT } from "../../sharedTypes";
 import { Navigate, useNavigate } from "react-router-dom";
 
-export default function Register(): ReactElement {
-    const [errorMsg, setErrorMsg] = useState<string>("");
-    const [loginForm] = Form.useForm();
+export default function Register() {
+    const [errorMsg, setErrorMsg] = useState("");
+    const [loginForm] = Form.useForm()
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -16,11 +16,11 @@ export default function Register(): ReactElement {
         }
     }, [errorMsg]);
 
-    const sendSignUp = (): void => {
-        const username: string = loginForm.getFieldValue('name');
-        const email: string = loginForm.getFieldValue('email');
-        const password: string = loginForm.getFieldValue('password');
-        const passwordTest: string = loginForm.getFieldValue('passwordTest');
+    const sendSignUp = () => {
+        const username = loginForm.getFieldValue('name');
+        const email = loginForm.getFieldValue('email');
+        const password = loginForm.getFieldValue('password');
+        const passwordTest = loginForm.getFieldValue('passwordTest');
 
         loginForm.resetFields(['password', 'passwordTest']);
 

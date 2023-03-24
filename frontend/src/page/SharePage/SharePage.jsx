@@ -1,10 +1,10 @@
 import axios from "axios";
-import { ReactElement, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
 
 
-export function SharedPage(): ReactElement {
+export function SharedPage() {
     const { addressbookID } = useParams();
 
     useEffect(() => {

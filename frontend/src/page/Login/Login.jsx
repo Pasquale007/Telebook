@@ -1,12 +1,12 @@
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_ENDPOINT, LOGIN_ENDPOINT, BASE_URL } from "../../sharedTypes";
 
-export default function Login(): ReactElement {
-    const [errorMsg, setErrorMsg] = useState<string>("");
+export default function Login() {
+    const [errorMsg, setErrorMsg] = useState("");
     const [loginForm] = Form.useForm();
     let navigate = useNavigate();
 
@@ -17,9 +17,9 @@ export default function Login(): ReactElement {
         }
     }, [errorMsg]);
 
-    const sendLogIn = (): void => {
-        const name: string = loginForm.getFieldValue('name');
-        const password: string = loginForm.getFieldValue('password');
+    const sendLogIn = () => {
+        const name = loginForm.getFieldValue('name');
+        const password = loginForm.getFieldValue('password');
         loginForm.resetFields(['password']);
 
         if (!password || !name) {

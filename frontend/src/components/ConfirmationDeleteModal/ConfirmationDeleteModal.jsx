@@ -1,20 +1,11 @@
 import { Modal } from "antd";
 import axios from "axios";
-import { ReactElement } from "react";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from "../../sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedTypes";
 
+export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts }) {
 
-type DelteConfirmationDeleteModal = {
-    deleteContact: Contact | undefined,
-    setDeleteContact: any,
-    updateContacts: any
-}
-
-export default function ConfirmationDeleteModal(props: DelteConfirmationDeleteModal): ReactElement {
-    const { deleteContact, setDeleteContact, updateContacts } = props;
-
-    const delContact = (): void => {
-        const contact: Contact | undefined = deleteContact;
+    const delContact = () => {
+        const contact = deleteContact;
         setDeleteContact(undefined);
         axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
         ).then(response => {
@@ -24,7 +15,7 @@ export default function ConfirmationDeleteModal(props: DelteConfirmationDeleteMo
             console.log(err);
         })
     }
-    const cancel = (): void => {
+    const cancel = () => {
         setDeleteContact(undefined);
     }
     return (

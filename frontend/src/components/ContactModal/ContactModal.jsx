@@ -2,26 +2,15 @@ import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutli
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
 import moment from "moment";
-import { ReactElement } from "react";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from "../../sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedTypes";
 
 
-type Mode = "EDIT" | "CREATE";
-
-type EditUserModalProps = {
-    editContact: Contact | undefined,
-    setEditContact: any,
-    updateContacts: any,
-    mode: Mode
-}
-
-export default function ContactModal(props: EditUserModalProps): ReactElement {
-    const { editContact, setEditContact, updateContacts, mode } = props;
+export default function ContactModal({ editContact, setEditContact, updateContacts, mode }) {
     const [contactForm] = Form.useForm();
 
-    const createContact = (): void => {
-        const contact: Contact = editContact!;
-        let phone_numbers: string[] | undefined = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
+    const createContact = () => {
+        const contact = editContact;
+        let phone_numbers = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         if (contactForm.getFieldValue('first_name')) {
             setEditContact(undefined);
         } else {
@@ -46,10 +35,10 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
         })
     }
 
-    const sendUpdatedContact = (): void => {
-        const contact: Contact = editContact!;
+    const sendUpdatedContact = () => {
+        const contact = editContact;
         setEditContact(undefined);
-        let phone_numbers: string[] | undefined = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
+        let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
         let moment = contactForm.getFieldValue('birthday');
         if (moment) {
@@ -103,7 +92,7 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
                         </Form.Item>
                     })}
                     <Button icon={<PlusOutlined />} onClick={() => {
-                        let newContact: Contact | undefined = JSON.parse(JSON.stringify(editContact));
+                        let newContact = JSON.parse(JSON.stringify(editContact));
                         if (newContact && !newContact.phone_numbers) {
                             newContact.phone_numbers = []
                         }

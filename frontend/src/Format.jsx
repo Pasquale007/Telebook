@@ -1,48 +1,38 @@
 import { Content } from "antd/es/layout/layout";
-import { Input, Layout, Menu, MenuProps, Modal } from "antd";
+import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
-import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
-import MenuItem from "antd/es/menu/MenuItem";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
 import axios from "axios";
 
-type FormProps = {
-    children: ReactElement
-    addressbooks: Addressbook[]
-    callback: any,
-    updateAddressBooks: any
-};
 
-export type MenuItem = Required<MenuProps>['items'][number];
-
-export default function Format(props: FormProps): ReactElement {
-    const { addressbooks, children, callback, updateAddressBooks } = props;
-    const [items, setItems] = useState<MenuItem[]>([]);
-    const [collapsed, setCollapsed] = useState<boolean>(false);
-    const [nameAddressbook, setNameAddressbook] = useState<boolean>(false);
+export default function Format({ addressbooks, children, callback, updateAddressBooks }) {
+    const [items, setItems] = useState([]);
+    const [collapsed, setCollapsed] = useState(false);
+    const [nameAddressbook, setNameAddressbook] = useState(false);
     const inputName = useRef(null);
 
     function getItem(
-        label: React.ReactNode,
-        key: React.Key,
-        icon?: React.ReactNode,
-        children?: MenuItem[],
-    ): MenuItem {
-        return { key, icon, children, label, } as MenuItem;
+        label,
+        key,
+        icon,
+        children,
+    ) {
+        return { key, icon, children, label, };
     }
 
     useEffect(() => {
-        const books: MenuItem[] = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
+        const books = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
         setItems(books);
     }, [addressbooks]);
 
-    const createAddressbook = (): void => {
+    const createAddressbook = () => {
         setNameAddressbook(true);
     }
 
-    const sendNewAddressbook = (): void => {
-        let addressBookName: string = "";
+    const sendNewAddressbook = () => {
+        let addressBookName = "";
         if (inputName.current) {
             addressBookName = inputName.current['input']['value'];
         }
@@ -60,8 +50,8 @@ export default function Format(props: FormProps): ReactElement {
         });
     }
 
-    const clickMenu = (menuItem: MenuItem): void => {
-        const searchedAddressbook: Addressbook | undefined = addressbooks.find(
+    const clickMenu = (menuItem) => {
+        const searchedAddressbook = addressbooks.find(
             (addressbook) => {
                 return addressbook.id + '' === menuItem?.key
             })

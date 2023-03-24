@@ -1,23 +1,17 @@
 import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import axios from "axios";
-import { ReactElement, useState } from "react";
-import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
+import {  useState } from "react";
+import {  ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
 
-type AddressbookModalProps = {
-    addressbook: Addressbook
-    setEditAddressbook: any,
-    deleteAddressbook: any
-    updateAddressbooks: any
-}
 
-export default function AddressbookModal(props: AddressbookModalProps): ReactElement {
-    const { addressbook, setEditAddressbook, updateAddressbooks, deleteAddressbook } = props;
+export default function AddressbookModal({ addressbook, setEditAddressbook, updateAddressbooks, deleteAddressbook }) {
+
     const [form] = Form.useForm();
-    const [del, setDelete] = useState<boolean>(false);
-    const [share, setShare] = useState<boolean>(false);
+    const [del, setDelete] = useState(false);
+    const [share, setShare] = useState(false);
 
-    const action = (): void => {
+    const action = () => {
         if (del) {
             axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
             ).then(response => {
@@ -43,16 +37,16 @@ export default function AddressbookModal(props: AddressbookModalProps): ReactEle
         setEditAddressbook(undefined);
     }
 
-    const cancel = (): void => {
+    const cancel = () => {
         setEditAddressbook(undefined);
     }
 
-    const initDeleteModal = (): void => {
+    const initDeleteModal = () => {
         setShare(false);
         setDelete(true);
     }
 
-    const iniShare = (): void => {
+    const iniShare = () => {
         setDelete(false);
         setShare(true);
 

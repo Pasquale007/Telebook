@@ -1,8 +1,8 @@
 import Format from './Format';
 import './App.css';
-import { ReactElement, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Addressbook, ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from './sharedTypes';
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
@@ -11,23 +11,23 @@ import { SearchOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 
-function App(): ReactElement {
+function App() {
 
-  const [addressbooks, setAddressbooks] = useState<Addressbook[]>([]);
-  const [currentAddressbook, setCurrentAddressbook] = useState<Addressbook | undefined>(undefined);
-  const [contacts, setContacts] = useState<Contact[] | undefined>(undefined);
-  const [allContacts, setAllContacts] = useState<Contact[]>([]);
-  const [editContact, setEditContact] = useState<Contact | undefined>(undefined);
-  const [editAddressbook, setEditAddressbook] = useState<Addressbook | undefined>();
-  const [deleteContact, setDeleteContact] = useState<Contact | undefined>(undefined);
-  const [newContact, setNewContact] = useState<Contact | undefined>(undefined);
+  const [addressbooks, setAddressbooks] = useState([]);
+  const [currentAddressbook, setCurrentAddressbook] = useState(undefined);
+  const [contacts, setContacts] = useState(undefined);
+  const [allContacts, setAllContacts] = useState([]);
+  const [editContact, setEditContact] = useState(undefined);
+  const [editAddressbook, setEditAddressbook] = useState();
+  const [deleteContact, setDeleteContact] = useState(undefined);
+  const [newContact, setNewContact] = useState(undefined);
 
   useEffect(() => {
     console.log(currentAddressbook?.name)
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
-        let sortedData = response.data.sort((a: Contact, b: Contact) => {
+        let sortedData = response.data.sort((a, b) => {
           return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
         });
         setAllContacts(sortedData);
@@ -50,7 +50,7 @@ function App(): ReactElement {
     }
   }, [addressbooks]);
 
-  const updateAddressbooks = (): void => {
+  const updateAddressbooks = () => {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
       setAddressbooks(response.data);
@@ -59,27 +59,27 @@ function App(): ReactElement {
     })
   }
 
-  const clickCallback = (addressbook: Addressbook): void => {
+  const clickCallback = (addressbook) => {
     setCurrentAddressbook(addressbook);
   }
 
-  const editContactCallback = (contact: Contact): void => {
+  const editContactCallback = (contact) => {
     setEditContact(contact);
   }
 
-  const deleteContactCallback = (contact: Contact): void => {
+  const deleteContactCallback = (contact) => {
     setDeleteContact(JSON.parse(JSON.stringify(contact)));
   }
 
-  const updateContacts = (): void => {
+  const updateContacts = () => {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
-  const filterContacts = (inputString: string) => {
+  const filterContacts = (inputString) => {
     if (inputString.length === 0) {
       setContacts(undefined);
     }
-    const contacts: Contact[] = allContacts.filter((contact: Contact) =>
+    const contacts = allContacts.filter((contact) =>
       contact.first_name.includes(inputString) || contact.last_name?.includes(inputString) || contact.phone_numbers?.find(number => number.includes(inputString))
     )
     setContacts(contacts);
