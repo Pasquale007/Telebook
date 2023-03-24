@@ -1,7 +1,6 @@
 import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
-import dayjs from "dayjs";
 import moment from "moment";
 import { ReactElement } from "react";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, Contact, CONTACT_ENDPOINT } from "../../sharedTypes";
@@ -100,7 +99,7 @@ export default function ContactModal(props: EditUserModalProps): ReactElement {
                     </Space>
                     {editContact?.phone_numbers?.map((phone_number, key) => {
                         return <Form.Item name={"phone_number" + key} initialValue={phone_number} style={{ margin: "0px" }}>
-                            <Input prefix={<PhoneOutlined />} />
+                            <Input prefix={<PhoneOutlined />} key={key} />
                         </Form.Item>
                     })}
                     <Button icon={<PlusOutlined />} onClick={() => {

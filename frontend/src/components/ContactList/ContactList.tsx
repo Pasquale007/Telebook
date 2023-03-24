@@ -55,7 +55,7 @@ export default function ContactList(props: ContactListProps): ReactElement {
                     key={contact.id}
                 >
                     <List.Item.Meta
-                        avatar={<Avatar src={`https://joesch.moe/api/v1/random?key=${index}`} />}
+                        avatar={<Avatar src={`https://api.dicebear.com/5.x/avataaars/svg/seed=${contact.first_name + contact.last_name}`} />}
                         title={<h3>{contact.first_name} {contact.last_name}</h3>}
                         description={desc(contact)}
                     />

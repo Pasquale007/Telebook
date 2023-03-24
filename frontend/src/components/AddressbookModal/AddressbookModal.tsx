@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, MailOutlined, ShareAltOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import axios from "axios";
 import { ReactElement, useState } from "react";
