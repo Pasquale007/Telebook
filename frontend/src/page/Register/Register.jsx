@@ -47,17 +47,24 @@ export default function Register() {
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
         }).catch(err => {
-            setErrorMsg(err.response.data.detail)
+            console.log(err)
+            if(err.response.data.errors){
+                const errString = err.response.data.errors.map(err => { return err.msg})
+                setErrorMsg(errString)
+
+            } else{
+                setErrorMsg(err.response.data.message || "Ein unbekannter Fehler ist aufgetreten.")
+            }
         })
     }
 
     return (
         <Modal
             open
-            title={<h3>Login</h3>}
+            title={<h3>Register</h3>}
             centered
-            cancelText={'Sign Up'}
-            okText={'Log In'}
+            cancelText={'Login'}
+            okText={'Register'}
             onOk={sendSignUp}
             onCancel={() => { navigate("/login") }}
         >
