@@ -1,18 +1,24 @@
 import { Avatar, List } from "antd";
-import { Contact } from "../../sharedTypes";
 
 
 export default function ContactList({ contacts, editContactCallback, deleteContactCallback }) {
 
+    const phone_numbers = (contact) => {
+        if (contact.phone_numbers && contact.phone_numbers.length > 0) {
+            let addresses = contact.phone_numbers.map(number => " | " + number)
+            console.log(addresses)
+            return addresses;
+        } else {
+            return ""
+
+        }
+    }
     const desc = (contact) => {
         let information = []
         if (contact.email) {
             information.push(" Email: " + contact.email)
         }
-        if (contact.phone_numbers && contact.phone_numbers.length > 0) {
-            let address = " Nummer(n): " + contact.phone_numbers.map(number => " " + number)
-            information.push(address.substring(0, address.length - 2))
-        }
+
         if (contact.zip_code && contact.city && contact.street) {
             information.push(" Wohnort: " + contact.zip_code + ", " + contact.city + ", " + contact.street);
         }
@@ -49,7 +55,7 @@ export default function ContactList({ contacts, editContactCallback, deleteConta
                 >
                     <List.Item.Meta
                         avatar={<Avatar src={`https://api.dicebear.com/5.x/avataaars/svg/seed=${contact.first_name + contact.last_name}`} />}
-                        title={<h3>{contact.first_name} {contact.last_name}</h3>}
+                        title={<h3>{contact.first_name} {contact.last_name} {phone_numbers(contact)}</h3>}
                         description={desc(contact)}
                     />
                 </List.Item>
