@@ -45,7 +45,6 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             moment = moment.add(1, 'days');
             moment = moment.toISOString().split('T')[0]
         }
-        console.log(moment)
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
