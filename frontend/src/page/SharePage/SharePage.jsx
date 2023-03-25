@@ -1,18 +1,18 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
-
+import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../../sharedTypes";
 
 export function SharedPage() {
     const { addressbookID } = useParams();
-
+    const [addressbook, setAddressbook] = useState();
     useEffect(() => {
         axios.post(BASE_ENDPOINT + ADD_USER_TO_ADDRESSBOOK_ENDPOINT, {
             'user_id': sessionStorage.getItem('id'),
             'address_book_id': addressbookID,
         }).then(response => {
             console.log(response.data);
+            window.location.href = BASE_URL;
         }).catch(err => {
             console.log(err);
         })
@@ -20,7 +20,7 @@ export function SharedPage() {
 
     return (
         <>
-            <h1>Test</h1>
+            <h1>Hinzufügen zu Addressbuch...</h1>
         </>
     )
 }

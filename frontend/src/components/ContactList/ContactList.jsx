@@ -6,7 +6,6 @@ export default function ContactList({ contacts, editContactCallback, deleteConta
     const phone_numbers = (contact) => {
         if (contact.phone_numbers && contact.phone_numbers.length > 0) {
             let addresses = contact.phone_numbers.map(number => " | " + number)
-            console.log(addresses)
             return addresses;
         } else {
             return ""

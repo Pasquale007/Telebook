@@ -5,7 +5,7 @@ import moment from "moment";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedTypes";
 
 
-export default function ContactModal({ editContact, setEditContact, updateContacts, mode }) {
+export default function ContactModal({ editContact, setEditContact, updateContacts, mode, openNotification }) {
     const [contactForm] = Form.useForm();
 
     const createContact = () => {
@@ -27,9 +27,10 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             'email': contactForm.getFieldValue('email'),
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
-            console.log(response);
+            openNotification(response.data.message, "success");
             updateContacts();
         }).catch(err => {
+            openNotification(err.data.message, "error");
             console.log(err);
             updateContacts();
         })
@@ -40,11 +41,6 @@ export default function ContactModal({ editContact, setEditContact, updateContac
         setEditContact(undefined);
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
-        let moment = contactForm.getFieldValue('birthday');
-        if (moment) {
-            moment = moment.add(1, 'days');
-            moment = moment.toISOString().split('T')[0]
-        }
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -53,11 +49,13 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
             'email': contactForm.getFieldValue('email'),
-            'birthday': moment,
+            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
             console.log(response);
+            openNotification(response.data.message, "success");
             updateContacts();
         }).catch(err => {
+            openNotification("dgfas", "error");
             console.log(err);
             updateContacts();
         })

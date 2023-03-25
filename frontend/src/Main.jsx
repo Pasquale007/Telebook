@@ -1,18 +1,19 @@
 import Format from './Format';
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext, useMemo } from 'react';
 import axios from 'axios';
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
-import { Button, Input, Layout } from 'antd';
+import { Button, Input, Layout, Popover, notification } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 
-function App() {
+const Context = createContext({});
 
+function App() {
   const [addressbooks, setAddressbooks] = useState([]);
   const [currentAddressbook, setCurrentAddressbook] = useState(undefined);
   const [contacts, setContacts] = useState(undefined);
@@ -21,9 +22,37 @@ function App() {
   const [editAddressbook, setEditAddressbook] = useState();
   const [deleteContact, setDeleteContact] = useState(undefined);
   const [newContact, setNewContact] = useState(undefined);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (message, type) => {
+    if (type === "success") {
+      api.success({
+        message: "Erfolg",
+        description: <Context.Consumer>{() => message}</Context.Consumer>,
+        placement: "bottomLeft",
+        type: "error",
+        duration: 3
+      });
+    } else if (type === "error") {
+      api.error({
+        message: "Fehler",
+        description: <Context.Consumer>{() => message}</Context.Consumer>,
+        placement: "bottomLeft",
+        type: "error",
+        duration: 3
+      });
+    }
+
+  };
+
+  const contextValue = useMemo(
+    () => ({
+      name: 'Ant Design',
+    }),
+    [],
+  );
 
   useEffect(() => {
-    console.log(currentAddressbook?.name)
     if (currentAddressbook) {
       axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
@@ -92,52 +121,57 @@ function App() {
   }
 
   return (
-    <Layout>
-      <Header
-        style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
-        {currentAddressbook && <Button
-          type="default"
-          style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-          icon={<EditOutlined />}
-          onClick={() => {
-            setEditAddressbook(currentAddressbook)
-          }}
-        > {currentAddressbook.name}</Button>}
-        <Input
-          onChange={(e) => filterContacts(e.target.value)}
-          style={{ padding: "10px", width: "50%" }}
-          prefix={<SearchOutlined />
-          }
-        />
-        {currentAddressbook && <Button
-          type="default"
-          style={{ margin: "5px", width: '15%' }}
-          icon={<PlusOutlined />}
-          onClick={() => {
-            if (currentAddressbook) {
-              setNewContact({
-                address_book_id: currentAddressbook.id,
-                first_name: ''
-              })
+    <Context.Provider value={contextValue}>
+      {contextHolder}
+      <Layout>
+        <Header
+          style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
+          {currentAddressbook && <Button
+            type="default"
+            style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditAddressbook(currentAddressbook)
+            }}
+          > {currentAddressbook.name}</Button>}
+          <Input
+            onChange={(e) => filterContacts(e.target.value)}
+            style={{ padding: "10px", width: "50%" }}
+            prefix={<SearchOutlined />
             }
-          }}
-        > Kontakt</Button>}
+          />
+          {currentAddressbook && <Button
+            type="default"
+            style={{ margin: "5px", width: '15%' }}
+            icon={<PlusOutlined />}
+            onClick={() => {
+              if (currentAddressbook) {
+                setNewContact({
+                  address_book_id: currentAddressbook.id,
+                  first_name: ''
+                })
+              }
+            }}
+          > Kontakt</Button>}
+          <Popover content={"Logout"}>
+            <Button
+              icon={<LogoutOutlined />}
+              onClick={logout}
+            ></Button>
+          </Popover>
+        </Header>
+        {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} openNotification={openNotification} />}
+        {editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} openNotification={openNotification} />}
+        {editAddressbook && <AddressbookModal addressbook={editAddressbook} setEditAddressbook={setEditAddressbook} updateAddressbooks={updateAddressbooks} deleteAddressbook={setCurrentAddressbook} openNotification={openNotification} />}
+        {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} openNotification={openNotification} />}
+        {
+          <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks} openNotification={openNotification}>
+            <ContactList contacts={contacts || allContacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
+          </Format>
+        }
+      </Layout>
+    </Context.Provider>
 
-        <Button
-          icon={<LogoutOutlined />}
-          onClick={logout}
-        ></Button>
-      </Header>
-      {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} />}
-      {editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} />}
-      {editAddressbook && <AddressbookModal addressbook={editAddressbook} setEditAddressbook={setEditAddressbook} updateAddressbooks={updateAddressbooks} deleteAddressbook={setCurrentAddressbook} />}
-      {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} />}
-      {
-        <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks}>
-          <ContactList contacts={contacts || allContacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
-        </Format>
-      }
-    </Layout>
   );
 }
 export default App;

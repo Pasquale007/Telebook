@@ -1,11 +1,11 @@
 import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import axios from "axios";
-import {  useState } from "react";
-import {  ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
+import { useState } from "react";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
 
 
-export default function AddressbookModal({ addressbook, setEditAddressbook, updateAddressbooks, deleteAddressbook }) {
+export default function AddressbookModal({ addressbook, setEditAddressbook, updateAddressbooks, deleteAddressbook, openNotification }) {
 
     const [form] = Form.useForm();
     const [del, setDelete] = useState(false);
@@ -15,10 +15,13 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
         if (del) {
             axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
             ).then(response => {
+                console.log(response)
+                openNotification(response.data.message, "success");
                 updateAddressbooks();
                 deleteAddressbook();
                 console.log(response);
             }).catch(err => {
+                openNotification(err.data.message, "error");
                 console.log(err);
             });
         } else if (!share) {

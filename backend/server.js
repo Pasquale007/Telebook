@@ -122,7 +122,7 @@ app.post('/addressbook', [
 
     if (results.length > 0) {
       connection.end();
-      return res.status(409).json({ message: 'Es existiert schon ein Adressbuch mit diesem Namen. Bitte ändere diesen Namen.' });
+      return res.status(409).json({ message: 'Es existiert bereits ein Adressbuch mit dem Namen ' + req.body.name + '. Bitte ändere diesen Namen.' });
     }
 
     const insertQuery = `
@@ -195,7 +195,7 @@ app.get('/addressbook/:user_id/get/:addressbook_id', (req, res) => {
 
   const connection = mysql.createConnection(connectionData);
 
-  connection.query(query, [addressbook_id, user_id], (error, results, fields) => {
+  connection.query(query, [addressbook_id, user_id], (error, results) => {
     connection.end();
     if (error) {
       throw error;
@@ -364,7 +364,7 @@ app.post('/addressbook/:addressbook_id/contact', [
         connection.query(phoneQuery, [contactId, phone_number], (err) => {
           if (err) {
             connection.end();
-            return res.status(400).json({ error: "Es konnte kein Eintrag erstellt werden. Bitte versuche es später erneut." });
+            return res.status(400).json({ message: "Es konnte kein Eintrag erstellt werden. Bitte versuche es später erneut." });
 
           }
         });
@@ -373,7 +373,7 @@ app.post('/addressbook/:addressbook_id/contact', [
 
     connection.commit();
     connection.end();
-    return res.status(201).json({ message: "Der Eintrag wurde hinzugefügt" });
+    return res.status(201).json({ message: "Der Kontakt wurde hinzugefügt." });
   });
 });
 
@@ -504,7 +504,7 @@ app.put('/addressbook/:addressbook_id/contact/:contact_id', [
               if (count === phone_numbers.length) {
                 connection.commit();
                 connection.end();
-                return res.status(200).json({ message: "Kontakt erfolgreich aktualisiert." });
+                return res.status(200).json({ message: "Der Kontakt wurde erfolgreich aktualisiert." });
               }
             });
           });
@@ -512,7 +512,7 @@ app.put('/addressbook/:addressbook_id/contact/:contact_id', [
       } else {
         connection.commit();
         connection.end();
-        return res.status(200).json({ message: "Kontakt erfolgreich aktualisiert." });
+        return res.status(200).json({ message: "Der Kontakt wurde erfolgreich aktualisiert." });
       }
     });
   });
@@ -532,7 +532,7 @@ app.delete('/addressbook/:addressbook_id/contact/:contact_id', (req, res) => {
       connection.commit();
       connection.end();
       if (results.affectedRows === 1) {
-        return res.status(200).json({ message: 'Benutzer wurde erfolgreich gelöscht' });
+        return res.status(200).json({ message: 'Der Kontakt wurde erfolgreich gelöscht.' });
       }
       return res.status(400).json({ message: "Ein Fehler ist aufgetreten. Bitte versuche es später erneut." });
     }
