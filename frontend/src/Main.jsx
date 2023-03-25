@@ -2,12 +2,12 @@ import Format from './Format';
 import './App.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from './sharedTypes';
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL } from './sharedTypes';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
 import { Button, Input, Layout } from 'antd';
-import { SearchOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 
@@ -86,6 +86,11 @@ function App() {
 
   }
 
+  const logout = () => {
+    sessionStorage.clear();
+    window.location.href = BASE_URL;
+  }
+
   return (
     <Layout>
       <Header
@@ -117,6 +122,11 @@ function App() {
             }
           }}
         > Kontakt</Button>}
+
+        <Button
+          icon={<LogoutOutlined />}
+          onClick={logout}
+        ></Button>
       </Header>
       {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} />}
       {editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} />}
