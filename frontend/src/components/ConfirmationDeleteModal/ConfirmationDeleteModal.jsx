@@ -2,16 +2,19 @@ import { Modal } from "antd";
 import axios from "axios";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedTypes";
 
-export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts }) {
+export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts, openNotification }) {
 
     const delContact = () => {
         const contact = deleteContact;
         setDeleteContact(undefined);
         axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
         ).then(response => {
+            openNotification(response.data.message, "success");
             console.log(response.data.message);
             updateContacts();
         }).catch(err => {
+            openNotification(err.response.data.message, "error");
+
             console.log(err);
         })
     }

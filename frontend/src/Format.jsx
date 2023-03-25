@@ -6,8 +6,7 @@ import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
 import axios from "axios";
 
-
-export default function Format({ addressbooks, children, callback, updateAddressBooks }) {
+export default function Format({ addressbooks, children, callback, updateAddressBooks, openNotification }) {
     const [items, setItems] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
     const [nameAddressbook, setNameAddressbook] = useState(false);
@@ -42,10 +41,13 @@ export default function Format({ addressbooks, children, callback, updateAddress
             'user_id': [sessionStorage.getItem('id')],
             'name': addressBookName
         }).then(response => {
+            openNotification(response.data.message, "success");
             updateAddressBooks([]);
             console.log(response.data);
 
         }).catch(err => {
+            openNotification(err.response.data.message, "error");
+
             console.log(err);
         });
     }
@@ -61,6 +63,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
     }
 
     return (
+
         <Layout style={{ height: '100vh', width: '100%' }}>
             <Sider
                 collapsible
