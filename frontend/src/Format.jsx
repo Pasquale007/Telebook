@@ -3,7 +3,7 @@ import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "./sharedTypes";
 import axios from "axios";
 
 export default function Format({ addressbooks, children, callback, updateAddressBooks, openNotification }) {
@@ -22,6 +22,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
     }
 
     useEffect(() => {
+        console.log(BASE_URL)
         const books = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
         setItems(books);
     }, [addressbooks]);
