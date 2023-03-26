@@ -82,6 +82,7 @@ function App() {
   const updateAddressbooks = () => {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
+      setCurrentAddressbook(response.data.find(addressbook => addressbook.id === currentAddressbook.id))
       setAddressbooks(response.data);
     }).catch(err => {
       console.log(err);
@@ -136,8 +137,9 @@ function App() {
             icon={<EditOutlined />}
             onClick={() => {
               setEditAddressbook(currentAddressbook)
-            }}
-          > {currentAddressbook.name}</Button>}
+            }}>
+            {currentAddressbook?.name}
+          </Button>}
           <Input
             onChange={(e) => filterContacts(e.target.value)}
             style={{ padding: "10px", width: "50%" }}
@@ -146,7 +148,7 @@ function App() {
           />
           {currentAddressbook && <Button
             type="default"
-            style={{ margin: "5px", width: '15%' }}
+            style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
             icon={<PlusOutlined />}
             onClick={() => {
               if (currentAddressbook) {
