@@ -79,11 +79,12 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
                         icon={<DeleteOutlined />}
                     />
                 </div>
-
                 {share &&
-                    <p>
-                        Kopiere einfach folgenden Link und schicke ihn deinen Freunden:
-                        <br />
+                    <>
+                        <p>
+                            Kopiere einfach folgenden Link und schicke ihn deinen Freunden:
+                            <br />
+                        </p>
                         <Popover
                             content="In Zwischenablage kopiert"
                             placement={"topLeft"}
@@ -96,7 +97,7 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
                                 {window.location.href + "share/" + addressbook.id}
                             </p>
                         </Popover>
-                    </p>
+                    </>
                 }
             </Form>
             {del &&
