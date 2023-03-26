@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../../sharedTypes";
+import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../../sharedValues";
 
 export function SharedPage() {
     const { addressbookID } = useParams();

@@ -17,6 +17,6 @@ export default function Router() {
                     <Route path="/share/:addressbookID" element={<SharedPage />} />
                 </Route>
             </Routes>
-        </BrowserRouter >
+        </BrowserRouter>
     )
 }

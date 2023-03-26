@@ -2,7 +2,7 @@ import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BASE_ENDPOINT, BASE_URL, SIGNUP_ENDPOINT } from "../../sharedTypes";
+import { BASE_ENDPOINT, BASE_URL, SIGNUP_ENDPOINT } from "../../sharedValues";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Register() {

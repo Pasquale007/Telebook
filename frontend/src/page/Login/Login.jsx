@@ -3,13 +3,12 @@ import { Alert, Form, Input, Modal } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_ENDPOINT, LOGIN_ENDPOINT, BASE_URL } from "../../sharedTypes";
+import { BASE_ENDPOINT, LOGIN_ENDPOINT } from "../../sharedValues";
 
 export default function Login() {
     const [errorMsg, setErrorMsg] = useState("");
     const [loginForm] = Form.useForm();
     let navigate = useNavigate();
-
 
     useEffect(() => {
         if (errorMsg.length > 0) {
@@ -36,7 +35,7 @@ export default function Login() {
             sessionStorage.setItem('id', response.data.id);
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('loggedIn', 'true');
-            window.location.href = BASE_URL;
+            navigate(-1);
         }).catch(err => {
             setErrorMsg(err.response?.data?.detail || "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut")
         })

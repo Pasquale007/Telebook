@@ -3,7 +3,7 @@ import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "./sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "./sharedValues";
 import axios from "axios";
 
 export default function Format({ addressbooks, children, callback, updateAddressBooks, openNotification }) {

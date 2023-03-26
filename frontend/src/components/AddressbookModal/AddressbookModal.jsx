@@ -2,7 +2,7 @@ import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icon
 import { Button, Form, Input, Modal, Popover } from "antd";
 import axios from "axios";
 import { useState } from "react";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedValues";
 
 
 export default function AddressbookModal({ addressbook, setEditAddressbook, updateAddressbooks, deleteAddressbook, openNotification }) {

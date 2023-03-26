@@ -2,7 +2,7 @@ import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutli
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
 import moment from "moment";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 
 
 export default function ContactModal({ editContact, setEditContact, updateContacts, mode, openNotification }) {

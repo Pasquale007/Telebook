@@ -2,7 +2,7 @@ import Format from './Format';
 import './App.css';
 import { useEffect, useState, createContext, useMemo } from 'react';
 import axios from 'axios';
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL } from './sharedTypes';
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL } from './sharedValues';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
@@ -82,7 +82,7 @@ function App() {
   const updateAddressbooks = () => {
     axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
-      setCurrentAddressbook(response.data.find(addressbook => addressbook.id === currentAddressbook.id))
+      setCurrentAddressbook(response.data.find(addressbook => addressbook.id === currentAddressbook?.id))
       setAddressbooks(response.data);
     }).catch(err => {
       console.log(err);

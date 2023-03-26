@@ -1,6 +1,6 @@
 import { Modal } from "antd";
 import axios from "axios";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedTypes";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 
 export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts, openNotification }) {
 
