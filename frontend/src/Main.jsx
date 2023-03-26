@@ -108,8 +108,12 @@ function App() {
     if (inputString.length === 0) {
       setContacts(undefined);
     }
+    inputString = inputString.toLowerCase();
     const contacts = allContacts.filter((contact) =>
-      contact.first_name.includes(inputString) || contact.last_name?.includes(inputString) || contact.phone_numbers?.find(number => number.includes(inputString))
+      contact.first_name.toLowerCase().includes(inputString) ||
+      contact.last_name?.toLowerCase().includes(inputString) ||
+      contact.first_name.toLowerCase().concat(' ' + contact.last_name.toLowerCase()).includes(inputString) ||
+      contact.phone_numbers?.find(number => number.includes(inputString))
     )
     setContacts(contacts);
 

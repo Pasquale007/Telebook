@@ -1,11 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../../sharedTypes";
 
 export function SharedPage() {
     const { addressbookID } = useParams();
-    const [addressbook, setAddressbook] = useState();
     useEffect(() => {
         axios.post(BASE_ENDPOINT + ADD_USER_TO_ADDRESSBOOK_ENDPOINT, {
             'user_id': sessionStorage.getItem('id'),

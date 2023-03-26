@@ -31,7 +31,6 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             updateContacts();
         }).catch(err => {
             openNotification(err.data.message, "error");
-            console.log(err);
             updateContacts();
         })
     }
@@ -51,12 +50,10 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             'email': contactForm.getFieldValue('email'),
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
-            console.log(response);
             openNotification(response.data.message, "success");
             updateContacts();
         }).catch(err => {
-            openNotification("dgfas", "error");
-            console.log(err);
+            openNotification(err.data.message, "error");
             updateContacts();
         })
     }

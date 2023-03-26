@@ -22,7 +22,6 @@ export default function Format({ addressbooks, children, callback, updateAddress
     }
 
     useEffect(() => {
-        console.log(BASE_URL)
         const books = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
         setItems(books);
     }, [addressbooks]);
@@ -44,12 +43,8 @@ export default function Format({ addressbooks, children, callback, updateAddress
         }).then(response => {
             openNotification(response.data.message, "success");
             updateAddressBooks([]);
-            console.log(response.data);
-
         }).catch(err => {
             openNotification(err.response.data.message, "error");
-
-            console.log(err);
         });
     }
 

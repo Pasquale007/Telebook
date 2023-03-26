@@ -15,26 +15,22 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
         if (del) {
             axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
             ).then(response => {
-                console.log(response)
                 openNotification(response.data.message, "success");
                 updateAddressbooks();
                 deleteAddressbook();
-                console.log(response);
             }).catch(err => {
                 openNotification(err.data.message, "error");
-                console.log(err);
             });
         } else if (!share) {
             const name = form.getFieldValue('name');
-            console.log(name);
             axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id, {
                 'user_id': [sessionStorage.getItem('id')],
                 'name': name
             }).then(response => {
-                console.log(response);
+                openNotification(response.data.message, "success");
                 updateAddressbooks();
             }).catch(err => {
-                console.log(err);
+                openNotification(err.data.message, "error");
             });
         }
         setEditAddressbook(undefined);

@@ -47,11 +47,9 @@ export default function Register() {
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
         }).catch(err => {
-            console.log(err)
             if(err.response.data.errors){
                 const errString = err.response.data.errors.map(err => { return err.msg})
                 setErrorMsg(errString)
-
             } else{
                 setErrorMsg(err.response.data.message || "Ein unbekannter Fehler ist aufgetreten.")
             }
