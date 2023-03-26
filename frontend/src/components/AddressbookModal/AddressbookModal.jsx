@@ -47,12 +47,12 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
 
     const initDeleteModal = () => {
         setShare(false);
-        setDelete(true);
+        setDelete(!del);
     }
 
     const iniShare = () => {
         setDelete(false);
-        setShare(true);
+        setShare(!share);
 
     }
 
@@ -68,12 +68,15 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
                 </Form.Item>
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
                     <Button
-                        onClick={initDeleteModal}
-                        icon={<DeleteOutlined />}
-                    />
-                    <Button
+                        type={share ? 'primary' : 'default'}
                         onClick={iniShare}
                         icon={<ShareAltOutlined />}
+                    />
+                    <Button
+                        type={del ? 'primary' : 'default'}
+                        danger
+                        onClick={initDeleteModal}
+                        icon={<DeleteOutlined />}
                     />
                 </div>
 
