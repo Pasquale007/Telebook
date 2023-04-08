@@ -35,7 +35,8 @@ export default function Login() {
             sessionStorage.setItem('id', response.data.id);
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('loggedIn', 'true');
-            navigate(-1);
+            //blöd für share page.. idee?
+            navigate("/");
         }).catch(err => {
             setErrorMsg(err.response?.data?.detail || "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut")
         })
@@ -50,6 +51,7 @@ export default function Login() {
             okText={'Log In'}
             onOk={sendLogIn}
             onCancel={() => { navigate("/register") }}
+            maskClosable={false}
         >
             {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
             <hr />

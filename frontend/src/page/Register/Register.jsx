@@ -47,10 +47,10 @@ export default function Register() {
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
         }).catch(err => {
-            if(err.response.data.errors){
-                const errString = err.response.data.errors.map(err => { return err.msg})
+            if (err.response.data.errors) {
+                const errString = err.response.data.errors.map(err => { return err.msg })
                 setErrorMsg(errString)
-            } else{
+            } else {
                 setErrorMsg(err.response.data.message || "Ein unbekannter Fehler ist aufgetreten.")
             }
         })
@@ -65,6 +65,7 @@ export default function Register() {
             okText={'Register'}
             onOk={sendSignUp}
             onCancel={() => { navigate("/login") }}
+            maskClosable={false}
         >
             {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
             <hr />
