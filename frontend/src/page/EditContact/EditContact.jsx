@@ -4,7 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL, CONTACT_ENDPOINT } from "../../sharedValues";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
 
 //evtl mit id -1 arbeiten
@@ -24,7 +24,7 @@ export default function EditContact() {
             console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
             return;
         }
-        axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact.address_book_id + CONTACT_ENDPOINT, {
+        axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'phone_numbers': phone_numbers,
@@ -35,7 +35,7 @@ export default function EditContact() {
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
             console.log(response);
-            navigate(BASE_URL);
+            navigate("/#");
         }).catch(err => {
             console.log(err);
         })
@@ -57,7 +57,7 @@ export default function EditContact() {
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
             console.log(response);
-            navigate("/");
+            navigate(`/#${contacbookID}`);
         }).catch(err => {
             console.log(err)
         })
@@ -85,7 +85,7 @@ export default function EditContact() {
             }}
             onCancel={() => {
                 setEditContact(undefined);
-                navigate("/");
+                navigate(`/#${contacbookID}"`);
             }}
         >
             <Form form={contactForm}>
