@@ -101,7 +101,7 @@ export default function EditContact() {
             }}
             onCancel={() => {
                 setEditContact(undefined);
-                navigate(`/#${contacbookID}"`);
+                navigate(`/#${contacbookID}`);
             }}
         >
             <Space direction="vertical">
