@@ -10,10 +10,13 @@ import { Button, Input, Layout, Popover, notification } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
+import { useNavigate } from "react-router-dom";
 
 const Context = createContext({});
 
 function App() {
+  let navigate = useNavigate();
+
   const [addressbooks, setAddressbooks] = useState([]);
   const [currentAddressbook, setCurrentAddressbook] = useState(undefined);
   const [contacts, setContacts] = useState(undefined);
@@ -68,6 +71,20 @@ function App() {
     }
 
   }, [currentAddressbook]);
+
+  useEffect(() => {
+    if (editContact) {
+      navigate("/contactbook/" + currentAddressbook.id + "/contact/" + editContact.id + "/EDIT")
+    }
+
+  }, [editContact]);
+  useEffect(() => {
+    if (newContact) {
+      console.log(newContact)
+      navigate("/contactbook/" + currentAddressbook.id + "/contact/" + newContact.id + "/CREATE")
+    }
+
+  }, [newContact]);
 
   useEffect(() => {
     updateAddressbooks();
@@ -154,6 +171,7 @@ function App() {
               if (currentAddressbook) {
                 setNewContact({
                   address_book_id: currentAddressbook.id,
+                  id: -1,
                   first_name: ''
                 })
               }
@@ -167,7 +185,7 @@ function App() {
           </Popover>
         </Header>
         {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} openNotification={openNotification} />}
-        {editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} openNotification={openNotification} />}
+        {/*{editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} openNotification={openNotification} />}*/}
         {editAddressbook && <AddressbookModal addressbook={editAddressbook} setEditAddressbook={setEditAddressbook} updateAddressbooks={updateAddressbooks} deleteCurrentAddressbook={setCurrentAddressbook} openNotification={openNotification} />}
         {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} openNotification={openNotification} />}
         {
