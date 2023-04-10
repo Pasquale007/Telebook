@@ -1,4 +1,4 @@
-import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
 import moment from "moment";
@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
 
-export default function EditContact() {
+export default function EditPhonenumber() {
     const { contacbookID, userID, mode } = useParams();
     const [contactForm] = Form.useForm();
     const [editContact, setEditContact] = useState();
@@ -45,7 +45,7 @@ export default function EditContact() {
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
             console.log(response);
-            navigate(`/#${contacbookID}"`);
+            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}`);
         }).catch(err => {
             setErrorMsg(err);
             console.log(err);
@@ -72,7 +72,7 @@ export default function EditContact() {
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
             console.log(response);
-            navigate(`/#${contacbookID}`);
+            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}`);
         }).catch(err => {
             console.log(err)
         })
@@ -100,7 +100,7 @@ export default function EditContact() {
             }}
             onCancel={() => {
                 setEditContact(undefined);
-                navigate(`/#${contacbookID}`);
+                navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}`);
             }}
         >
             <Space direction="vertical">
@@ -108,21 +108,25 @@ export default function EditContact() {
                 <Form form={contactForm}>
                     <Space direction="vertical">
                         <Space direction="horizontal">
-                            <Form.Item name="first_name" initialValue={editContact?.first_name} style={{ margin: "0px" }}>
-                                <Input prefix={<UserOutlined />} />
+                            <Form.Item name="first_name" initialValue={editContact?.first_name} style={{ margin: "0px" }} >
+                                <Input prefix={<UserOutlined />} contentEditable={false} />
                             </Form.Item>
                             <Form.Item name="last_name" initialValue={editContact?.last_name} style={{ margin: "0px" }}>
                                 <Input prefix={<UserOutlined />} />
                             </Form.Item>
                         </Space>
-                        <Button icon={<PhoneOutlined />} onClick={() => {
-                            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}/phonenumbers`);
-                            /*let newContact = JSON.parse(JSON.stringify(editContact));
+                        {editContact?.phone_numbers?.map((phone_number, key) => {
+                            return <Form.Item name={"phone_number" + key} initialValue={phone_number} style={{ margin: "0px" }}>
+                                <Input prefix={<PhoneOutlined />} key={key} />
+                            </Form.Item>
+                        })}
+                        <Button icon={<PlusOutlined />} onClick={() => {
+                            let newContact = JSON.parse(JSON.stringify(editContact));
                             if (newContact && !newContact.phone_numbers) {
                                 newContact.phone_numbers = []
                             }
                             newContact?.phone_numbers?.push("");
-                            setEditContact(newContact);*/
+                            setEditContact(newContact);
                         }} />
                         <Space direction="horizontal">
                             <Form.Item name={"street"} initialValue={editContact?.street} style={{ margin: "0px" }}>
