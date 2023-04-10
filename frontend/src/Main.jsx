@@ -148,7 +148,7 @@ function App() {
       {contextHolder}
       <Layout>
         <Header
-          style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
+          style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly", height:'70px' }}>
           {currentAddressbook && <Button
             type="default"
             style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}

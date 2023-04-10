@@ -12,8 +12,8 @@ export default function EditContact() {
     const [contactForm] = Form.useForm();
     const [editContact, setEditContact] = useState();
     const [errorMsg, setErrorMsg] = useState("");
-
     let navigate = useNavigate();
+    let nextRoute = `/#${contacbookID}`;
 
     useEffect(() => {
         if (errorMsg.length > 0) {
@@ -22,18 +22,12 @@ export default function EditContact() {
     }, [errorMsg]);
 
     const createContact = () => {
-        const contact = editContact;
-        if (!contact.first_name) {
+        if (!contactForm.getFieldValue('first_name')) {
             setErrorMsg("Bitte gib einen Vornamen an");
             return;
         }
-        let phone_numbers = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        if (contactForm.getFieldValue('first_name')) {
-            setEditContact(undefined);
-        } else {
-            console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
-            return;
-        }
+        setEditContact(undefined);
+        let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -44,8 +38,11 @@ export default function EditContact() {
             'email': contactForm.getFieldValue('email'),
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
-            console.log(response);
-            navigate(`/#${contacbookID}"`);
+            let contact_id = response.data.id;
+            if (nextRoute.includes('-1')) {
+                nextRoute = nextRoute.replace('-1', contact_id);
+            }
+            navigate(nextRoute);
         }).catch(err => {
             setErrorMsg(err);
             console.log(err);
@@ -59,12 +56,10 @@ export default function EditContact() {
             return;
         }
         setEditContact(undefined);
-        let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
-            'phone_numbers': phone_numbers,
             'street': contactForm.getFieldValue('street'),
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
@@ -96,6 +91,7 @@ export default function EditContact() {
                     sendUpdatedContact();
                 } else if (mode === 'CREATE') {
                     createContact();
+                    navigate(`/#${contacbookID}`);
                 }
             }}
             onCancel={() => {
@@ -115,14 +111,18 @@ export default function EditContact() {
                                 <Input prefix={<UserOutlined />} />
                             </Form.Item>
                         </Space>
+                        {editContact?.phone_numbers?.map((phone_number, key) => {
+                            return <Form.Item name={"phone_number" + key} initialValue={phone_number} style={{ margin: "0px" }}>
+                                <Input prefix={<PhoneOutlined />} key={key} disabled />
+                            </Form.Item>
+                        })}
                         <Button icon={<PhoneOutlined />} onClick={() => {
-                            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}/phonenumbers`);
-                            /*let newContact = JSON.parse(JSON.stringify(editContact));
-                            if (newContact && !newContact.phone_numbers) {
-                                newContact.phone_numbers = []
+                            if (mode === 'EDIT') {
+                                navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}/phonenumbers`);
+                            } else if (mode === 'CREATE') {
+                                createContact();
+                                nextRoute = `/contactbook/${contacbookID}/contact/-1/${mode}/phonenumbers`;
                             }
-                            newContact?.phone_numbers?.push("");
-                            setEditContact(newContact);*/
                         }} />
                         <Space direction="horizontal">
                             <Form.Item name={"street"} initialValue={editContact?.street} style={{ margin: "0px" }}>

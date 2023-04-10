@@ -1,5 +1,5 @@
 import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
-import { Alert, Button, DatePicker, Form, Input, Modal, Space } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -8,71 +8,22 @@ import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sha
 import { useNavigate } from "react-router-dom";
 
 export default function EditPhonenumber() {
-    const { contacbookID, userID, mode } = useParams();
+    const { contacbookID, userID } = useParams();
     const [contactForm] = Form.useForm();
     const [editContact, setEditContact] = useState();
-    const [errorMsg, setErrorMsg] = useState("");
-
     let navigate = useNavigate();
 
-    useEffect(() => {
-        if (errorMsg.length > 0) {
-            setTimeout(() => setErrorMsg(""), 5000);
-        }
-    }, [errorMsg]);
-
-    const createContact = () => {
-        const contact = editContact;
-        if (!contact.first_name) {
-            setErrorMsg("Bitte gib einen Vornamen an");
-            return;
-        }
-        let phone_numbers = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        if (contactForm.getFieldValue('first_name')) {
-            setEditContact(undefined);
-        } else {
-            console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
-            return;
-        }
-        axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
-            'first_name': contactForm.getFieldValue('first_name'),
-            'last_name': contactForm.getFieldValue('last_name'),
-            'phone_numbers': phone_numbers,
-            'street': contactForm.getFieldValue('street'),
-            'city': contactForm.getFieldValue('city'),
-            'zip_code': contactForm.getFieldValue('zip_code'),
-            'email': contactForm.getFieldValue('email'),
-            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
-        }).then(response => {
-            console.log(response);
-            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}`);
-        }).catch(err => {
-            setErrorMsg(err);
-            console.log(err);
-        })
-    }
-
-    const sendUpdatedContact = () => {
-        const contact = editContact;
-        if (!contactForm.getFieldValue('first_name')) {
-            setErrorMsg("Bitte gib einen Vornamen an");
-            return;
-        }
-        setEditContact(undefined);
+    const updatePhonnumbers = () => {
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        const id = contact.id;
-        axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
+        const valid_phoneNumbers = phone_numbers.filter(phone_number => phone_number !== '');
+        console.log(valid_phoneNumbers)
+        axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
             'first_name': contactForm.getFieldValue('first_name'),
-            'last_name': contactForm.getFieldValue('last_name'),
-            'phone_numbers': phone_numbers,
-            'street': contactForm.getFieldValue('street'),
-            'city': contactForm.getFieldValue('city'),
-            'zip_code': contactForm.getFieldValue('zip_code'),
-            'email': contactForm.getFieldValue('email'),
-            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
+            'phone_numbers': valid_phoneNumbers,
         }).then(response => {
+            setEditContact(undefined);
             console.log(response);
-            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}`);
+            navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/EDIT`);
         }).catch(err => {
             console.log(err)
         })
@@ -91,20 +42,13 @@ export default function EditPhonenumber() {
     return (
         <Modal
             open={editContact ? true : false}
-            onOk={() => {
-                if (mode === 'EDIT') {
-                    sendUpdatedContact();
-                } else if (mode === 'CREATE') {
-                    createContact();
-                }
-            }}
+            onOk={() => { updatePhonnumbers() }}
             onCancel={() => {
                 setEditContact(undefined);
-                navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/${mode}`);
+                navigate(`/contactbook/${contacbookID}/contact/${editContact.id}/EDIT`);
             }}
         >
             <Space direction="vertical">
-                {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
                 <Form form={contactForm}>
                     <Space direction="vertical">
                         <Space direction="horizontal">
@@ -116,7 +60,7 @@ export default function EditPhonenumber() {
                             </Form.Item>
                         </Space>
                         {editContact?.phone_numbers?.map((phone_number, key) => {
-                            return <Form.Item name={"phone_number" + key} initialValue={phone_number} style={{ margin: "0px" }}>
+                            return <Form.Item name={"phone_number" + key} initialValue={phone_number} style={{ margin: "0px" }} key={key}>
                                 <Input prefix={<PhoneOutlined />} key={key} />
                             </Form.Item>
                         })}
@@ -143,7 +87,7 @@ export default function EditPhonenumber() {
                             <Input prefix={<MailOutlined />} disabled />
                         </Form.Item>
                         <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
-                            <DatePicker disabled/>
+                            <DatePicker disabled />
                         </Form.Item>
                     </Space>
                 </Form>

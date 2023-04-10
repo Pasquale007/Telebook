@@ -393,7 +393,10 @@ app.post('/addressbook/:addressbook_id/contact', [
 
     connection.commit();
     connection.end();
-    return res.status(201).json({ message: "Der Kontakt wurde hinzugefügt." });
+    return res.status(201).json({
+      message: "Der Kontakt wurde hinzugefügt.",
+      id: contactId
+    });
   });
 });
 
