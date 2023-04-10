@@ -41,9 +41,9 @@ export default function Register() {
                 "password": password
             }
         ).then(response => {
-            sessionStorage.setItem('email', response.data.email);
-            sessionStorage.setItem('id', response.data.id);
-            sessionStorage.setItem('name', response.data.name);
+            sessionStorage.setItem('email', response.data.data.email);
+            sessionStorage.setItem('id', response.data.data.id);
+            sessionStorage.setItem('name', response.data.data.name);
             sessionStorage.setItem('loggedIn', 'true');
             window.location.href = BASE_URL;
         }).catch(err => {

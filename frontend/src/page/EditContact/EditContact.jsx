@@ -35,7 +35,7 @@ export default function EditContact() {
             'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
         }).then(response => {
             console.log(response);
-            navigate("/#");
+            navigate(`/#${contacbookID}"`);
         }).catch(err => {
             console.log(err);
         })

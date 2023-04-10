@@ -83,13 +83,33 @@ app.post('/register', [
       const insertQuery = `
         INSERT INTO users (name, email, password)
         VALUES (?, ?, MD5(?));
-      `;
+       `;
 
       connection.query(insertQuery, [name, email, password], (err, result) => {
         if (err) throw err;
 
-        connection.end();
-        res.status(201).json({ message: 'Benutzer erfolgreich erstellt.' });
+        connection.query(insertQuery, [name, email, password], (err, result) => {
+          if (err) throw err;
+
+          const insertedId = result.insertId;
+
+          const selectQuery = `
+            SELECT id, name, email
+            FROM users
+            WHERE id = ?;
+          `;
+
+          connection.query(selectQuery, [insertedId], (err, result) => {
+            if (err) throw err;
+
+            const insertedData = result[0];
+            connection.end();
+            res.status(201).json({
+              message: 'Benutzer erfolgreich erstellt.',
+              data: insertedData
+            });
+          });
+        });
       });
     }
   });

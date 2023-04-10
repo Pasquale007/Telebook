@@ -5,12 +5,15 @@ import { useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedValues";
 import axios from "axios";
+import { useLocation } from 'react-router-dom';
 
 export default function Format({ addressbooks, children, callback, updateAddressBooks, openNotification }) {
     const [items, setItems] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
+    const [selectedKey, setSelectedKey] = useState(undefined);
     const [nameAddressbook, setNameAddressbook] = useState(false);
     const inputName = useRef(null);
+    const location = useLocation();
 
     function getItem(
         label,
@@ -26,20 +29,22 @@ export default function Format({ addressbooks, children, callback, updateAddress
         setItems(books);
     }, [addressbooks]);
 
-    /* const getAddressbook = () => {
-         let element = parseInt(window.location.href.split('#')[1]);
-         if (!element) {
-             return [];
-         }
-         const searchedAddressbook = addressbooks.find(addressbook => addressbook.id === element);
-         console.log(items)
-         const item = items.find(item => item.label === searchedAddressbook.name);
-         console.log(item)
-         console.log(searchedAddressbook)
-         callback(searchedAddressbook);
-         console.log(item?.key)
-         return [`${item?.key}`]
-     }*/
+    useEffect(() => {
+        setAddressbook();
+    }, [items]);
+
+    const setAddressbook = () => {
+        let element = parseInt(location.hash.split('#')[1]);
+        if (!element) {
+            return [];
+        }
+        const searchedAddressbook = addressbooks.find(addressbook => addressbook.id === element);
+        const item = items.find(item => item.label === searchedAddressbook.name);
+        console.log(searchedAddressbook)
+        callback(searchedAddressbook);
+        console.log(item?.key)
+        setSelectedKey(`${item?.key}`)
+    }
 
     const createAddressbook = () => {
         setNameAddressbook(true);
@@ -68,6 +73,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
             (addressbook) => {
                 return addressbook.id + '' === menuItem?.key
             })
+        setSelectedKey(menuItem?.key);
         if (searchedAddressbook) {
             callback(searchedAddressbook);
         }
@@ -91,7 +97,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
                     theme="dark"
                     mode="inline"
                     items={items}
-                /*defaultSelectedKeys={getAddressbook()}*/
+                    selectedKeys={[selectedKey]}
                 />
             </Sider>
             <Layout>
