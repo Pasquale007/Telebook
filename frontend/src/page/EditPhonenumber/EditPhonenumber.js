@@ -109,10 +109,10 @@ export default function EditPhonenumber() {
                     <Space direction="vertical">
                         <Space direction="horizontal">
                             <Form.Item name="first_name" initialValue={editContact?.first_name} style={{ margin: "0px" }} >
-                                <Input prefix={<UserOutlined />} contentEditable={false} />
+                                <Input prefix={<UserOutlined />} disabled />
                             </Form.Item>
                             <Form.Item name="last_name" initialValue={editContact?.last_name} style={{ margin: "0px" }}>
-                                <Input prefix={<UserOutlined />} />
+                                <Input prefix={<UserOutlined />} disabled />
                             </Form.Item>
                         </Space>
                         {editContact?.phone_numbers?.map((phone_number, key) => {
@@ -130,20 +130,20 @@ export default function EditPhonenumber() {
                         }} />
                         <Space direction="horizontal">
                             <Form.Item name={"street"} initialValue={editContact?.street} style={{ margin: "0px" }}>
-                                <Input prefix={<NodeIndexOutlined />} />
+                                <Input prefix={<NodeIndexOutlined />} disabled />
                             </Form.Item>
                             <Form.Item name={"city"} initialValue={editContact?.city} style={{ margin: "0px" }}>
-                                <Input prefix={<HomeOutlined />} />
+                                <Input prefix={<HomeOutlined />} disabled />
                             </Form.Item>
                             <Form.Item name={"zip_code"} initialValue={editContact?.zip_code} style={{ margin: "0px" }}>
-                                <Input prefix={<ScanOutlined />} />
+                                <Input prefix={<ScanOutlined />} disabled />
                             </Form.Item>
                         </Space>
                         <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}>
-                            <Input prefix={<MailOutlined />} />
+                            <Input prefix={<MailOutlined />} disabled />
                         </Form.Item>
                         <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
-                            <DatePicker />
+                            <DatePicker disabled/>
                         </Form.Item>
                     </Space>
                 </Form>
