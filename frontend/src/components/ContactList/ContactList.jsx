@@ -43,6 +43,7 @@ export default function ContactList({ contacts, editContactCallback, deleteConta
 
     return (
         <List
+            style={{ height: "calc(100vh - 70px)", overflow: "scroll" }}
             itemLayout="horizontal"
             dataSource={contacts}
             renderItem={(contact, index) => (
