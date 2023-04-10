@@ -78,6 +78,7 @@ function App() {
     }
 
   }, [editContact]);
+
   useEffect(() => {
     if (newContact) {
       console.log(newContact)

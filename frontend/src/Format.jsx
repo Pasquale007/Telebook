@@ -40,9 +40,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
         }
         const searchedAddressbook = addressbooks.find(addressbook => addressbook.id === element);
         const item = items.find(item => item.label === searchedAddressbook.name);
-        console.log(searchedAddressbook)
         callback(searchedAddressbook);
-        console.log(item?.key)
         setSelectedKey(`${item?.key}`)
     }
 
