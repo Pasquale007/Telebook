@@ -16,7 +16,6 @@ export default function EditPhonenumber() {
     const updatePhonnumbers = () => {
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const valid_phoneNumbers = phone_numbers.filter(phone_number => phone_number !== '');
-        console.log(valid_phoneNumbers)
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'phone_numbers': valid_phoneNumbers,
