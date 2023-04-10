@@ -3,7 +3,7 @@ import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "./sharedValues";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedValues";
 import axios from "axios";
 
 export default function Format({ addressbooks, children, callback, updateAddressBooks, openNotification }) {
@@ -25,6 +25,21 @@ export default function Format({ addressbooks, children, callback, updateAddress
         const books = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
         setItems(books);
     }, [addressbooks]);
+
+    /* const getAddressbook = () => {
+         let element = parseInt(window.location.href.split('#')[1]);
+         if (!element) {
+             return [];
+         }
+         const searchedAddressbook = addressbooks.find(addressbook => addressbook.id === element);
+         console.log(items)
+         const item = items.find(item => item.label === searchedAddressbook.name);
+         console.log(item)
+         console.log(searchedAddressbook)
+         callback(searchedAddressbook);
+         console.log(item?.key)
+         return [`${item?.key}`]
+     }*/
 
     const createAddressbook = () => {
         setNameAddressbook(true);
@@ -74,9 +89,9 @@ export default function Format({ addressbooks, children, callback, updateAddress
                 <Menu
                     onClick={clickMenu}
                     theme="dark"
-                    //defaultSelectedKeys={['1']}
                     mode="inline"
                     items={items}
+                /*defaultSelectedKeys={getAddressbook()}*/
                 />
             </Sider>
             <Layout>
