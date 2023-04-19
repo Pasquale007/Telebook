@@ -149,7 +149,7 @@ export default function EditContact() {
                             <Input prefix={<MailOutlined />} />
                         </Form.Item>
                         <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
-                            <DatePicker selected={birthday} onChange={(date) => setBirthday(date)} />
+                            <DatePicker selected={birthday} onChange={(date) => setBirthday(date)} showYearDropdown/>
                         </Form.Item>
                     </Space>
                 </Form>
