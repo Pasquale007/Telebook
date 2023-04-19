@@ -477,6 +477,7 @@ app.put('/addressbook/:addressbook_id/contact/:contact_id', [
   const { first_name, last_name, email, street, city, zip_code, birthday, phone_numbers } = req.body;
   const connection = mysql.createConnection(connectionData);
 
+  console.log(birthday);
   connection.query("SELECT id FROM contacts WHERE address_book_id = ? AND id = ?", [addressbook_id, contact_id], (err, existing_contact) => {
     if (err) {
       connection.end();

@@ -148,7 +148,7 @@ function App() {
       {contextHolder}
       <Layout>
         <Header
-          style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly", height:'70px' }}>
+          style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly", height: '70px' }}>
           {currentAddressbook && <Button
             type="default"
             style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
@@ -186,7 +186,6 @@ function App() {
           </Popover>
         </Header>
         {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} openNotification={openNotification} />}
-        {/*{editContact && <ContactModal editContact={editContact} setEditContact={setEditContact} updateContacts={updateContacts} mode={'EDIT'} openNotification={openNotification} />}*/}
         {editAddressbook && <AddressbookModal addressbook={editAddressbook} setEditAddressbook={setEditAddressbook} updateAddressbooks={updateAddressbooks} deleteCurrentAddressbook={setCurrentAddressbook} openNotification={openNotification} />}
         {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} openNotification={openNotification} />}
         {

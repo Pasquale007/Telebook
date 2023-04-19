@@ -1,19 +1,26 @@
 import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
-import { Alert, Button, DatePicker, Form, Input, Modal, Space } from "antd";
+import { Alert, Button, Form, Input, Modal, Space } from "antd";
 import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function EditContact() {
     const { contacbookID, userID, mode } = useParams();
     const [contactForm] = Form.useForm();
     const [editContact, setEditContact] = useState();
+    const [birthday, setBirthday] = useState();
     const [errorMsg, setErrorMsg] = useState("");
     let navigate = useNavigate();
     let nextRoute = `/#${contacbookID}`;
+
+    useEffect(() => {
+        setBirthday(editContact?.birthday ? new Date(editContact?.birthday) : undefined);
+    }, [editContact]);
 
     useEffect(() => {
         if (errorMsg.length > 0) {
@@ -57,6 +64,9 @@ export default function EditContact() {
         }
         setEditContact(undefined);
         const id = contact.id;
+        //+1 for right time format -> 1 = JAN
+        const newBirthday = (birthday.getMonth() + 1) + "-" + birthday.getDate() + "-" + birthday.getFullYear();
+        console.log(newBirthday)
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -64,7 +74,7 @@ export default function EditContact() {
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
             'email': contactForm.getFieldValue('email'),
-            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
+            'birthday': newBirthday,
         }).then(response => {
             console.log(response);
             navigate(`/#${contacbookID}`);
@@ -139,7 +149,7 @@ export default function EditContact() {
                             <Input prefix={<MailOutlined />} />
                         </Form.Item>
                         <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
-                            <DatePicker />
+                            <DatePicker selected={birthday} onChange={(date) => setBirthday(date)} />
                         </Form.Item>
                     </Space>
                 </Form>

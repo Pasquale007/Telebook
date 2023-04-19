@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS contacts (
   street VARCHAR(255),
   city VARCHAR(255),
   zip_code VARCHAR(20),
-  birthday DATE,
+  birthday VARCHAR(20),
   PRIMARY KEY (id),
   FOREIGN KEY (address_book_id) REFERENCES address_books(id) ON DELETE CASCADE
 );

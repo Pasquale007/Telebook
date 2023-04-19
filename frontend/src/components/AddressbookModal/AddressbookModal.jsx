@@ -23,6 +23,8 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
         }).then(response => {
             openNotification(response.data.message, "success");
             updateAddressbooks();
+            cancel();
+
         }).catch(err => {
             openNotification(err.data.message, "error");
         });
