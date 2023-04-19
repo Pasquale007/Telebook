@@ -16,8 +16,17 @@ export default function EditPhonenumber() {
     const updatePhonnumbers = () => {
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const valid_phoneNumbers = phone_numbers.filter(phone_number => phone_number !== '');
+        //+1 for right time format -> 1 = JAN
+        const birthday = contactForm.getFieldValue('birthday');
+        const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
             'first_name': contactForm.getFieldValue('first_name'),
+            'last_name': contactForm.getFieldValue('last_name'),
+            'street': contactForm.getFieldValue('street'),
+            'city': contactForm.getFieldValue('city'),
+            'zip_code': contactForm.getFieldValue('zip_code'),
+            'email': contactForm.getFieldValue('email'),
+            'birthday': birthday ? newBirthday : undefined,
             'phone_numbers': valid_phoneNumbers,
         }).then(response => {
             setEditContact(undefined);

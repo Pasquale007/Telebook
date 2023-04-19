@@ -29,7 +29,7 @@ export default function EditContact() {
         setEditContact(undefined);
 
         const birthday = contactForm.getFieldValue('birthday');
-        const newBirthday = (birthday.get('month') + 1) + "-" + birthday.get('date') + "-" + birthday.get('year');
+        const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
@@ -39,7 +39,7 @@ export default function EditContact() {
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
             'email': contactForm.getFieldValue('email'),
-            'birthday': newBirthday,
+            'birthday': birthday ? newBirthday : undefined,
         }).then(response => {
             let contact_id = response.data.id;
             if (nextRoute.includes('-1')) {
@@ -62,7 +62,7 @@ export default function EditContact() {
         const id = contact.id;
         //+1 for right time format -> 1 = JAN
         const birthday = contactForm.getFieldValue('birthday');
-        const newBirthday = (birthday.get('month') + 1) + "-" + birthday.get('date') + "-" + birthday.get('year');
+        const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -70,7 +70,7 @@ export default function EditContact() {
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
             'email': contactForm.getFieldValue('email'),
-            'birthday': newBirthday,
+            'birthday': birthday ? newBirthday : undefined,
         }).then(response => {
             console.log(response);
             navigate(`/#${contacbookID}`);
