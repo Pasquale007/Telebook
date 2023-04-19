@@ -22,7 +22,7 @@ export default function ContactList({ contacts, editContactCallback, deleteConta
             information.push(" Wohnort: " + contact.zip_code + ", " + contact.city + ", " + contact.street);
         }
         if (contact.birthday) {
-            information.push(" Geburtstag: " + contact.birthday);
+            information.push(" Geburtstag: " + contact.birthday.split("-")[1] + "." + contact.birthday.split("-")[0] + "." + contact.birthday.split("-")[2]);
         }
         return information.join(" | ");
     }

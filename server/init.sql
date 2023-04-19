@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 );
 
 /*insert values into contact*/
-/*Geb format: Month-Day-Year*/
+/*Geb format: MM-DD-YYYY*/
 INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code, birthday)
 VALUES
     (1, 'Julia', 'Wesel', 'julia.wesel@example.com', 'Baumstrasse 3a', 'Berlin', '00012', '01-01-2000'),

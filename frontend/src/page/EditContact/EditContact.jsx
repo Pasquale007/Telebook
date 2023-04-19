@@ -6,8 +6,6 @@ import { useParams } from "react-router-dom";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-//import DatePicker from "react-datepicker";
-//import "react-datepicker/dist/react-datepicker.css";
 
 export default function EditContact() {
     const { contacbookID, userID, mode } = useParams();
