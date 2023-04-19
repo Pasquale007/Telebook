@@ -1,26 +1,21 @@
 import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
-import { Alert, Button, Form, Input, Modal, Space } from "antd";
+import { Alert, Button, Form, Input, Modal, Space, DatePicker } from "antd";
 import axios from "axios";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import dayjs from "dayjs";
+//import DatePicker from "react-datepicker";
+//import "react-datepicker/dist/react-datepicker.css";
 
 export default function EditContact() {
     const { contacbookID, userID, mode } = useParams();
     const [contactForm] = Form.useForm();
     const [editContact, setEditContact] = useState();
-    const [birthday, setBirthday] = useState();
     const [errorMsg, setErrorMsg] = useState("");
     let navigate = useNavigate();
     let nextRoute = `/#${contacbookID}`;
-
-    useEffect(() => {
-        setBirthday(editContact?.birthday ? new Date(editContact?.birthday) : undefined);
-    }, [editContact]);
 
     useEffect(() => {
         if (errorMsg.length > 0) {
@@ -34,8 +29,10 @@ export default function EditContact() {
             return;
         }
         setEditContact(undefined);
+
+        const birthday = contactForm.getFieldValue('birthday');
+        const newBirthday = (birthday.get('month') + 1) + "-" + birthday.get('date') + "-" + birthday.get('year');
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        const newBirthday = (birthday.getMonth() + 1) + "-" + birthday.getDate() + "-" + birthday.getFullYear();
         axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -66,7 +63,8 @@ export default function EditContact() {
         setEditContact(undefined);
         const id = contact.id;
         //+1 for right time format -> 1 = JAN
-        const newBirthday = (birthday.getMonth() + 1) + "-" + birthday.getDate() + "-" + birthday.getFullYear();
+        const birthday = contactForm.getFieldValue('birthday');
+        const newBirthday = (birthday.get('month') + 1) + "-" + birthday.get('date') + "-" + birthday.get('year');
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -148,8 +146,8 @@ export default function EditContact() {
                         <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}>
                             <Input prefix={<MailOutlined />} />
                         </Form.Item>
-                        <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
-                            <DatePicker selected={birthday} onChange={(date) => setBirthday(date)} showYearDropdown/>
+                        <Form.Item name={"birthday"} initialValue={editContact?.birthday ? dayjs(editContact?.birthday) : null} style={{ margin: "0px" }}>
+                            <DatePicker />
                         </Form.Item>
                     </Space>
                 </Form>
