@@ -35,6 +35,7 @@ export default function EditContact() {
         }
         setEditContact(undefined);
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
+        const newBirthday = (birthday.getMonth() + 1) + "-" + birthday.getDate() + "-" + birthday.getFullYear();
         axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
@@ -43,7 +44,7 @@ export default function EditContact() {
             'city': contactForm.getFieldValue('city'),
             'zip_code': contactForm.getFieldValue('zip_code'),
             'email': contactForm.getFieldValue('email'),
-            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
+            'birthday': newBirthday,
         }).then(response => {
             let contact_id = response.data.id;
             if (nextRoute.includes('-1')) {
@@ -66,7 +67,6 @@ export default function EditContact() {
         const id = contact.id;
         //+1 for right time format -> 1 = JAN
         const newBirthday = (birthday.getMonth() + 1) + "-" + birthday.getDate() + "-" + birthday.getFullYear();
-        console.log(newBirthday)
         axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
