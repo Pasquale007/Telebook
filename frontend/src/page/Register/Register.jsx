@@ -1,6 +1,6 @@
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
-import axios from "axios";
+import { axiosInstance } from "../../axios";
 import { useEffect, useState } from "react";
 import { BASE_ENDPOINT, BASE_URL, SIGNUP_ENDPOINT } from "../../sharedValues";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -34,7 +34,7 @@ export default function Register() {
             return;
         }
 
-        axios.post(BASE_ENDPOINT + SIGNUP_ENDPOINT,
+        axiosInstance.post(BASE_ENDPOINT + SIGNUP_ENDPOINT,
             {
                 "name": username,
                 "email": email,
@@ -45,6 +45,8 @@ export default function Register() {
             sessionStorage.setItem('id', response.data.data.id);
             sessionStorage.setItem('name', response.data.data.name);
             sessionStorage.setItem('loggedIn', 'true');
+            sessionStorage.setItem('accessToken', 'Bearer ' + response.data.access_token);
+
             window.location.href = BASE_URL;
         }).catch(err => {
             if (err.response.data.errors) {

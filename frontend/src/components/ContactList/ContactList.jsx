@@ -1,6 +1,5 @@
 import { Avatar, List } from "antd";
 
-
 export default function ContactList({ contacts, editContactCallback, deleteContactCallback }) {
 
     const phone_numbers = (contact) => {

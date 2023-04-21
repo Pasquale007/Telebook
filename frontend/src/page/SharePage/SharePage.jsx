@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance } from "../../axios";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../../sharedValues";
@@ -6,7 +6,7 @@ import { ADD_USER_TO_ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../..
 export function SharedPage() {
     const { addressbookID } = useParams();
     useEffect(() => {
-        axios.post(BASE_ENDPOINT + ADD_USER_TO_ADDRESSBOOK_ENDPOINT, {
+        axiosInstance.post(BASE_ENDPOINT + ADD_USER_TO_ADDRESSBOOK_ENDPOINT, {
             'user_id': sessionStorage.getItem('id'),
             'address_book_id': addressbookID,
         }).then(response => {

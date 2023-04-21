@@ -1,10 +1,14 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, cookie } = require('express-validator');
+var jwt = require('jsonwebtoken');
+let secret = 'secret123123';
 
 //My sql connection
-const mysql = require('mysql')
+const mysql = require('mysql');
+const cookieParser = require('cookie-parser');
+
 //sql connection
 const connectionData = {
   host: 'localhost',
@@ -13,15 +17,21 @@ const connectionData = {
   database: 'APP'
 }
 
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(cors({ origin: '*' }))
-
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 
 app.post('/login', [
   check('username_or_email', 'Gib eine Email oder ein Benutzernamen an.').exists(),
@@ -46,11 +56,55 @@ app.post('/login', [
       connection.end();
       res.status(404).json({ message: 'Es existiert kein Benutzer mit diesen Anmeldedaten.' });
     } else {
-      connection.end();
-      res.json(result[0]);
+      const user = result[0];
+      const accessToken = jwt.sign({ user_id: user.id }, secret, { expiresIn: '2h' });
+      const expirationDate = new Date(Date.now() + 60 * 60 * 1000 * 2);
+
+      const insertQuery = `
+        INSERT INTO access_tokens (user_id, token, expiration_date)
+        VALUES (?, ?, ?);
+      `;
+
+      connection.query(insertQuery, [user.id, accessToken, expirationDate], (err, result) => {
+        if (err) throw err;
+        res.cookie('accessToken', accessToken)
+        res.json({ ...user, access_token: accessToken });
+        connection.end();
+      });
     }
   });
 });
+
+app.post('/logout', [
+], (req, res) => {
+  res.clearCookie('accessToken');
+  res.status(200).json({ "message": "Benutzer wurde abgemeldet" });
+});
+
+// Middleware, um zu überprüfen, ob der Benutzer ein gültiges Token hat
+const authenticate = (req, res, next) => {
+  const authHeader = req.cookies.accessToken;
+  /*
+    POST /addressbook
+    DELETE /addressbook/:addressbook_id/get/:current_user_id
+    POST /addressbook/:addressbook_id/contact
+    GET /addressbook/:addressbook_id/contact
+    GET /addressbook/:addressbook_id/contact/:contact_id
+  */
+
+  if (!authHeader) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(authHeader, secret, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    console.log(user);
+    next();
+  });
+}
 
 //register
 app.post('/register', [
@@ -103,10 +157,21 @@ app.post('/register', [
             if (err) throw err;
 
             const insertedData = result[0];
-            connection.end();
-            res.status(201).json({
-              message: 'Benutzer erfolgreich erstellt.',
-              data: insertedData
+            const accessToken = jwt.sign({ user_id: insertedData.id }, secret, { expiresIn: '2h' });
+            const expirationDate = new Date(Date.now() + 60 * 60 * 1000 * 2);
+
+            const insertQuery = `
+            INSERT INTO access_tokens (user_id, token, expiration_date)
+            VALUES (?, ?, ?);
+          `;
+
+            connection.query(insertQuery, [insertedData.id, accessToken, expirationDate], (err, result) => {
+              if (err) throw err;
+              connection.end();
+              res.status(201).json({
+                message: 'Benutzer erfolgreich erstellt.',
+                data: { ...insertedData, access_token: accessToken }
+              });
             });
           });
         });
@@ -118,7 +183,7 @@ app.post('/register', [
 // ======================================== Adressbücher ========================================
 
 //create 
-app.post('/addressbook', [
+app.post('/addressbook', authenticate, [
   check('user_id').isArray(),
   check('name').notEmpty()
 ], (req, res) => {
@@ -184,7 +249,7 @@ app.post('/addressbook', [
 });
 
 //get
-app.get('/addressbook/:user_id/get', (req, res) => {
+app.get('/addressbook/:user_id/get', authenticate, (req, res) => {
   const userId = req.params.user_id;
   const connection = mysql.createConnection(connectionData);
   const query = `
@@ -203,7 +268,7 @@ app.get('/addressbook/:user_id/get', (req, res) => {
 });
 
 //get id
-app.get('/addressbook/:user_id/get/:addressbook_id', (req, res) => {
+app.get('/addressbook/:user_id/get/:addressbook_id', authenticate, (req, res) => {
   const user_id = req.params.user_id;
   const addressbook_id = req.params.addressbook_id;
   const query = `
@@ -230,7 +295,7 @@ app.get('/addressbook/:user_id/get/:addressbook_id', (req, res) => {
 });
 
 // post new user 
-app.post("/add_user_to_addressbook", (req, res) => {
+app.post("/add_user_to_addressbook", authenticate, (req, res) => {
   const { user_id, address_book_id } = req.body;
   const connection = mysql.createConnection(connectionData);
 
@@ -264,7 +329,7 @@ app.post("/add_user_to_addressbook", (req, res) => {
 });
 
 //update
-app.put('/addressbook/:address_book_id', [
+app.put('/addressbook/:address_book_id', authenticate, [
   check('name', "Es wird der neue Name des Adressbuches benötigt").notEmpty()
 ], (req, res) => {
   const errors = validationResult(req);
@@ -308,7 +373,7 @@ app.put('/addressbook/:address_book_id', [
 });
 
 //delete
-app.delete('/addressbook/:addressbook_id/get/:current_user_id', (req, res) => {
+app.delete('/addressbook/:addressbook_id/get/:current_user_id', authenticate, (req, res) => {
   const { addressbook_id, current_user_id } = req.params;
   const query1 = `
     DELETE FROM address_book_users
@@ -353,7 +418,7 @@ app.delete('/addressbook/:addressbook_id/get/:current_user_id', (req, res) => {
 // ======================================== Kontakte ========================================
 
 //Create
-app.post('/addressbook/:addressbook_id/contact', [
+app.post('/addressbook/:addressbook_id/contact', authenticate, [
   check('first_name', "Es wird ein Vorname benötigt").notEmpty(),
 ], (req, res) => {
   const errors = validationResult(req);
@@ -401,7 +466,7 @@ app.post('/addressbook/:addressbook_id/contact', [
 });
 
 // get
-app.get('/addressbook/:addressbook_id/contact', (req, res) => {
+app.get('/addressbook/:addressbook_id/contact', authenticate, (req, res) => {
   const { addressbook_id } = req.params;
   const connection = mysql.createConnection(connectionData);
 
@@ -436,7 +501,7 @@ app.get('/addressbook/:addressbook_id/contact', (req, res) => {
 });
 
 // get id
-app.get('/addressbook/:addressbook_id/contact/:contact_id', (req, res) => {
+app.get('/addressbook/:addressbook_id/contact/:contact_id', authenticate, (req, res) => {
   const { addressbook_id, contact_id } = req.params;
   const connection = mysql.createConnection(connectionData);
 
@@ -470,7 +535,7 @@ app.get('/addressbook/:addressbook_id/contact/:contact_id', (req, res) => {
 });
 
 //update
-app.put('/addressbook/:addressbook_id/contact/:contact_id', [
+app.put('/addressbook/:addressbook_id/contact/:contact_id', authenticate, [
   check('first_name', "Es wird ein Vorname benötigt").notEmpty(),
 ], (req, res) => {
   const { addressbook_id, contact_id } = req.params;
@@ -543,7 +608,7 @@ app.put('/addressbook/:addressbook_id/contact/:contact_id', [
 });
 
 //delete
-app.delete('/addressbook/:addressbook_id/contact/:contact_id', (req, res) => {
+app.delete('/addressbook/:addressbook_id/contact/:contact_id', authenticate, (req, res) => {
   const connection = mysql.createConnection(connectionData);
   connection.query(
     'DELETE FROM contacts WHERE address_book_id = ? AND id = ?',

@@ -87,3 +87,12 @@ VALUES
     (1, '12345678990'),
     (2, '3847502194785'),
     (2, '6584687');
+
+
+/*create accessToken table*/
+CREATE TABLE access_tokens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  token VARCHAR(255) NOT NULL,
+  expiration_date DATETIME NOT NULL
+);

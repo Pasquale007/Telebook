@@ -1,6 +1,6 @@
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
-import axios from "axios";
+import { axiosInstance } from "../../axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_ENDPOINT, LOGIN_ENDPOINT } from "../../sharedValues";
@@ -25,7 +25,7 @@ export default function Login() {
             setErrorMsg("Alle Felder müssen gefüllt sein")
             return;
         }
-        axios.post(BASE_ENDPOINT + LOGIN_ENDPOINT,
+        axiosInstance.post(BASE_ENDPOINT + LOGIN_ENDPOINT,
             {
                 "username_or_email": name,
                 "password": password
@@ -35,6 +35,7 @@ export default function Login() {
             sessionStorage.setItem('id', response.data.id);
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('loggedIn', 'true');
+            sessionStorage.setItem('accessToken', 'Bearer ' + response.data.access_token);
             //blöd für share page.. idee?
             navigate("/");
         }).catch(err => {

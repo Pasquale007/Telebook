@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import axios from "axios";
+import { axiosInstance } from "../../axios";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
 
 export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts, openNotification }) {
@@ -7,7 +7,7 @@ export default function ConfirmationDeleteModal({ deleteContact, setDeleteContac
     const delContact = () => {
         const contact = deleteContact;
         setDeleteContact(undefined);
-        axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
+        axiosInstance.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
         ).then(response => {
             openNotification(response.data.message, "success");
             updateContacts();

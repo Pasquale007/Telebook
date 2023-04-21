@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Popover } from "antd";
-import axios from "axios";
+import { axiosInstance } from "../../axios";
 import { useState } from "react";
 import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedValues";
 
@@ -17,7 +17,7 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
 
     const shareAddressbook = () => {
         const name = form.getFieldValue('name');
-        axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id, {
+        axiosInstance.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id, {
             'user_id': [sessionStorage.getItem('id')],
             'name': name
         }).then(response => {
@@ -31,7 +31,7 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
     }
 
     const deleteAddressbook = () => {
-        axios.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
+        axiosInstance.delete(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
         ).then(response => {
             openNotification(response.data.message, "success");
             updateAddressbooks();

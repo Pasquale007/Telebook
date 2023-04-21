@@ -1,6 +1,6 @@
 import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
-import axios from "axios";
+import { axiosInstance } from "../../axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -19,7 +19,7 @@ export default function EditPhonenumber() {
         //+1 for right time format -> 1 = JAN
         const birthday = contactForm.getFieldValue('birthday');
         const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
-        axios.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
+        axiosInstance.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'street': contactForm.getFieldValue('street'),
@@ -38,7 +38,7 @@ export default function EditPhonenumber() {
     }
 
     useEffect(() => {
-        axios.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT + "/" + userID
+        axiosInstance.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT + "/" + userID
         ).then(response => {
             console.log(response);
             setEditContact(response.data)
