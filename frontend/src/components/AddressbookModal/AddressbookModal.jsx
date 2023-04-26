@@ -94,7 +94,7 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
                             onOpenChange={showPopover}
                         >
                             <p style={{ color: 'blue', cursor: 'pointer' }}
-                                onClick={() => { navigator.clipboard.writeText(SHARE_LINK)}}>
+                                onClick={() => { navigator.clipboard.writeText(SHARE_LINK) }}>
                                 {SHARE_LINK}
                             </p>
                         </Popover>
