@@ -101,27 +101,7 @@ const authenticate = (req, res, next) => {
     if (err || user.user_id !== user_id) {
       return res.sendStatus(403);
     }
-    //secure addressbook routes
-    req.user = user;
-    if (!req.url.includes('/addressbook')) {
-      next();
-    }
-    const query = `
-    SELECT *
-    FROM address_book_users
-    WHERE 
-    user_id = ? AND
-    address_book_id = ?
-    `
-    const connection = mysql.createConnection(connectionData);
-    connection.query(query, [user_id, req.params.addressbook_id], (error, result) => {
-      connection.end();
-      if (result?.length > 0) {
-        next();
-      } else {
-        return res.status(403).json({ message: 'Du darfst nicht auf diese Ressource zugreifen.' });
-      }
-    });
+    next();
   });
 }
 
