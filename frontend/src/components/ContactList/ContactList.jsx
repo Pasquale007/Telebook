@@ -1,6 +1,10 @@
 import { Avatar, List } from "antd";
+import { useEffect } from "react";
 
 export default function ContactList({ contacts, editContactCallback, deleteContactCallback }) {
+    useEffect(() => {
+        console.log()
+    }, [contacts]);
 
     const phone_numbers = (contact) => {
         if (contact.phone_numbers && contact.phone_numbers.length > 0) {
