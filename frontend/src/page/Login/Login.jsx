@@ -36,8 +36,13 @@ export default function Login() {
             sessionStorage.setItem('name', response.data.name);
             sessionStorage.setItem('loggedIn', 'true');
             sessionStorage.setItem('accessToken', 'Bearer ' + response.data.access_token);
-            //blöd für share page.. idee?
-            navigate("/");
+            const prevRoute = JSON.parse(sessionStorage.getItem('prevRoute'))
+            const [lastRoute] = prevRoute.slice(-1);
+            if (lastRoute.includes('share')) {
+                navigate(lastRoute);
+            } else {
+                navigate("/");
+            }
         }).catch(err => {
             setErrorMsg(err.response?.data?.detail || "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut")
         })
