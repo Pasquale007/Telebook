@@ -2,13 +2,14 @@ import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icon
 import { Button, Form, Input, Modal, Popover } from "antd";
 import { axiosInstance } from "../../axios";
 import { useState } from "react";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "../../sharedValues";
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, BASE_URL } from "../../sharedValues";
 
 export default function AddressbookModal({ addressbook, setEditAddressbook, updateAddressbooks, deleteCurrentAddressbook, openNotification }) {
     const [form] = Form.useForm();
     const [isDeleting, setIsDelete] = useState(false);
     const [isShareing, setIsShare] = useState(false);
     const [open, setOpen] = useState(false);
+    const SHARE_LINK = BASE_URL + "/share/" + addressbook.id;
 
     const showPopover = () => {
         setOpen(true);
@@ -93,8 +94,8 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
                             onOpenChange={showPopover}
                         >
                             <p style={{ color: 'blue', cursor: 'pointer' }}
-                                onClick={() => { navigator.clipboard.writeText(window.location.href + "share/" + addressbook.id) }}>
-                                {window.location.href + "share/" + addressbook.id}
+                                onClick={() => { navigator.clipboard.writeText(SHARE_LINK)}}>
+                                {SHARE_LINK}
                             </p>
                         </Popover>
                     </>
