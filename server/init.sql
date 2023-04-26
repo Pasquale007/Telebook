@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS address_books (
 INSERT INTO address_books ( name)
 VALUES
     ('Meine Kontakte'),
-    ("Familienkontakte");
+    ("Familie"),
+    ('Uni');
 
 /*add multiple users to a addressbook*/
 CREATE TABLE IF NOT EXISTS address_book_users (
@@ -45,7 +46,8 @@ INSERT INTO address_book_users (user_id, address_book_id)
 VALUES
     (1, 1),
     (1, 2),
-    (2, 1);
+    (1, 3),
+    (2, 3);
 
 
 /*create table contacts*/
@@ -67,9 +69,22 @@ CREATE TABLE IF NOT EXISTS contacts (
 /*Geb format: MM-DD-YYYY*/
 INSERT INTO contacts (address_book_id, first_name, last_name, email, street, city, zip_code, birthday)
 VALUES
-    (1, 'Julia', 'Wesel', 'julia.wesel@example.com', 'Baumstrasse 3a', 'Berlin', '00012', '01-01-2000'),
-    (1, 'Bob', 'Schmidt', 'bob.schmidt@example.com', 'Blumenweg 12', 'Hamburg', '54678', '02-03-2001'),
-    (2, 'Pascal', 'Thurow', 'pascal.thurow@example.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145', '07-07-2000');
+    (1, 'Julia', 'Wesel', 'julia.wesel@gmx.de', 'Baumstrasse 3a', 'Berlin', '00012', '01-01-2000'),
+    (1, 'Bob', 'Schmidt', 'bob.schmidt@outlook.com', 'Blumenweg 12', 'Hamburg', '54678', '02-03-2001'),
+    (2, 'Pascal', 'Thurow', 'pascal.thurow@example.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145', '07-07-2000'),
+    (2, 'Ronja', 'Thurow', 'ronja.thurow@gmail.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145', '12-12-2001'),
+    (2, 'Sven', 'Thurow', 'sven.thurow@gmx.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145', '02-01-1970'),
+    (2, 'Corinna', 'Thurow', 'corrina.thurow@gmx.com', 'Otto-Hahn Str 7', 'Oberkotzau', '95145', '03-22-1974'),
+    (3, 'Sheldon', 'Cooper', 'bazinga@gmail.com', '2311 Los Robles Ave', 'Pasadena', '91101', '02-26-1980'),
+    (3, 'Richard', 'Hendricks', 'richard@piedpiper.com', '1234 Nerd Ave', 'San Francisco', '94103', '03-25-1987'),
+    (3, 'Roy', 'Trenneman', 'areyoua@windowcleaner.com', '27 Dorking Rd', 'London', 'N1 5DL', '10-05-1983'),
+    (3, 'Jar Jar', 'Binks', 'mesa_love_jarjar@naboo.com', '123 Naboo St', 'Theed', '99999', '01-01-1999'),
+    (3, 'Wade', 'Wilson', 'chimichanga_lover@deadpool.com', '444 Hella Blvd', 'New York City', '10001', '04-01-1971'),
+    (3, 'Peter', 'Parker', 'spiderman@dailybugle.com', '20 Ingram St', 'Queens', '11427', '08-10-2001'),
+    (3, 'Tony', 'Stark', 'ironman@starkindustries.com', '10880 Malibu Point', 'Malibu', '90265', '05-29-1970'),
+    (3, 'Hermione', 'Granger', 'bookworm@hogwarts.com', '12 Grimmauld Place', 'London', 'W1T 1JJ', '09-19-1979'),
+    (3, 'Jack', 'Sparrow', 'savvy@blackpearl.com', '777 Treasure Isle', 'Port Royal', '00001', '07-07-1699'),
+    (3, 'Willy', 'Wonka', 'golden_ticket@wonka.com', '29 Acacia Road', 'London', 'SE18 4AD', '09-10-1964');
 
 /*create table phone_numbers*/
 CREATE TABLE IF NOT EXISTS phone_numbers (
