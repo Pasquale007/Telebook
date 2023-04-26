@@ -119,7 +119,6 @@ const authenticate = (req, res, next) => {
       if (result?.length > 0) {
         next();
       } else {
-        console.log(error)
         return res.status(403).json({ message: 'Du darfst nicht auf diese Ressource zugreifen.' });
       }
     });
@@ -212,7 +211,6 @@ app.post('/addressbook', authenticate, [
     return res.status(400).json({ errors: errors.array() });
   }
   const connection = mysql.createConnection(connectionData);
-  console.log(req.body.user_id)
 
   const checkQuery = `
   SELECT a.*
