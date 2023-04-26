@@ -67,7 +67,8 @@ app.post('/login', [
 
       connection.query(insertQuery, [user.id, accessToken, expirationDate], (err, result) => {
         if (err) throw err;
-        res.cookie('accessToken', accessToken)
+        res.cookie('accessToken', accessToken);
+        res.cookie('user_id', user.id);
         res.json({ ...user, access_token: accessToken });
         connection.end();
       });
@@ -84,25 +85,44 @@ app.post('/logout', [
 // Middleware, um zu überprüfen, ob der Benutzer ein gültiges Token hat
 const authenticate = (req, res, next) => {
   const authHeader = req.cookies.accessToken;
+  const user_id = parseInt(req.cookies.user_id);
+
   /*
-    POST /addressbook
-    DELETE /addressbook/:addressbook_id/get/:current_user_id
+    DELETE /addressbook/:addressbook_id/get/:contact_id
     POST /addressbook/:addressbook_id/contact
     GET /addressbook/:addressbook_id/contact
     GET /addressbook/:addressbook_id/contact/:contact_id
   */
-
   if (!authHeader) {
     return res.sendStatus(401);
   }
 
   jwt.verify(authHeader, secret, (err, user) => {
-    if (err) {
+    if (err || user.user_id !== user_id) {
       return res.sendStatus(403);
     }
+    //secure addressbook routes
     req.user = user;
-    console.log(user);
-    next();
+    if (!req.url.includes('/addressbook')) {
+      next();
+    }
+    const query = `
+    SELECT *
+    FROM address_book_users
+    WHERE 
+    user_id = ? AND
+    address_book_id = ?
+    `
+    const connection = mysql.createConnection(connectionData);
+    connection.query(query, [user_id, req.params.addressbook_id], (error, result) => {
+      connection.end();
+      if (result?.length > 0) {
+        next();
+      } else {
+        console.log(error)
+        return res.status(403).json({ message: 'Du darfst nicht auf diese Ressource zugreifen.' });
+      }
+    });
   });
 }
 
@@ -192,6 +212,7 @@ app.post('/addressbook', authenticate, [
     return res.status(400).json({ errors: errors.array() });
   }
   const connection = mysql.createConnection(connectionData);
+  console.log(req.body.user_id)
 
   const checkQuery = `
   SELECT a.*
@@ -373,8 +394,8 @@ app.put('/addressbook/:address_book_id', authenticate, [
 });
 
 //delete
-app.delete('/addressbook/:addressbook_id/get/:current_user_id', authenticate, (req, res) => {
-  const { addressbook_id, current_user_id } = req.params;
+app.delete('/addressbook/:addressbook_id/get/:contact_id', authenticate, (req, res) => {
+  const { addressbook_id, contact_id } = req.params;
   const query1 = `
     DELETE FROM address_book_users
     WHERE address_book_id = ?
@@ -388,7 +409,7 @@ app.delete('/addressbook/:addressbook_id/get/:current_user_id', authenticate, (r
     )
   `;
   const connection = mysql.createConnection(connectionData);
-  connection.query(query1, [addressbook_id, current_user_id], (err, result1) => {
+  connection.query(query1, [addressbook_id, contact_id], (err, result1) => {
     if (err) {
       res.status(400).json({ message: err })
     }
@@ -542,7 +563,6 @@ app.put('/addressbook/:addressbook_id/contact/:contact_id', authenticate, [
   const { first_name, last_name, email, street, city, zip_code, birthday, phone_numbers } = req.body;
   const connection = mysql.createConnection(connectionData);
 
-  console.log(birthday);
   connection.query("SELECT id FROM contacts WHERE address_book_id = ? AND id = ?", [addressbook_id, contact_id], (err, existing_contact) => {
     if (err) {
       connection.end();
