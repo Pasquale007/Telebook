@@ -22,25 +22,17 @@ export default function EditContact() {
     }, [errorMsg]);
 
     const createContact = () => {
-        if (!contactForm.getFieldValue('first_name')) {
+        const values = contactForm.getFieldsValue()
+        if (!values.first_name) {
             setErrorMsg("Bitte gib einen Vornamen an");
             return;
         }
         setEditContact(undefined);
-
         const birthday = contactForm.getFieldValue('birthday');
         const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        axiosInstance.post(CONTACT_URL + contacbookID + CONTACT_ENDPOINT, {
-            'first_name': contactForm.getFieldValue('first_name'),
-            'last_name': contactForm.getFieldValue('last_name'),
-            'phone_numbers': phone_numbers,
-            'street': contactForm.getFieldValue('street'),
-            'city': contactForm.getFieldValue('city'),
-            'zip_code': contactForm.getFieldValue('zip_code'),
-            'email': contactForm.getFieldValue('email'),
-            'birthday': birthday ? newBirthday : undefined,
-        }).then(response => {
+        let payload = { ...values, 'birthday': birthday ? newBirthday : undefined, phone_numbers }
+        axiosInstance.post(CONTACT_URL + contacbookID + CONTACT_ENDPOINT, payload).then(response => {
             let contact_id = response.data.id;
             if (nextRoute.includes('-1')) {
                 nextRoute = nextRoute.replace('-1', contact_id);
@@ -54,7 +46,8 @@ export default function EditContact() {
 
     const sendUpdatedContact = () => {
         const contact = editContact;
-        if (!contactForm.getFieldValue('first_name')) {
+        const values = contactForm.getFieldsValue();
+        if (!values.first_name) {
             setErrorMsg("Bitte gib einen Vornamen an");
             return;
         }
@@ -63,20 +56,14 @@ export default function EditContact() {
         //+1 for right time format -> 1 = JAN
         const birthday = contactForm.getFieldValue('birthday');
         const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
-        axiosInstance.put(CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
-            'first_name': contactForm.getFieldValue('first_name'),
-            'last_name': contactForm.getFieldValue('last_name'),
-            'street': contactForm.getFieldValue('street'),
-            'city': contactForm.getFieldValue('city'),
-            'zip_code': contactForm.getFieldValue('zip_code'),
-            'email': contactForm.getFieldValue('email'),
-            'birthday': birthday ? newBirthday : undefined,
-        }).then(response => {
-            console.log(response);
-            navigate(`/#${contacbookID}`);
-        }).catch(err => {
-            console.log(err)
-        })
+        const payload = { ...values, 'birthday': birthday ? newBirthday : undefined }
+        axiosInstance.put(CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, payload)
+            .then(response => {
+                console.log(response);
+                navigate(`/#${contacbookID}`);
+            }).catch(err => {
+                console.log(err)
+            })
     }
 
     useEffect(() => {
