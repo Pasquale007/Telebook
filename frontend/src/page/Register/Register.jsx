@@ -2,7 +2,7 @@ import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Alert, Form, Input, Modal } from "antd";
 import { axiosInstance } from "../../axios";
 import { useEffect, useState } from "react";
-import { BASE_ENDPOINT, BASE_URL, SIGNUP_ENDPOINT } from "../../sharedValues";
+import { BASE_URL, SIGNUP_ENDPOINT } from "../../sharedValues";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Register() {
@@ -33,7 +33,7 @@ export default function Register() {
             setErrorMsg("Deine Passwörter unterschieden sich. Bitte überprüfe die Passwörter.");
             return;
         }
-        axiosInstance.post(BASE_ENDPOINT + SIGNUP_ENDPOINT,
+        axiosInstance.post(SIGNUP_ENDPOINT,
             {
                 "name": username,
                 "email": email,

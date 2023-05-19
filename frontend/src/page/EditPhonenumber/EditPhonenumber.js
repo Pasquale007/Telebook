@@ -4,7 +4,7 @@ import { axiosInstance } from "../../axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BASE_ENDPOINT, CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
+import { CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
 
 export default function EditPhonenumber() {
@@ -19,7 +19,7 @@ export default function EditPhonenumber() {
         //+1 for right time format -> 1 = JAN
         const birthday = contactForm.getFieldValue('birthday');
         const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
-        axiosInstance.put(BASE_ENDPOINT + CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
+        axiosInstance.put(CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + editContact.id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'street': contactForm.getFieldValue('street'),
@@ -38,7 +38,7 @@ export default function EditPhonenumber() {
     }
 
     useEffect(() => {
-        axiosInstance.get(BASE_ENDPOINT + CONTACT_URL + contacbookID + CONTACT_ENDPOINT + "/" + userID
+        axiosInstance.get(CONTACT_URL + contacbookID + CONTACT_ENDPOINT + "/" + userID
         ).then(response => {
             console.log(response);
             setEditContact(response.data)

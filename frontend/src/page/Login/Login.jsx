@@ -3,7 +3,7 @@ import { Alert, Form, Input, Modal } from "antd";
 import { axiosInstance } from "../../axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_ENDPOINT, LOGIN_ENDPOINT } from "../../sharedValues";
+import { LOGIN_ENDPOINT } from "../../sharedValues";
 
 export default function Login() {
     const [errorMsg, setErrorMsg] = useState("");
@@ -25,7 +25,7 @@ export default function Login() {
             setErrorMsg("Alle Felder müssen gefüllt sein")
             return;
         }
-        axiosInstance.post(BASE_ENDPOINT + LOGIN_ENDPOINT,
+        axiosInstance.post(LOGIN_ENDPOINT,
             {
                 "username_or_email": name,
                 "password": password

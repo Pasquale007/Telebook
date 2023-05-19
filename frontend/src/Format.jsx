@@ -3,9 +3,9 @@ import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT } from "./sharedValues";
-import axios from "axios";
+import { ADDRESSBOOK_ENDPOINT } from "./sharedValues";
 import { useLocation } from 'react-router-dom';
+import { axiosInstance } from "./axios";
 
 export default function Format({ addressbooks, children, callback, updateAddressBooks, openNotification }) {
     const [items, setItems] = useState([]);
@@ -55,7 +55,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
         }
         setNameAddressbook(false);
         //send Axios post request
-        axios.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT, {
+        axiosInstance.post(ADDRESSBOOK_ENDPOINT, {
             'user_id': [sessionStorage.getItem('id')],
             'name': addressBookName
         }).then(response => {

@@ -2,7 +2,7 @@ import Format from './Format';
 import './App.css';
 import { useEffect, useState, createContext, useMemo } from 'react';
 import { axiosInstance } from './axios';
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL, LOGOUT_ENDPOINT, CONTACT_URL } from './sharedValues';
+import { ADDRESSBOOK_ENDPOINT, CONTACT_ENDPOINT, BASE_URL, LOGOUT_ENDPOINT, CONTACT_URL } from './sharedValues';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
@@ -56,7 +56,7 @@ function App() {
 
   useEffect(() => {
     if (currentAddressbook) {
-      axiosInstance.get(BASE_ENDPOINT + CONTACT_URL + currentAddressbook?.id + CONTACT_ENDPOINT
+      axiosInstance.get(CONTACT_URL + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
         console.log(response)
         let sortedData = response.data.sort((a, b) => {
@@ -97,7 +97,7 @@ function App() {
   }, [addressbooks]);
 
   const updateAddressbooks = () => {
-    axiosInstance.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
+    axiosInstance.get(ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
       setCurrentAddressbook(response.data.find(addressbook => addressbook.id === currentAddressbook?.id))
       setAddressbooks(response.data);
@@ -138,7 +138,7 @@ function App() {
 
   const logout = () => {
     sessionStorage.clear();
-    axiosInstance.post(BASE_ENDPOINT + LOGOUT_ENDPOINT
+    axiosInstance.post(LOGOUT_ENDPOINT
     ).then(response => {
       let sortedData = response.data.sort((a, b) => {
         return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");

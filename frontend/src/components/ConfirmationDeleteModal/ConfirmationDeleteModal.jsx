@@ -1,13 +1,13 @@
 import { Modal } from "antd";
 import { axiosInstance } from "../../axios";
-import { BASE_ENDPOINT, CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
+import { CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
 
 export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts, openNotification }) {
 
     const delContact = () => {
         const contact = deleteContact;
         setDeleteContact(undefined);
-        axiosInstance.delete(BASE_ENDPOINT + CONTACT_URL + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
+        axiosInstance.delete(CONTACT_URL + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
         ).then(response => {
             openNotification(response.data.message, "success");
             updateContacts();
