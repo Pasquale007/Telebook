@@ -33,7 +33,6 @@ export default function Register() {
             setErrorMsg("Deine Passwörter unterschieden sich. Bitte überprüfe die Passwörter.");
             return;
         }
-
         axiosInstance.post(BASE_ENDPOINT + SIGNUP_ENDPOINT,
             {
                 "name": username,

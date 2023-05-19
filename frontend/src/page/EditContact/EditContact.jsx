@@ -3,7 +3,7 @@ import { Alert, Button, Form, Input, Modal, Space, DatePicker } from "antd";
 import { axiosInstance } from "../../axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
+import { BASE_ENDPOINT, CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
@@ -31,7 +31,7 @@ export default function EditContact() {
         const birthday = contactForm.getFieldValue('birthday');
         const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        axiosInstance.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT, {
+        axiosInstance.post(BASE_ENDPOINT + CONTACT_URL + contacbookID + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'phone_numbers': phone_numbers,
@@ -63,7 +63,7 @@ export default function EditContact() {
         //+1 for right time format -> 1 = JAN
         const birthday = contactForm.getFieldValue('birthday');
         const newBirthday = (birthday?.get('month') + 1) + "-" + birthday?.get('date') + "-" + birthday?.get('year');
-        axiosInstance.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
+        axiosInstance.put(BASE_ENDPOINT + CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'street': contactForm.getFieldValue('street'),
@@ -80,7 +80,7 @@ export default function EditContact() {
     }
 
     useEffect(() => {
-        axiosInstance.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contacbookID + CONTACT_ENDPOINT + "/" + userID
+        axiosInstance.get(BASE_ENDPOINT + CONTACT_URL + contacbookID + CONTACT_ENDPOINT + "/" + userID
         ).then(response => {
             console.log(response);
             setEditContact(response.data)

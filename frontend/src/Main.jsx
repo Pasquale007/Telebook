@@ -2,7 +2,7 @@ import Format from './Format';
 import './App.css';
 import { useEffect, useState, createContext, useMemo } from 'react';
 import { axiosInstance } from './axios';
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL } from './sharedValues';
+import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT, BASE_URL, LOGOUT_ENDPOINT, CONTACT_URL } from './sharedValues';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
@@ -45,7 +45,6 @@ function App() {
         duration: 3
       });
     }
-
   };
 
   const contextValue = useMemo(
@@ -57,8 +56,9 @@ function App() {
 
   useEffect(() => {
     if (currentAddressbook) {
-      axiosInstance.get(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + currentAddressbook?.id + CONTACT_ENDPOINT
+      axiosInstance.get(BASE_ENDPOINT + CONTACT_URL + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
+        console.log(response)
         let sortedData = response.data.sort((a, b) => {
           return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
         });
@@ -134,12 +134,11 @@ function App() {
       contact.phone_numbers?.find(number => number.includes(inputString))
     )
     setContacts(contacts);
-
   }
 
   const logout = () => {
     sessionStorage.clear();
-    axiosInstance.post(BASE_ENDPOINT + "/logout"
+    axiosInstance.post(BASE_ENDPOINT + LOGOUT_ENDPOINT
     ).then(response => {
       let sortedData = response.data.sort((a, b) => {
         return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");

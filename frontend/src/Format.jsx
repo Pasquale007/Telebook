@@ -62,7 +62,8 @@ export default function Format({ addressbooks, children, callback, updateAddress
             openNotification(response.data.message, "success");
             updateAddressBooks([]);
         }).catch(err => {
-            openNotification(err.response.data.message, "error");
+            console.log(err)
+            openNotification(err.response.statusText, "error");
         });
     }
 

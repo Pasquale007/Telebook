@@ -2,7 +2,7 @@ import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutli
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import { axiosInstance } from "../../axios";
 import moment from "moment";
-import { ADDRESSBOOK_ENDPOINT, BASE_ENDPOINT, CONTACT_ENDPOINT } from "../../sharedValues";
+import { BASE_ENDPOINT, CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
 
 
 export default function ContactModal({ editContact, setEditContact, updateContacts, mode, openNotification }) {
@@ -17,7 +17,7 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
             return;
         }
-        axiosInstance.post(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + contact.address_book_id + CONTACT_ENDPOINT, {
+        axiosInstance.post(BASE_ENDPOINT + CONTACT_URL + contact.address_book_id + CONTACT_ENDPOINT, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'phone_numbers': phone_numbers,
@@ -40,7 +40,7 @@ export default function ContactModal({ editContact, setEditContact, updateContac
         setEditContact(undefined);
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
         const id = contact.id;
-        axiosInstance.put(BASE_ENDPOINT + ADDRESSBOOK_ENDPOINT + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
+        axiosInstance.put(BASE_ENDPOINT + CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
             'first_name': contactForm.getFieldValue('first_name'),
             'last_name': contactForm.getFieldValue('last_name'),
             'phone_numbers': phone_numbers,
