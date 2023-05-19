@@ -27,6 +27,12 @@ function App() {
   const [newContact, setNewContact] = useState(undefined);
   const [api, contextHolder] = notification.useNotification();
 
+  //Dieser React-Hook soll nur beim initialen Laden ausgeführt werden und nicht auf die funktion hören. Deshalb wird hier der linter disabled
+  useEffect(() => {
+    updateAddressbooks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const openNotification = (message, type) => {
     if (type === "success") {
       api.success({
@@ -86,13 +92,14 @@ function App() {
   }, [currentAddressbook?.id, navigate, newContact]);
 
   useEffect(() => {
-    updateAddressbooks();
-  }, []);
-
-  useEffect(() => {
     if (currentAddressbook) {
       updateContacts();
     }
+    /*
+    currentAddressbook und updateContact darf nicht in den dependencies sein, da sonst eine Dauerschleife auftritt.
+    In diesem Spezialfall müssen die Abhängigkeiten ignoriert werden
+    */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressbooks]);
 
   const updateAddressbooks = () => {

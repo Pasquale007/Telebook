@@ -29,8 +29,10 @@ export default function Format({ addressbooks, children, callback, updateAddress
         setItems(books);
     }, [addressbooks]);
 
+    // Der linter wird hier disables, da das rendern unabhängig von allen anderen Variablen ist. Es soll nur auf die items geachtet werden
     useEffect(() => {
         setAddressbook();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [items]);
 
     const setAddressbook = () => {
