@@ -31,10 +31,7 @@ export default function Login() {
                 "password": password
             }
         ).then(response => {
-            sessionStorage.setItem('email', response.data.email);
             sessionStorage.setItem('id', response.data.id);
-            sessionStorage.setItem('name', response.data.name);
-            sessionStorage.setItem('loggedIn', 'true');
             sessionStorage.setItem('accessToken', 'Bearer ' + response.data.access_token);
             const prevRoute = JSON.parse(sessionStorage.getItem('prevRoute'))
             const [lastRoute] = prevRoute.slice(-1);

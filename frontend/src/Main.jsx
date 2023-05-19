@@ -74,15 +74,14 @@ function App() {
 
   useEffect(() => {
     if (editContact) {
-      navigate("/contactbook/" + currentAddressbook.id + "/contact/" + editContact.id + "/EDIT")
+      navigate(`/contactbook/${currentAddressbook.id}/contact/${editContact.id}/EDIT`)
     }
 
   }, [editContact]);
 
   useEffect(() => {
     if (newContact) {
-      console.log(newContact)
-      navigate("/contactbook/" + currentAddressbook.id + "/contact/" + newContact.id + "/CREATE")
+      navigate(`/contactbook/${currentAddressbook.id}/contact/${newContact.id}/CREATE`)
     }
 
   }, [newContact]);
