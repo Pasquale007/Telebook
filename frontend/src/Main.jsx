@@ -6,8 +6,8 @@ import { ADDRESSBOOK_ENDPOINT, CONTACT_ENDPOINT, BASE_URL, LOGOUT_ENDPOINT, CONT
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
-import { Button, Input, Layout, Popover, notification } from 'antd';
-import { SearchOutlined, PlusOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Button, Layout, Popover, notification } from 'antd';
+import { PlusOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 import { useNavigate } from "react-router-dom";
