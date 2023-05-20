@@ -15,12 +15,12 @@ export default function Format({ addressbooks, children, callback, updateAddress
     const inputName = useRef(null);
     const location = useLocation();
 
-    function getItem(
+    const getItem = (
         label,
         key,
         icon,
         children,
-    ) {
+    ) => {
         return { key, icon, children, label, };
     }
 

@@ -9,47 +9,39 @@ export default function ContactModal({ editContact, setEditContact, updateContac
     const [contactForm] = Form.useForm();
 
     const createContact = () => {
+        const values = contactForm.getFieldsValue();
         const contact = editContact;
         let phone_numbers = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
-        if (contactForm.getFieldValue('first_name')) {
+        if (values.first_name) {
             setEditContact(undefined);
         } else {
             console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
             return;
         }
-        axiosInstance.post(CONTACT_URL + contact.address_book_id + CONTACT_ENDPOINT, {
-            'first_name': contactForm.getFieldValue('first_name'),
-            'last_name': contactForm.getFieldValue('last_name'),
-            'phone_numbers': phone_numbers,
-            'street': contactForm.getFieldValue('street'),
-            'city': contactForm.getFieldValue('city'),
-            'zip_code': contactForm.getFieldValue('zip_code'),
-            'email': contactForm.getFieldValue('email'),
-            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
-        }).then(response => {
-            openNotification(response.data.message, "success");
-            updateContacts();
-        }).catch(err => {
-            openNotification(err.data.message, "error");
-            updateContacts();
-        })
+        const payload = { ...values, 'phone_numbers': phone_numbers, 'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0] }
+        axiosInstance.post(CONTACT_URL + contact.address_book_id + CONTACT_ENDPOINT, payload)
+            .then(response => {
+                openNotification(response.data.message, "success");
+                updateContacts();
+            }).catch(err => {
+                openNotification(err.data.message, "error");
+                updateContacts();
+            })
     }
 
     const sendUpdatedContact = () => {
+        const values = contactForm.getFieldsValue();
         const contact = editContact;
-        setEditContact(undefined);
+        if (values.first_name) {
+            setEditContact(undefined);
+        } else {
+            console.log("Bitte vergieb mindestens einen Vornamen um einen Kontakt zu erstellen.");
+            return;
+        }
         let phone_numbers = editContact?.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
+        const payload = { ...values, 'phone_numbers': phone_numbers, 'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0], }
         const id = contact.id;
-        axiosInstance.put(CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, {
-            'first_name': contactForm.getFieldValue('first_name'),
-            'last_name': contactForm.getFieldValue('last_name'),
-            'phone_numbers': phone_numbers,
-            'street': contactForm.getFieldValue('street'),
-            'city': contactForm.getFieldValue('city'),
-            'zip_code': contactForm.getFieldValue('zip_code'),
-            'email': contactForm.getFieldValue('email'),
-            'birthday': contactForm.getFieldValue('birthday')?.toISOString().split('T')[0],
-        }).then(response => {
+        axiosInstance.put(CONTACT_URL + editContact?.address_book_id + CONTACT_ENDPOINT + "/" + id, payload).then(response => {
             openNotification(response.data.message, "success");
             updateContacts();
         }).catch(err => {
