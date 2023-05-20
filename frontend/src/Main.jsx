@@ -11,6 +11,7 @@ import { SearchOutlined, PlusOutlined, EditOutlined, LogoutOutlined } from '@ant
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 import { useNavigate } from "react-router-dom";
+import SearchBar from './components/Searchbar/Searchbar';
 
 const Context = createContext({});
 
@@ -128,20 +129,6 @@ function App() {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
-  const filterContacts = (inputString) => {
-    if (inputString.length === 0) {
-      setContacts(undefined);
-    }
-    inputString = inputString.toLowerCase();
-    const contacts = allContacts.filter((contact) =>
-      contact.first_name.toLowerCase().includes(inputString) ||
-      contact.last_name?.toLowerCase().includes(inputString) ||
-      contact.first_name.toLowerCase().concat(' ' + contact.last_name?.toLowerCase()).includes(inputString) ||
-      contact.phone_numbers?.find(number => number.includes(inputString))
-    )
-    setContacts(contacts);
-  }
-
   const logout = () => {
     sessionStorage.clear();
     axiosInstance.post(LOGOUT_ENDPOINT
@@ -171,12 +158,7 @@ function App() {
             }}>
             {currentAddressbook?.name}
           </Button>}
-          <Input
-            onChange={(e) => filterContacts(e.target.value)}
-            style={{ padding: "10px", width: "50%" }}
-            prefix={<SearchOutlined />
-            }
-          />
+          <SearchBar allContacts={allContacts} setContacts={setContacts} />
           {currentAddressbook && <Button
             type="default"
             style={{ margin: "5px", width: '15%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
