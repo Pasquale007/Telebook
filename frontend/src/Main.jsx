@@ -2,12 +2,12 @@ import Format from './Format';
 import './App.css';
 import { useEffect, useState, createContext, useMemo } from 'react';
 import { axiosInstance } from './axios';
-import { ADDRESSBOOK_ENDPOINT, CONTACT_ENDPOINT, BASE_URL, LOGOUT_ENDPOINT, CONTACT_URL } from './sharedValues';
+import { ADDRESSBOOK_ENDPOINT, CONTACT_ENDPOINT, CONTACT_URL } from './sharedValues';
 import ContactList from './components/ContactList/ContactList';
 import ContactModal from './components/ContactModal/ContactModal';
 import ConfirmationDeleteModal from './components/ConfirmationDeleteModal/ConfirmationDeleteModal';
 import { Button, Layout, Popover, notification } from 'antd';
-import { PlusOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 import { useNavigate } from "react-router-dom";
@@ -162,7 +162,7 @@ function App() {
             }}
           > Kontakt</Button>}
           <Popover content={"Logout"}>
-            <LogoutButton setAllContacts={setAllContacts}/>
+            <LogoutButton setAllContacts={setAllContacts} />
           </Popover>
         </Header>
         {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} openNotification={openNotification} />}
