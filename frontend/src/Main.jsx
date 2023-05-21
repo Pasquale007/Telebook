@@ -12,6 +12,7 @@ import { Header } from 'antd/es/layout/layout';
 import AddressbookModal from './components/AddressbookModal/AddressbookModal';
 import { useNavigate } from "react-router-dom";
 import SearchBar from './components/Searchbar/Searchbar';
+import LogoutButton from './components/LogoutButton/LogoutButton';
 
 const Context = createContext({});
 
@@ -129,19 +130,6 @@ function App() {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
   }
 
-  const logout = () => {
-    sessionStorage.clear();
-    axiosInstance.post(LOGOUT_ENDPOINT
-    ).then(response => {
-      let sortedData = response.data.sort((a, b) => {
-        return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
-      });
-      setAllContacts(sortedData);
-    }).catch(err => {
-      console.log(err);
-    })
-    window.location.href = BASE_URL;
-  }
 
   return (
     <Context.Provider value={contextValue}>
@@ -174,10 +162,7 @@ function App() {
             }}
           > Kontakt</Button>}
           <Popover content={"Logout"}>
-            <Button
-              icon={<LogoutOutlined />}
-              onClick={logout}
-            ></Button>
+            <LogoutButton setAllContacts={setAllContacts}/>
           </Popover>
         </Header>
         {newContact && <ContactModal editContact={newContact} setEditContact={setNewContact} updateContacts={updateContacts} mode={'CREATE'} openNotification={openNotification} />}
