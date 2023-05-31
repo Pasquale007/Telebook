@@ -1,7 +1,7 @@
 import { Content } from "antd/es/layout/layout";
 import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
 import { ADDRESSBOOK_ENDPOINT } from "./sharedValues";
 import { useLocation } from 'react-router-dom';
