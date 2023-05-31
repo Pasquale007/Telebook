@@ -6,7 +6,6 @@ import { useCallback } from "react";
 export default function SearchBar({ setContacts, allContacts }) {
 
     const filterContacts = useCallback((inputString) => {
-        console.log(inputString)
         if (inputString.length === 0) {
             setContacts(undefined);
         }
