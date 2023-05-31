@@ -1,10 +1,11 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Input } from "antd";
+import { useCallback } from "react";
 
 
 export default function SearchBar({ setContacts, allContacts }) {
 
-    const filterContacts = (inputString) => {
+    const filterContacts = useCallback((inputString) => {
         console.log(inputString)
         if (inputString.length === 0) {
             setContacts(undefined);
@@ -17,7 +18,7 @@ export default function SearchBar({ setContacts, allContacts }) {
             contact.phone_numbers?.find(number => number.includes(inputString))
         )
         setContacts(contacts);
-    }
+    }, [allContacts, setContacts]);
 
 
     return (

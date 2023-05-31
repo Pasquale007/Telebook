@@ -1,7 +1,7 @@
 import { Content } from "antd/es/layout/layout";
 import { Input, Layout, Menu, Modal } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ContactsOutlined, PlusOutlined } from "@ant-design/icons";
 import { ADDRESSBOOK_ENDPOINT } from "./sharedValues";
 import { useLocation } from 'react-router-dom';
@@ -15,14 +15,14 @@ export default function Format({ addressbooks, children, callback, updateAddress
     const inputName = useRef(null);
     const location = useLocation();
 
-    const getItem = (
+    const getItem = useCallback((
         label,
         key,
         icon,
         children,
     ) => {
         return { key, icon, children, label, };
-    }
+    }, []);
 
     useEffect(() => {
         const books = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
@@ -35,7 +35,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [items]);
 
-    const setAddressbook = () => {
+    const setAddressbook = useCallback(() => {
         let element = parseInt(location.hash.split('#')[1]);
         if (!element) {
             return [];
@@ -44,13 +44,13 @@ export default function Format({ addressbooks, children, callback, updateAddress
         const item = items.find(item => item.label === searchedAddressbook?.name);
         callback(searchedAddressbook);
         setSelectedKey(`${item?.key}`)
-    }
+    }, [addressbooks, callback, items, location.hash]);
 
-    const createAddressbook = () => {
+    const createAddressbook = useCallback(() => {
         setNameAddressbook(true);
-    }
+    }, []);
 
-    const sendNewAddressbook = () => {
+    const sendNewAddressbook = useCallback(() => {
         let addressBookName = "";
         if (inputName.current) {
             addressBookName = inputName.current['input']['value'];
@@ -67,9 +67,9 @@ export default function Format({ addressbooks, children, callback, updateAddress
             console.log(err)
             openNotification(err.response.statusText, "error");
         });
-    }
+    }, [openNotification, updateAddressBooks]);
 
-    const clickMenu = (menuItem) => {
+    const clickMenu = useCallback((menuItem) => {
         const searchedAddressbook = addressbooks.find(
             (addressbook) => {
                 return addressbook.id + '' === menuItem?.key
@@ -78,7 +78,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
         if (searchedAddressbook) {
             callback(searchedAddressbook);
         }
-    }
+    }, [addressbooks, callback]);
 
     return (
 

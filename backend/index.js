@@ -22,7 +22,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cors(corsConfig));
-app.options('*', cors(corsConfig));
 
 app.use("/auth", authRoutes);
 app.use("/addressbook", addressbookRoutes);

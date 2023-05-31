@@ -1,10 +1,11 @@
 import { Modal } from "antd";
 import { axiosInstance } from "../../axios";
 import { CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
+import { useCallback } from "react";
 
 export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts, openNotification }) {
 
-    const delContact = () => {
+    const delContact = useCallback(() => {
         const contact = deleteContact;
         setDeleteContact(undefined);
         axiosInstance.delete(CONTACT_URL + contact?.address_book_id + CONTACT_ENDPOINT + "/" + contact?.id
@@ -14,10 +15,12 @@ export default function ConfirmationDeleteModal({ deleteContact, setDeleteContac
         }).catch(err => {
             openNotification(err.response.data.message, "error");
         })
-    }
-    const cancel = () => {
+    }, [deleteContact, openNotification, setDeleteContact, updateContacts]);
+
+    const cancel = useCallback(() => {
         setDeleteContact(undefined);
-    }
+    }, [setDeleteContact])
+
     return (
         <>
             {deleteContact && <Modal

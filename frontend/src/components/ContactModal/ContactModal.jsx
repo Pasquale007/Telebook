@@ -3,12 +3,13 @@ import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import { axiosInstance } from "../../axios";
 import moment from "moment";
 import { CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
+import { useCallback } from "react";
 
 
 export default function ContactModal({ editContact, setEditContact, updateContacts, mode, openNotification }) {
     const [contactForm] = Form.useForm();
 
-    const createContact = () => {
+    const createContact = useCallback(() => {
         const values = contactForm.getFieldsValue();
         const contact = editContact;
         let phone_numbers = contact.phone_numbers?.map(((_, i) => contactForm.getFieldValue('phone_number' + i)));
@@ -27,9 +28,9 @@ export default function ContactModal({ editContact, setEditContact, updateContac
                 openNotification(err.data.message, "error");
                 updateContacts();
             })
-    }
+    }, [contactForm, editContact, openNotification, setEditContact, updateContacts]);
 
-    const sendUpdatedContact = () => {
+    const sendUpdatedContact = useCallback(() => {
         const values = contactForm.getFieldsValue();
         const contact = editContact;
         if (values.first_name) {
@@ -48,7 +49,7 @@ export default function ContactModal({ editContact, setEditContact, updateContac
             openNotification(err.data.message, "error");
             updateContacts();
         })
-    }
+    }, [contactForm, editContact, openNotification, setEditContact, updateContacts])
 
     return (
         <Modal

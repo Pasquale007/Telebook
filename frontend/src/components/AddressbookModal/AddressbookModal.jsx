@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Popover } from "antd";
 import { axiosInstance } from "../../axios";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ADDRESSBOOK_ENDPOINT, BASE_URL } from "../../sharedValues";
 
 export default function AddressbookModal({ addressbook, setEditAddressbook, updateAddressbooks, deleteCurrentAddressbook, openNotification }) {
@@ -9,14 +9,19 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
     const [isDeleting, setIsDelete] = useState(false);
     const [isShareing, setIsShare] = useState(false);
     const [open, setOpen] = useState(false);
-    const SHARE_LINK = BASE_URL + "/share/" + addressbook.id;
 
-    const showPopover = () => {
+    const SHARE_LINK = useMemo(() => { return BASE_URL + "/share/" + addressbook.id }, [addressbook.id]);;
+
+    const cancel = useCallback(() => {
+        setEditAddressbook(undefined);
+    }, [setEditAddressbook]);
+
+    const showPopover = useCallback(() => {
         setOpen(true);
         setTimeout(() => { setOpen(false) }, 1000);
-    }
+    }, []);
 
-    const shareAddressbook = () => {
+    const shareAddressbook = useCallback(() => {
         const name = form.getFieldValue('name');
         axiosInstance.put(ADDRESSBOOK_ENDPOINT + addressbook.id, {
             'user_id': [sessionStorage.getItem('id')],
@@ -29,9 +34,9 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
         }).catch(err => {
             openNotification(err.data.message, "error");
         });
-    }
+    }, [addressbook.id, cancel, form, openNotification, updateAddressbooks]);
 
-    const deleteAddressbook = () => {
+    const deleteAddressbook = useCallback(() => {
         axiosInstance.delete(ADDRESSBOOK_ENDPOINT + addressbook.id + "/get/" + sessionStorage.getItem('id')
         ).then(response => {
             openNotification(response.data.message, "success");
@@ -41,21 +46,17 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
             openNotification(err.data.message, "error");
         });
         setEditAddressbook(undefined);
-    }
+    }, [addressbook.id, deleteCurrentAddressbook, openNotification, setEditAddressbook, updateAddressbooks]);
 
-    const cancel = () => {
-        setEditAddressbook(undefined);
-    }
-
-    const initDeleteModal = () => {
+    const initDeleteModal = useCallback(() => {
         setIsShare(false);
         setIsDelete(!isDeleting);
-    }
+    }, [isDeleting]);
 
-    const iniShare = () => {
+    const iniShare = useCallback(() => {
         setIsDelete(false);
         setIsShare(!isShareing);
-    }
+    }, [isShareing]);
 
     return (
         <Modal

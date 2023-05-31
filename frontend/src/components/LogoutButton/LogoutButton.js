@@ -2,12 +2,13 @@ import { LogoutOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { axiosInstance } from "../../axios";
 import { BASE_URL, LOGOUT_ENDPOINT } from "../../sharedValues";
+import { useCallback } from "react";
 
 
 export default function LogoutButton({ setAllContacts }) {
 
 
-    const logout = () => {
+    const logout = useCallback(() => {
         sessionStorage.clear();
         axiosInstance.post(LOGOUT_ENDPOINT
         ).then(response => {
@@ -19,7 +20,7 @@ export default function LogoutButton({ setAllContacts }) {
             console.log(err);
         })
         window.location.href = BASE_URL;
-    }
+    }, [setAllContacts]);
 
     return (
         <Button

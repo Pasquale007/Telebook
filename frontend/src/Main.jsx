@@ -1,6 +1,6 @@
 import Format from './Format';
 import './App.css';
-import { useEffect, useState, createContext, useMemo } from 'react';
+import { useEffect, useState, createContext, useMemo, useCallback } from 'react';
 import { axiosInstance } from './axios';
 import { ADDRESSBOOK_ENDPOINT, CONTACT_ENDPOINT, CONTACT_URL } from './sharedValues';
 import ContactList from './components/ContactList/ContactList';
@@ -35,7 +35,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const openNotification = (message, type) => {
+  const openNotification = useCallback((message, type) => {
     if (type === "success") {
       api.success({
         message: "Erfolg",
@@ -53,7 +53,7 @@ function App() {
         duration: 3
       });
     }
-  };
+  }, [api]);;
 
   const contextValue = useMemo(
     () => ({
@@ -104,7 +104,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressbooks]);
 
-  const updateAddressbooks = () => {
+  const updateAddressbooks = useCallback(() => {
     axiosInstance.get(ADDRESSBOOK_ENDPOINT + sessionStorage.getItem('id') + "/get"
     ).then(response => {
       setCurrentAddressbook(response.data.find(addressbook => addressbook.id === currentAddressbook?.id))
@@ -112,23 +112,23 @@ function App() {
     }).catch(err => {
       console.log(err);
     })
-  }
+  }, [currentAddressbook?.id]);
 
-  const clickCallback = (addressbook) => {
+  const clickCallback = useCallback((addressbook) => {
     setCurrentAddressbook(addressbook);
-  }
+  }, []);
 
-  const editContactCallback = (contact) => {
+  const editContactCallback = useCallback((contact) => {
     setEditContact(contact);
-  }
+  }, []);
 
-  const deleteContactCallback = (contact) => {
+  const deleteContactCallback = useCallback((contact) => {
     setDeleteContact(JSON.parse(JSON.stringify(contact)));
-  }
+  }, []);
 
-  const updateContacts = () => {
+  const updateContacts = useCallback(() => {
     setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
-  }
+  }, [currentAddressbook]);
 
 
   return (

@@ -1,17 +1,18 @@
 import { Avatar, List } from "antd";
+import { useCallback } from "react";
 
 export default function ContactList({ contacts, editContactCallback, deleteContactCallback }) {
 
-    const phone_numbers = (contact) => {
+    const phone_numbers = useCallback((contact) => {
         if (contact.phone_numbers && contact.phone_numbers.length > 0) {
             let addresses = contact.phone_numbers.map(number => " | " + number)
             return addresses;
         } else {
             return ""
-
         }
-    }
-    const desc = (contact) => {
+    }, []);
+
+    const desc = useCallback((contact) => {
         let information = []
         if (contact.email) {
             information.push(" Email: " + contact.email)
@@ -24,21 +25,21 @@ export default function ContactList({ contacts, editContactCallback, deleteConta
             information.push(" Geburtstag: " + contact.birthday.split("-")[1] + "." + contact.birthday.split("-")[0] + "." + contact.birthday.split("-")[2]);
         }
         return information.join(" | ");
-    }
+    }, []);
 
-    const editContact = (key) => {
+    const editContact = useCallback((key) => {
         const searchedContact = contacts.find((contact) => contact.id === key)
         if (searchedContact) {
             editContactCallback(searchedContact);
         }
-    }
+    }, [contacts, editContactCallback]);
 
-    const deleteContact = (key) => {
+    const deleteContact = useCallback((key) => {
         const searchedContact = contacts.find((contact) => contact.id === key);
         if (searchedContact) {
             deleteContactCallback(searchedContact);
         }
-    }
+    }, [contacts, deleteContactCallback]);
 
     return (
         <List
