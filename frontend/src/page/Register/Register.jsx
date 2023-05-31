@@ -42,8 +42,14 @@ export default function Register() {
         ).then(response => {
             sessionStorage.setItem('id', response.data.data.id);
             sessionStorage.setItem('accessToken', 'Bearer ' + response.data.access_token);
-
-            window.location.href = BASE_URL;
+            const prevRoute = JSON.parse(sessionStorage.getItem('prevRoute'))
+            const [lastRoute] = prevRoute.slice(-1);
+            if (lastRoute.includes('share')) {
+                navigate(lastRoute);
+            } else {
+                navigate("/");
+            }
+            //window.location.href = BASE_URL;
         }).catch(err => {
             if (err.response.data.errors) {
                 const errString = err.response.data.errors.map(err => { return err.msg })
