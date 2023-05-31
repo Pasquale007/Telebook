@@ -27,7 +27,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
     useEffect(() => {
         const books = addressbooks.map(address => getItem(address.name, address.id, <ContactsOutlined />));
         setItems(books);
-    }, [addressbooks]);
+    }, [addressbooks, getItem]);
 
     // Der linter wird hier disables, da das rendern unabhängig von allen anderen Variablen ist. Es soll nur auf die items geachtet werden
     useEffect(() => {
