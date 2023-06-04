@@ -76,6 +76,11 @@ export default function EditContact() {
         })
     }, []);
 
+    //disable all dates in the future
+    const disabledDate = (current) => {
+        return current && current > dayjs().endOf('day');
+    };
+
     return (
         <Modal
             open={editContact ? true : false}
@@ -98,10 +103,10 @@ export default function EditContact() {
                     <Space direction="vertical">
                         <Space direction="horizontal">
                             <Form.Item name="first_name" initialValue={editContact?.first_name} style={{ margin: "0px" }}>
-                                <Input prefix={<UserOutlined />} />
+                                <Input prefix={<UserOutlined />} placeholder="Vorname" />
                             </Form.Item>
                             <Form.Item name="last_name" initialValue={editContact?.last_name} style={{ margin: "0px" }}>
-                                <Input prefix={<UserOutlined />} />
+                                <Input prefix={<UserOutlined />} placeholder="Nachname" />
                             </Form.Item>
                         </Space>
                         {editContact?.phone_numbers?.map((phone_number, key) => {
@@ -119,20 +124,21 @@ export default function EditContact() {
                         }} />
                         <Space direction="horizontal">
                             <Form.Item name={"street"} initialValue={editContact?.street} style={{ margin: "0px" }}>
-                                <Input prefix={<NodeIndexOutlined />} />
+                                <Input prefix={<NodeIndexOutlined />} placeholder="Straße" />
                             </Form.Item>
                             <Form.Item name={"city"} initialValue={editContact?.city} style={{ margin: "0px" }}>
-                                <Input prefix={<HomeOutlined />} />
+                                <Input prefix={<HomeOutlined />} placeholder="Wohnort" />
                             </Form.Item>
                             <Form.Item name={"zip_code"} initialValue={editContact?.zip_code} style={{ margin: "0px" }}>
-                                <Input prefix={<ScanOutlined />} />
+                                <Input prefix={<ScanOutlined />} placeholder="PLZ" />
                             </Form.Item>
                         </Space>
-                        <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}>
-                            <Input prefix={<MailOutlined />} />
+                        <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}
+                            rules={[{ type: 'email', message: "Bitte gib eine valide E-Mail ein", }]}>
+                            <Input prefix={<MailOutlined />} placeholder="E-Mail" />
                         </Form.Item>
                         <Form.Item name={"birthday"} initialValue={editContact?.birthday ? dayjs(editContact?.birthday) : null} style={{ margin: "0px" }}>
-                            <DatePicker />
+                            <DatePicker showToday={false} disabledDate={disabledDate} />
                         </Form.Item>
                     </Space>
                 </Form>
