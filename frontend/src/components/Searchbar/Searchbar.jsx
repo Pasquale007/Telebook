@@ -7,7 +7,7 @@ export default function SearchBar({ setContacts, allContacts }) {
 
     const filterContacts = useCallback((inputString) => {
         if (inputString.length === 0) {
-            setContacts(undefined);
+            setContacts(allContacts);
         }
         inputString = inputString.toLowerCase();
         const contacts = allContacts.filter((contact) =>

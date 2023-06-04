@@ -66,7 +66,6 @@ function App() {
     if (currentAddressbook) {
       axiosInstance.get(CONTACT_URL + currentAddressbook?.id + CONTACT_ENDPOINT
       ).then(response => {
-        console.log(response)
         let sortedData = response.data.sort((a, b) => {
           return (a.first_name.localeCompare(b.first_name) !== 0) ? a.first_name.localeCompare(b.first_name) : a.last_name?.localeCompare(b.last_name || "");
         });
@@ -81,6 +80,10 @@ function App() {
   }, [currentAddressbook]);
 
   useEffect(() => {
+    setContacts(allContacts)
+  }, [allContacts])
+
+  useEffect(() => {
     if (editContact) {
       navigate(`/contactbook/${currentAddressbook.id}/contact/${editContact.id}/EDIT`)
     }
@@ -90,7 +93,6 @@ function App() {
     if (newContact) {
       navigate(`/contactbook/${currentAddressbook.id}/contact/${newContact.id}/CREATE`)
     }
-
   }, [currentAddressbook?.id, navigate, newContact]);
 
   useEffect(() => {
