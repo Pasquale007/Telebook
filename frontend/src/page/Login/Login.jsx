@@ -41,7 +41,8 @@ export default function Login() {
                 navigate("/");
             }
         }).catch(err => {
-            setErrorMsg(err.response?.data?.detail || "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut")
+            console.log(err)
+            setErrorMsg(err.response?.data?.message || "Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut")
         })
     }
 

@@ -9,6 +9,7 @@ export const login = (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { username_or_email, password } = req.body;
+  console.log(username_or_email);
   const connection = createConnection();
 
   const query = `
@@ -19,7 +20,7 @@ export const login = (req, res) => {
 
   connection.query(query, [username_or_email, username_or_email, password], (err, result) => {
     if (err) throw err;
-
+    
     if (result.length === 0) {
       connection.end();
       res.status(404).json({ message: 'Es existiert kein Benutzer mit diesen Anmeldedaten.' });

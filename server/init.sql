@@ -6,7 +6,7 @@ USE APP;
 CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED NOT NULL auto_increment,
     name VARCHAR(50),
-    email VARCHAR(255),
+    email VARCHAR(50),
     password VARCHAR(50),
     role VARCHAR(20),
     PRIMARY KEY (id)
