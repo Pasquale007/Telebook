@@ -53,7 +53,7 @@ function App() {
         duration: 3
       });
     }
-  }, [api]);;
+  }, [api]);
 
   const contextValue = useMemo(
     () => ({
@@ -78,10 +78,6 @@ function App() {
     }
 
   }, [currentAddressbook]);
-
-  useEffect(() => {
-    setContacts(allContacts)
-  }, [allContacts])
 
   useEffect(() => {
     if (editContact) {
@@ -172,7 +168,7 @@ function App() {
         {deleteContact && <ConfirmationDeleteModal deleteContact={deleteContact} setDeleteContact={setDeleteContact} updateContacts={updateContacts} openNotification={openNotification} />}
         {
           <Format addressbooks={addressbooks} callback={clickCallback} updateAddressBooks={updateAddressbooks} openNotification={openNotification}>
-            <ContactList contacts={contacts || allContacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
+            <ContactList contacts={contacts} editContactCallback={editContactCallback} deleteContactCallback={deleteContactCallback} />
           </Format>
         }
       </Layout>

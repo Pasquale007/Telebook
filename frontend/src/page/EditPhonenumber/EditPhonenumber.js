@@ -1,11 +1,11 @@
 import { HomeOutlined, MailOutlined, NodeIndexOutlined, PhoneOutlined, PlusOutlined, ScanOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Modal, Space } from "antd";
 import { axiosInstance } from "../../axios";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 export default function EditPhonenumber() {
     const { contacbookID, userID } = useParams();
@@ -87,7 +87,7 @@ export default function EditPhonenumber() {
                         <Form.Item name={"email"} initialValue={editContact?.email} style={{ margin: "0px" }}>
                             <Input prefix={<MailOutlined />} disabled />
                         </Form.Item>
-                        <Form.Item name={"birthday"} initialValue={editContact?.birthday ? moment(editContact?.birthday, 'YYYY-MM-DD') : undefined} style={{ margin: "0px" }}>
+                        <Form.Item name={"birthday"} initialValue={editContact?.birthday ? dayjs(editContact?.birthday) : null} style={{ margin: "0px" }}>
                             <DatePicker disabled />
                         </Form.Item>
                     </Space>
