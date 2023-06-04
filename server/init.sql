@@ -82,7 +82,7 @@ VALUES
     (3, 'Wade', 'Wilson', 'chimichanga_lover@deadpool.com', '444 Hella Blvd', 'New York City', '10001', '04-01-1971'),
     (3, 'Peter', 'Parker', 'spiderman@dailybugle.com', '20 Ingram St', 'Queens', '11427', '08-10-2001'),
     (3, 'Tony', 'Stark', 'ironman@starkindustries.com', '10880 Malibu Point', 'Malibu', '90265', '05-29-1970'),
-    (3, 'Hermione', 'Granger', 'bookworm@hogwarts.com', '12 Grimmauld Place', 'London', 'W1T 1JJ', '09-19-1979'),
+    (3, 'Hermine', 'Granger', 'bookworm@hogwarts.com', '12 Grimmauld Place', 'London', 'W1T 1JJ', '09-19-1979'),
     (3, 'Jack', 'Sparrow', 'savvy@blackpearl.com', '777 Treasure Isle', 'Port Royal', '00001', '07-07-1699'),
     (3, 'Willy', 'Wonka', 'golden_ticket@wonka.com', '29 Acacia Road', 'London', 'SE18 4AD', '09-10-1964');
 
