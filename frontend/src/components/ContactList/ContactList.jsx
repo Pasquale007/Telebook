@@ -1,12 +1,8 @@
 import { Avatar, List } from "antd";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 export default function ContactList({ contacts, editContactCallback, deleteContactCallback }) {
 
-    useEffect(() => {
-        console.log(contacts)
-    }, [contacts])
-    
     const phone_numbers = useCallback((contact) => {
         if (contact.phone_numbers && contact.phone_numbers.length > 0) {
             let addresses = contact.phone_numbers.map(number => " | " + number)

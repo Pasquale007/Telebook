@@ -9,7 +9,6 @@ export const login = (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { username_or_email, password } = req.body;
-  console.log(username_or_email);
   const connection = createConnection();
 
   const query = `

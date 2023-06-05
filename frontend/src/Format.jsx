@@ -29,10 +29,6 @@ export default function Format({ addressbooks, children, callback, updateAddress
         setItems(books);
     }, [addressbooks, getItem]);
 
-    useEffect(() => {
-        setAddressbook();
-    }, [items]);
-
     const setAddressbook = useCallback(() => {
         let element = parseInt(location.hash.split('#')[1]);
         if (!element) {
@@ -43,6 +39,12 @@ export default function Format({ addressbooks, children, callback, updateAddress
         callback(searchedAddressbook);
         setSelectedKey(`${item?.key}`)
     }, [addressbooks, callback, items, location.hash]);
+
+    useEffect(() => {
+        console.log("asdf")
+        setAddressbook();
+    }, [items, setAddressbook]);
+
 
     const createAddressbook = useCallback(() => {
         setNameAddressbook(true);

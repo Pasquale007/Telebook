@@ -18,8 +18,6 @@ export default function SearchBar({ setContacts, allContacts }) {
             contact.first_name.toLowerCase().concat(' ' + (contact.last_name || '').toLowerCase()).includes(inputString) ||
             contact.phone_numbers?.find(number => number.includes(inputString))
         )
-        console.log("filter")
-        console.log(contacts)
         setContacts(contacts);
     }, [allContacts, setContacts]);
 
