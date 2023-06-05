@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import Format from './Format';
 import './App.css';
 import { useEffect, useState, createContext, useMemo, useCallback } from 'react';
@@ -30,9 +29,7 @@ function App() {
   const [newContact, setNewContact] = useState(undefined);
   const [api, contextHolder] = notification.useNotification();
 
-  useEffect(() => {
-    updateAddressbooks();
-  }, []);
+
 
   const openNotification = useCallback((message, type) => {
     if (type === "success") {
@@ -90,6 +87,10 @@ function App() {
     }
   }, [currentAddressbook?.id, navigate, newContact]);
 
+  const updateContacts = useCallback(() => {
+    setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
+  }, [currentAddressbook]);
+
   useEffect(() => {
     if (currentAddressbook) {
       updateContacts();
@@ -110,6 +111,10 @@ function App() {
     })
   }, [currentAddressbook?.id]);
 
+  useEffect(() => {
+    updateAddressbooks();
+  }, [updateAddressbooks]);
+
   const clickCallback = useCallback((addressbook) => {
     setCurrentAddressbook(addressbook);
   }, []);
@@ -121,10 +126,6 @@ function App() {
   const deleteContactCallback = useCallback((contact) => {
     setDeleteContact(JSON.parse(JSON.stringify(contact)));
   }, []);
-
-  const updateContacts = useCallback(() => {
-    setCurrentAddressbook(JSON.parse(JSON.stringify(currentAddressbook)));
-  }, [currentAddressbook]);
 
 
   return (
