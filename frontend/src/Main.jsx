@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Format from './Format';
 import './App.css';
 import { useEffect, useState, createContext, useMemo, useCallback } from 'react';
