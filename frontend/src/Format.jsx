@@ -41,7 +41,6 @@ export default function Format({ addressbooks, children, callback, updateAddress
     }, [addressbooks, callback, items, location.hash]);
 
     useEffect(() => {
-        console.log("asdf")
         setAddressbook();
     }, [items, setAddressbook]);
 

@@ -29,7 +29,6 @@ function App() {
   const [newContact, setNewContact] = useState(undefined);
   const [api, contextHolder] = notification.useNotification();
 
-  //Dieser React-Hook soll nur beim initialen Laden ausgeführt werden und nicht auf die funktion hören. Deshalb wird hier der linter disabled
   useEffect(() => {
     updateAddressbooks();
   }, []);
