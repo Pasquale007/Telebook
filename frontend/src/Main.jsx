@@ -29,8 +29,6 @@ function App() {
   const [newContact, setNewContact] = useState(undefined);
   const [api, contextHolder] = notification.useNotification();
 
-
-
   const openNotification = useCallback((message, type) => {
     if (type === "success") {
       api.success({
@@ -99,6 +97,7 @@ function App() {
     currentAddressbook und updateContact darf nicht in den dependencies sein, da sonst eine Dauerschleife auftritt.
     In diesem Spezialfall müssen die Abhängigkeiten ignoriert werden
     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressbooks]);
 
   const updateAddressbooks = useCallback(() => {
