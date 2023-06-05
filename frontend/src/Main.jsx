@@ -32,7 +32,6 @@ function App() {
   //Dieser React-Hook soll nur beim initialen Laden ausgeführt werden und nicht auf die funktion hören. Deshalb wird hier der linter disabled
   useEffect(() => {
     updateAddressbooks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const openNotification = useCallback((message, type) => {
@@ -99,7 +98,6 @@ function App() {
     currentAddressbook und updateContact darf nicht in den dependencies sein, da sonst eine Dauerschleife auftritt.
     In diesem Spezialfall müssen die Abhängigkeiten ignoriert werden
     */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressbooks]);
 
   const updateAddressbooks = useCallback(() => {
