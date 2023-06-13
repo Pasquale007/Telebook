@@ -80,8 +80,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
     }, [addressbooks, callback]);
 
     return (
-
-        <Layout style={{ height: '100vh', width: '100%' }}>
+        <Layout style={{ height: '100%', width: '100%' }}>
             <Sider
                 collapsible
                 collapsed={collapsed}
