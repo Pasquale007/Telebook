@@ -112,7 +112,7 @@ function App() {
 
   useEffect(() => {
     updateAddressbooks();
-  }, [updateAddressbooks]);
+  }, []);
 
   const clickCallback = useCallback((addressbook) => {
     setCurrentAddressbook(addressbook);
