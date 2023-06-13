@@ -144,8 +144,7 @@ export const updateContact = (req, res) => {
                 connection.end();
                 return res.status(400).json({ error: "Es konnte kein Kontakt aktualisiert werden. Bitte versuche es später erneut." });
             }
-
-            if (phone_numbers && phone_numbers.length > 0) {
+            if (phone_numbers) {
                 const deleteQuery = "DELETE FROM phone_numbers WHERE contact_id = ?";
                 connection.query(deleteQuery, [contact_id], (err) => {
                     if (err) {
@@ -155,8 +154,13 @@ export const updateContact = (req, res) => {
 
                     const insertQuery = "INSERT INTO phone_numbers (contact_id, phone_number) VALUES (?, ?)";
                     let count = 0;
-
+                    if (phone_numbers.length === 0) {
+                        connection.commit();
+                        connection.end();
+                        return res.status(200).json({ message: "Der Kontakt wurde erfolgreich aktualisiert." });
+                    }
                     phone_numbers.forEach(phone_number => {
+
                         if (phone_number.length === 0) {
                             count++;
                             return;

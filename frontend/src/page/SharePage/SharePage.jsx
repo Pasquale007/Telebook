@@ -19,7 +19,7 @@ export function SharedPage() {
 
     return (
         <>
-            <h1>Hinzufügen zu Addressbuch...</h1>
+            <h1>Hinzufügen zu Adressbuch...</h1>
         </>
     )
 }

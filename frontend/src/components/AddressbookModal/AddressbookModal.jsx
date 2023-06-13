@@ -104,7 +104,7 @@ export default function AddressbookModal({ addressbook, setEditAddressbook, upda
             </Form>
             {isDeleting &&
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <p>Bist du sicher, dass das das Addressbuch mit allem Kontaken löschen möchtest?</p>
+                    <p>Bist du sicher, dass das das Adressbuch mit allem Kontaken löschen möchtest?</p>
                 </div>
             }
 

@@ -88,7 +88,7 @@ export default function Format({ addressbooks, children, callback, updateAddress
             >
                 <Menu
                     onClick={createAddressbook}
-                    items={[getItem("Neues Addressbuch", 1, <PlusOutlined />)]}
+                    items={[getItem("Neues Adressbuch", 1, <PlusOutlined />)]}
                     defaultSelectedKeys={['1']}
                 />
                 <Menu
@@ -103,11 +103,11 @@ export default function Format({ addressbooks, children, callback, updateAddress
                 <Content>
                     {nameAddressbook && <Modal
                         open
-                        title="Neues Addressbuch"
+                        title="Neues Adressbuch"
                         onOk={() => sendNewAddressbook()}
                         onCancel={() => setNameAddressbook(false)}
                     >
-                        <Input ref={inputName} placeholder="Addressbuch Name" />
+                        <Input ref={inputName} placeholder="Adressbuch Name" />
                     </Modal>}
                     {children}
                 </Content>
