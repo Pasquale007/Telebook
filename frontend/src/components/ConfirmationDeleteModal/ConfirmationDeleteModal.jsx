@@ -2,8 +2,10 @@ import { Modal } from "antd";
 import { axiosInstance } from "../../axios";
 import { CONTACT_ENDPOINT, CONTACT_URL } from "../../sharedValues";
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmationDeleteModal({ deleteContact, setDeleteContact, updateContacts, openNotification }) {
+    let navigate = useNavigate();
 
     const delContact = useCallback(() => {
         const contact = deleteContact;
@@ -15,7 +17,8 @@ export default function ConfirmationDeleteModal({ deleteContact, setDeleteContac
         }).catch(err => {
             openNotification(err.response.data.message, "error");
         })
-    }, [deleteContact, openNotification, setDeleteContact, updateContacts]);
+        navigate(`/`)
+    }, [deleteContact, navigate, openNotification, setDeleteContact, updateContacts]);
 
     const cancel = useCallback(() => {
         setDeleteContact(undefined);
